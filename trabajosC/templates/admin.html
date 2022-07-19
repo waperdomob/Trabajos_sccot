@@ -1,0 +1,79 @@
+{%  extends "base.html" %}
+{%  load static %}
+
+{%  block styles %}
+    <link rel="stylesheet" href="{% static 'css/indexProducto.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+  {%  endblock  %} 
+{%  block scripts %}
+    <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+  {%  endblock  %}
+  
+{% block content %}
+    <h2><center>Adiministrador</center></h2>
+
+    <table class="table table-light" id="trabajos">
+        <thead>
+            <tr>
+              <th >#</th>
+              <th >Titulo</th>
+              <th >Autor Correspondencia</th>
+              <th >Institucion principal</th>
+              <th >Curso</th>
+              <th ><center>Manuscritos</center></th>
+              <th ><center>Acciones</center></th>
+         </tr>
+        </thead>
+        <tbody>
+            {% for object in trabajos %}
+
+            <tr>
+                <td>{{object.id}}</td>
+                <td>{{object.titulo}}</td>
+                <td>{{object.Autor_correspondencia}}</td>
+                <td>{{object.institucion_principal}}</td>
+                <td>{{object.curso}}</td>
+                
+                <td>
+                    {% for manuscrito in manuscritos %}
+                    {% if manuscrito.trabajo_id == object.id %}
+                    <ul>
+                        <li>
+                            <a href="media/{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
+                        </li>
+                    </ul>
+                    {%  endif   %}
+                    {% endfor %}
+                </td>                
+                <td>
+                    <div class="d-grid gap-1 col-12 mx-auto">
+                        <button onclick="" class="btn btn-primary">Ver <i class="fa-solid fa-folder-open"></i></i></button>
+                        <button onclick="" class="btn btn-warning">Editar <i class="fa-solid fa-file-pen"></i></button><button onclick="" class="btn btn-danger">Eliminar <i class="fa-solid fa-box-archive"></i></button>
+                    </div>
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-grid gap-1 col-4 mx-auto">
+    <a href="{% url 'create_Trabajo'  %}" class="btn btn-secondary">Registrar Trabajo</a></div>
+{% endblock %}
+{% block javascript %}
+        <script type="text/javascript">
+
+                $('#trabajos').DataTable({
+                    responsive: true,
+                    autoWidth: false
+                });
+                
+
+            var $ = jQuery.noConflict();
+            
+            
+        </script>
+{% endblock %}

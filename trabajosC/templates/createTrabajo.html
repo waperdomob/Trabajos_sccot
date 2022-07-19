@@ -1,0 +1,239 @@
+{%  extends "base.html" %}
+{%  block title %}
+    SCCOT
+{%  endblock    %}
+{% load static %}
+    {% block styles %}
+    
+    <link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+    
+    <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>    
+
+    
+{% endblock %}
+{% block scripts %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <link href="{% static 'lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet"/>
+
+    <link href="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+    <script src="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.js' %}"></script>
+    
+
+    <script src="{% static 'js/form.js' %}"></script>
+
+{% endblock %}
+{%  block content   %}
+
+<div class="container ">
+    <br>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="textLabel">
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error:
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}¡Bien!:
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}Advertencia:
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}Aviso: {% endif %}
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="container">
+        <form action="" id="trabajo_form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if action == 'add' %}
+            <h1 style="color: rgb(9, 132, 240);" class="card-title"><center>
+                <i class="fas fa-plus"></i>
+                    {% else %}
+                    <i class="fas fa-edit"></i>
+                    {% endif %}
+                {{ title }}
+            </center></h1>
+            <br>
+            <br>
+            {% for row in form %}
+            {% if  "Curso" in row.label_tag  %}
+            <div class=" container" >
+                <div class="grid-container" >
+                    <label  class="textLabel" for="{{ row.html_name }}"  >
+                    {{ row.label_tag }}
+                </label>
+                </div>               
+                    {{ row }}                              
+                <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>                       
+            </div>
+            {%  endif %}
+            {% endfor %}
+
+            {% for row in form %}
+            {% if  "Tipo de trabajo" in row.label_tag  %}
+            <div class=" container" >
+                <div class="grid-container" >
+                    <label  class="textLabel" for="{{ row.html_name }}"  >
+                    {{ row.label_tag }}
+                </label>
+                </div>               
+                    {{ row }}                              
+                <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>                       
+            </div>
+            {%  endif %}
+            {% endfor %}
+
+            {% for row in form %}
+            {% if  "subTipo" in row.label_tag  %}
+            <div class=" container"  >
+                <div class="grid-container" id="subtipoLabel_id" >
+                    <label  class="textLabel" for="{{ row.html_name }}">
+                    {{ row.label_tag }}
+                </label>
+                </div>               
+                    {{ row }}                              
+                <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>                       
+            </div>
+            {%  endif %}
+            {% endfor %}
+
+            {% for row in form %}
+            {% if "titulo" in row.label_tag   %}
+            <div class=" container" >
+                <div class="grid-container" >
+                    <label  class="textLabel" for="{{ row.html_name }}"  >
+                    {{ row.label_tag }}
+                </label>
+                </div>               
+                    {{ row }}                              
+                <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>                       
+            </div>
+            {%  endif %}
+            {% endfor %}
+
+            {% for row in form %}
+            {%  if "Autor Correspondencia" in row.label_tag  %}
+            <div class=" container" >
+                <div class="row">
+                    <div class="col-10">
+                        <label  class="textLabel" for="{{ row.html_name }}"  >
+                            {{ row.label_tag }}
+                        </label>               
+                            {{ row }}                              
+                        <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>   
+                    </div>
+                    <div class="col-2">
+                        
+                        <button id="registrarAutor1" class="btn btn-success btnAddAutor" type="button" style="margin-top: 15%;" data-bs-toggle="modal" data-bs-target="#autoresModal"><i class="fas fa-plus" ></i> + Registrar Autor</button> 
+                    </div>
+                </div>
+                
+            </div>
+            {%  endif %}
+            {% endfor %}
+
+            {% for row in trabajo_autorForm %}
+            {%  if "Autores" in row.label_tag %}
+            <div class=" container" >
+                <div class="row">
+                    <div class="col-10">
+                        <label  class="textLabel" for="{{ row.html_name }}" >
+                            {{ row.label_tag }}
+                        </label>               
+                            {{ row }}                              
+                        <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>   
+                    </div>
+                    <div class="col-2">
+                        
+                        <button id="registrarAutor" class="btn btn-success btnAddAutor" type="button" style="margin-top: 15%;" data-bs-toggle="modal" data-bs-target="#autoresModal2"><i class="fas fa-plus" ></i> + Registrar Autor</button> 
+                    </div>
+                </div>
+                
+            </div>
+            {%  endif %}
+            {% endfor %}
+
+            {% for row in form %}
+            {% if "Observaciones" in row.label_tag or "Institucion principal" in row.label_tag  %}
+            <div class=" container" >
+                <div class="grid-container">
+                    <label  class="textLabel" for="{{ row.html_name }}" >
+                    {{ row.label_tag }}
+                </label>
+                </div>               
+                    {{ row }}                              
+                <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>   
+            </div>
+            {%  endif %}
+            {% endfor %}
+
+            {% for row in trabajo_instituForm %}
+            {%  if "Institucion" in row.label_tag %}
+            <div class=" container" >
+                <div class="grid-container">
+                    <label  class="textLabel" for="{{ row.html_name }}" >
+                    {{ row.label_tag }}
+                </label>
+                </div>               
+                    {{ row }}                              
+                <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>   
+            </div>
+            {%  endif %}
+            {% endfor %}
+
+            {% for row in form %}
+            {% if  "Resumen en español" in row.label_tag or "Palabras claves" in row.label_tag or "Resumen en ingles" in row.label_tag or "Keywords" in row.label_tag %}
+            <div class=" container" >
+                <div class="grid-container">
+                    <label  class="textLabel" for="{{ row.html_name }}" >
+                    {{ row.label_tag }}
+                </label>
+                </div>               
+                    {{ row }}                              
+                <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>   
+            </div>
+            {%  endif %}
+            {% endfor %}
+
+            {% for row in manuscritosForm %}
+            <div class=" container" >
+                <div class="grid-container" id="manuscritosLabel_id">
+                    <label  class="textLabel" for="{{ row.html_name }}" >
+                    {{ row.label_tag }}
+                </label>
+                </div>               
+                    {{ row }}                              
+                <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>                       
+            </div>
+            {% endfor %}
+            
+            {% for row in tablasForm %}
+            <div class=" container" >
+                <div class="grid-container"  id="tablaLabel_id">
+                    <label  class="textLabel" for="{{ row.html_name }}" >
+                    {{ row.label_tag }}
+                </label>
+                </div>               
+                    {{ row }}                              
+                <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>                       
+            </div>
+            {% endfor %}
+            
+            <input type="hidden" name="action" value="{{ action }}">
+              <br>
+              <div class="d-grid gap-2 col-4 mx-auto">
+                <button type="submit" class="btn btn-primary" id="botonEnviar">Guardar</button>
+              </div>
+          </form>
+    </div>
+    {% include 'autoresModal.html' %}
+    {% include 'autoresModal2.html' %}
+</div>
+
+
+   <br><br>
+{%  endblock    %}
