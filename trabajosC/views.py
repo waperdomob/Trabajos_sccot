@@ -1,9 +1,5 @@
 import datetime as dtime
-import traceback
-from django.contrib import messages
-
 from django.core.files.storage import FileSystemStorage 
-from datetime import datetime
 from django.http import JsonResponse
 import json
 from django.db.models import Q
@@ -15,18 +11,19 @@ from django.views.generic import CreateView,ListView, UpdateView,DeleteView,Deta
 
 from django.shortcuts import  redirect, render
 from numpy import save
-from trabajosC.forms import AutoresForm, AutoresForm2, AutoresForm3, ManuscritosForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, TrabajosCForm
+from trabajosC.forms import AutoresForm, AutoresForm2, AutoresForm3, InstitucionForm, ManuscritosForm, TablasForm, Trabajo_AutoresForm, TrabajosCForm
 
-from trabajosC.models import Autores, Cursos, Instituciones, Manuscritos, Tablas, Trabajos, Trabajos_has_autores, Trabajos_has_instituciones
+from trabajosC.models import Autores, Cursos, Instituciones, Manuscritos, Tablas, Trabajos, Trabajos_has_autores
 
 # Create your views here.
 
 def index(request):
     if request.user.is_superuser:
         trabajos = Trabajos.objects.all()
+        autores_trab = Trabajos_has_autores.objects.all()
         manuscritos = Manuscritos.objects.all().select_related('trabajo')
         
-        return render(request,'admin.html', {'trabajos':trabajos,'manuscritos':manuscritos})
+        return render(request,'admin.html', {'trabajos':trabajos,'manuscritos':manuscritos,'autores_trab':autores_trab})
     else:
         return render(request,'index.html')
 
@@ -42,7 +39,7 @@ class registrarTrabajo(CreateView):
     def post(self, request, *args, **kwargs):
         data = {}
         manus_path = 'media/manuscritos'
-        manus_path2 = 'media/tablas'
+        manus_path2 = 'media/otros'
 
         try:
             action = request.POST['action']
@@ -56,12 +53,22 @@ class registrarTrabajo(CreateView):
                     item['text'] = i.get_full_name()
                     data.append(item)
                     
-            if action == 'search_curso':
+            elif action == 'search_curso':
                 term = request.POST['curso_id']
                 curso = Cursos.objects.get(id=term)
                 if curso.fecha_fin < dtime.date.today():
                     data['error'] = 'No es posible registrar el trabajo, ha exedido la fecha limite'
                     return JsonResponse(data, safe=False)
+               
+            elif action == 'search_institucion':
+                data = []
+                term = request.POST['term']
+                instituciones = Instituciones.objects.filter(
+                    Q(institucion__icontains=term))[0:10]
+                for i in instituciones:
+                    item = i.toJSON()
+                    item['text'] = i.institucion
+                    data.append(item)
                
             elif action == 'create_autor1':
                 with transaction.atomic():
@@ -72,7 +79,12 @@ class registrarTrabajo(CreateView):
                 with transaction.atomic():
                     frmAutor = AutoresForm2(request.POST)
                     data = frmAutor.save()
-            
+
+            elif action == 'create_institucion':
+                with transaction.atomic():
+                    frmInst = InstitucionForm(request.POST)                    
+                    data = frmInst.save()
+
             elif action == 'add':
                     cont=0
                     autores = []
@@ -82,33 +94,27 @@ class registrarTrabajo(CreateView):
 
                     trab = Trabajos()
                     trab.tipo_trabajo = trabj['tipo_trabajo']
+                    trab.subtipo_trabajo = trabj['subTipo_trabajo']
                     trab.titulo = trabj['titulo']
                     trab.Autor_correspondencia_id = trabj['Autor_correspondencia']
                     trab.observaciones = trabj['observaciones']
-                    trab.institucion_principal = trabj['institucion_principal']
+                    trab.institucion_principal_id = trabj['institucion_principal']
                     trab.resumen_esp = trabj['resumen_esp']
                     trab.palabras_claves = trabj['palabras_claves']
                     trab.resumen_ingles = trabj['resumen_ingles']
                     trab.keywords = trabj['keywords']
                     trab.curso_id = trabj['curso']
+                    
                     trab.save()
-
-                    otras_instituciones = trabj['otras_instituciones']
                     otros_autores = trabj['otros_autores']
 
                     for i in otros_autores:
-                        a = int(i)
-                        aut = Autores.objects.get(id = a)
-
-                        Trabajos_has_autores.objects.create(trabajo_id=trab.id, autor_id =aut.id)
-                        print("save")
-                        #m1.save()
-
-                    for i in otras_instituciones:
-                        a = int(i)
-                        inst = Instituciones.objects.get(id = a)
-                        m2 = Trabajos_has_instituciones.objects.create(trabajo_id=trab.id, institucion_id=inst.id)
-                        m2.save()   
+                        if len(i) != 0:
+                            a = int(i)
+                            aut = Autores.objects.get(id = a)
+                            Trabajos_has_autores.objects.create(trabajo_id=trab.id, autor_id =aut.id)
+                            print("save")
+                        #m1.save() 
                                        
                     for file in manuscritos:
                         fs = FileSystemStorage(location=manus_path, base_url=manus_path)
@@ -120,12 +126,13 @@ class registrarTrabajo(CreateView):
                             )
                         obj.save(force_insert=True )
                         print("save")
+
                     for file in tablas:
                         fs = FileSystemStorage(location=manus_path2, base_url=manus_path2)
                         name1 = fs.save(trab.Autor_correspondencia.Nombres+trab.titulo+file.name,file)
                         obj = Tablas(
                             tituloM = trab.Autor_correspondencia.Nombres+trab.titulo+file.name,
-                            tabla = '/tablas/'+name1,
+                            tabla = '/otros/'+name1,
                             trabajo = trab
                             )
                         obj.save(force_insert=True )
@@ -142,12 +149,10 @@ class registrarTrabajo(CreateView):
         context['form'] = self.form_class
         context['form2'] = AutoresForm2()
         context['form3'] = AutoresForm3()
+        context['form4'] = InstitucionForm()
         context['manuscritosForm'] = ManuscritosForm()
         context['tablasForm'] = TablasForm()
         context['trabajo_autorForm'] = Trabajo_AutoresForm()
-        context['trabajo_instituForm'] = Trabajo_InstitucionesForm()
-
-
         context['action'] = 'add'
 
         return context

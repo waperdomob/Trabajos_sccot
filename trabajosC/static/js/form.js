@@ -5,15 +5,32 @@ let cajaTexto = document.getElementById("tabla")
 
 const MAXIMO_TAMANIO_BYTES = 2000000; // 1MB = 1 millón de bytes
 
+function message_error(obj) {
+    var html = '';
+    if (typeof (obj) === 'object') {
+        html = '<ul style="text-align: left;">';
+        $.each(obj, function (key, value) {
+            html += '<li>' + key + ': ' + value + '</li>';
+        });
+        html += '</ul>';
+    } else {
+        html = '<p>' + obj + '</p>';
+    }
+    Swal.fire({
+        title: 'Error!',
+        html: html,
+        icon: 'error'
+    });
+}
 var trabajo={
     items : {
         tipo_trabajo: '',
+        subTipo_trabajo: '',
         titulo : '',
         Autor_correspondencia:'',
         otros_autores :[],
         observaciones : '',
         institucion_principal: '',
-        otras_instituciones : [],
         resumen_esp : '',
         palabras_claves: '',
         resumen_ingles : '',
@@ -51,7 +68,8 @@ function submit_with_ajax(url, title, content, parameters, callback) {
                             callback(data);
                             return false;
                         }
-                        message_error(data.error);
+                        //alert(data['error']);
+                        message_error(data);
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         alert(textStatus + ': ' + errorThrown);
                     }).always(function (data) {
@@ -122,14 +140,18 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
                 $('#id_tabla').prop('hidden', true);
                 $('#tablaLabel_id').prop('hidden', true);
                 $('#subtipoLabel_id').prop('hidden', true);
+                $('#manuscritosLabel_id').prop('hidden', true);
+                $('#eposterLabel_id').prop('hidden', false);
                 $('#id_subtipo_trabajo').prop('hidden', true);
 
 
             }else {
-              $('#id_tabla').prop('hidden', false);
-              $('#tablaLabel_id').prop('hidden', false);
-              $('#subtipoLabel_id').prop('hidden', false);
-              $('#id_subtipo_trabajo').prop('hidden', false);
+                $('#eposterLabel_id').prop('hidden', true);
+                $('#manuscritosLabel_id').prop('hidden', false);
+                $('#id_tabla').prop('hidden', false);
+                $('#tablaLabel_id').prop('hidden', false);
+                $('#subtipoLabel_id').prop('hidden', false);
+                $('#id_subtipo_trabajo').prop('hidden', false);
 
 
             }
@@ -146,7 +168,7 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
                 
                 success: function (data) {
                     if (data['error']) {
-                        alert(data['error']);
+                        message_error(data['error']);
                         $('#botonEnviar').prop('hidden', true);
                         $('#botonEnviar').prop('disabled', true);
 
@@ -173,6 +195,8 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
             language: 'es',
             allowClear: true,
         });
+        $('select[name="autor"]').val(null).trigger('change');
+
         $('select[name="Autor_correspondencia"]').select2({
             theme: "bootstrap4",
             language: 'es',
@@ -196,14 +220,12 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
                 },
             },
             placeholder: 'Ingrese un Nombre o apellido',
-            minimumInputLength: 3,
+            minimumInputLength: 1,
         });
-
         $('select[name="autor"]').select2({
             theme: "bootstrap4",
             language: 'es',
-            
-            allowClear: true,
+                        
             ajax: {
                 delay: 250,
                 type: 'POST',
@@ -220,10 +242,57 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
                         results: data
                     };
                 },
+            allowClear: true,
+            
             },
             placeholder: 'Ingrese un Nombre o apellido',
-            minimumInputLength: 3,
+            minimumInputLength: 1,
         });
+        $('select[name="institucion_principal"]').select2({
+            theme: "bootstrap4",
+            language: 'es',
+            allowClear: true,
+            ajax: {
+                delay: 250,
+                type: 'POST',
+                url: window.location.pathname,
+                data: function (params) {
+                    var queryParameters = {
+                        term: params.term,
+                        action: 'search_institucion'
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {                        
+                        results: data
+                    };
+                },
+            },
+            placeholder: 'Ingrese una institucion',
+            minimumInputLength: 1,
+        });
+
+        $('.btnAddAutor').on('click', function () {
+            $('#autoresModal').modal('show');
+        });
+        $('.btnAddAutor2').on('click', function () {
+            $('#autoresModal2').modal('show');
+        });
+        $('.btnAddInst').on('click', function () {
+            $('#institucionModal').modal('show');
+        });
+
+        $('#autoresModal').on('hidden.bs.modal', function (e) {
+            $('#Autor_form1').trigger('reset');
+        });
+        $('#autoresModal2').on('hidden.bs.modal', function (e) {
+            $('#Autor_form2').trigger('reset');
+        });
+        $('#institucionModal').on('hidden.bs.modal', function (e) {
+            $('#Inst_form1').trigger('reset');
+        });
+    
         $('#Autor_form1').on('submit', function (e) {
             e.preventDefault();
             var parameters = new FormData(this);
@@ -233,8 +302,8 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
                     //console.log(response);
                     var newOption = new Option(response.full_name, response.id, false, true);
                     $('select[name="Autor_correspondencia"]').append(newOption).trigger('change');
-                    $('select[name="autor"]').append(newOption).trigger('change');
-
+                    /* $('select[name="autor"]').append(newOption).trigger('change');
+ */
                     $('#autoresModal').modal('hide');
                 });
         });
@@ -247,21 +316,34 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
                 '¿Estas seguro de registrar al siguiente Autor?', parameters, function (response) {
                     console.log(response);
                     var newOption = new Option(response.full_name, response.id, false, true);
-                    $('select[name="Autor_correspondencia"]').append(newOption).trigger('change');
+                    /* $('select[name="Autor_correspondencia"]').append(newOption).trigger('change'); */
                     $('select[name="autor"]').append(newOption).trigger('change');
 
                     $('#autoresModal2').modal('hide');
                 });
         });
+        $('#Inst_form1').on('submit', function (e) {
+            e.preventDefault();
+            var parameters = new FormData(this);
+            parameters.append('action', 'create_institucion');
+            submit_with_ajax(window.location.pathname, 'Notificación',
+                '¿Estas seguro de registrar la siguiente institución?', parameters, function (response) {
+                    console.log(response);
+                    var newOption = new Option(response.institucion, response.id, false, true);
+                    $('select[name="institucion_principal"]').append(newOption).trigger('change');
 
+                    $('#institucionModal').modal('hide');
+                });
+        });
         $('#trabajo_form').on('submit', function (e) {
             e.preventDefault();    
             trabajo.items.tipo_trabajo = $('select[name="tipo_trabajo"]').val();
+            trabajo.items.subTipo_trabajo = $('select[name="subtipo_trabajo"]').val();
             trabajo.items.titulo = $('input[name="titulo"]').val();
             trabajo.items.Autor_correspondencia = $('select[name="Autor_correspondencia"]').val();
             trabajo.items.otros_autores = $('select[name="autor"]').val();
             trabajo.items.observaciones = $('input[name="observaciones"]').val();
-            trabajo.items.institucion_principal = $('input[name="institucion_principal"]').val();
+            trabajo.items.institucion_principal = $('select[name="institucion_principal"]').val();
             trabajo.items.otras_instituciones = $('select[name="institucion"]').val();
             trabajo.items.resumen_esp = $('input[name="resumen_esp"]').val();
             trabajo.items.palabras_claves = $('input[name="palabras_claves"]').val();
@@ -280,20 +362,33 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
                 archivos.push($('input[name="manuscrito"]').get(0).files[i]);
                 ext[i] = archivos[i].name.split('.').pop();
                 ext[i] = ext[i].toLowerCase();
-                if (archivos[i].size > MAXIMO_TAMANIO_BYTES) {
-                    const tamanioEnMb = MAXIMO_TAMANIO_BYTES / 1000000;
-                    alert(`El tamaño máximo del archivo ${archivos[i].name} debe ser menor a ${tamanioEnMb} MB`);
-                    contador ++;
+                if (trabajo.items.tipo_trabajo !='E-poster') {
+                    if (archivos[i].size > MAXIMO_TAMANIO_BYTES) {
+                        const tamanioEnMb = MAXIMO_TAMANIO_BYTES / 1000000;
+                        alert(`El tamaño máximo del archivo ${archivos[i].name} debe ser menor a ${tamanioEnMb} MB`);
+                        contador ++;
+                    }
+                    
+                    else if (ext[i] === "docx" ||  ext[i] === "doc") {
+                        trabajo.items.manuscritos.push($('input[name="manuscrito"]').get(0).files[i].name);
+                        
+                    } 
+                    else{
+                        alert(`El  archivo ${archivos[i].name} debe ser documento word`);
+                        contador ++;
+                    }
+                }
+                else{
+                    if (ext[i] === "pptx") {
+                        trabajo.items.manuscritos.push($('input[name="manuscrito"]').get(0).files[i].name);
+                        
+                    } 
+                    else{
+                        alert(`El  archivo ${archivos[i].name} debe ser documento powerPoint`);
+                        contador ++;
+                    }
                 }
                 
-                else if (ext[i] === "docx" ||  ext[i] === "doc") {
-                    trabajo.items.manuscritos.push($('input[name="manuscrito"]').get(0).files[i].name);
-                    
-                } 
-                else{
-                    alert(`El  archivo ${archivos[i].name} debe ser documento word`);
-                    contador ++;
-                }
             };
             for (var i = 0; i < tamTablas; ++i) {
                 archivos2.push($('input[name="tabla"]').get(0).files[i]);
@@ -307,7 +402,7 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
                     trabajo.items.tablas.push($('input[name="tabla"]').get(0).files[i].name);
                 }
             };
-            console.log(trabajo.items.otras_instituciones);
+            
             if (contador == 0) {
                 var parameters = new FormData();
                 parameters.append('action', $('input[name="action"]').val());

@@ -29,8 +29,14 @@ class Roles(models.Model):
 
 class Instituciones(models.Model):
     institucion = models.CharField(max_length=45)
+
     def __str__(self):
         return self.institucion
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['institucion'] = self.institucion
+        return item
 
 class Especialidades(models.Model):
     especialidad = models.CharField(max_length=45)
@@ -79,7 +85,7 @@ class Trabajos(models.Model):
     titulo=models.CharField(max_length=100)
     Autor_correspondencia=models.ForeignKey(Autores, on_delete=models.CASCADE)
     observaciones=models.CharField(max_length=100,null=True, blank=True)
-    institucion_principal=models.CharField(max_length=100)
+    institucion_principal=models.ForeignKey(Instituciones, on_delete=models.CASCADE)
     resumen_esp=models.CharField(max_length=100)
     palabras_claves=models.CharField(max_length=100)
     resumen_ingles=models.CharField(max_length=100)
@@ -96,13 +102,6 @@ class Trabajos(models.Model):
 class Trabajos_has_autores(models.Model):
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
     autor = models.ForeignKey(Autores, on_delete=models.CASCADE, blank=True, null=True)
-    def __str__(self):
-        return self.trabajo.titulo
-
-class Trabajos_has_instituciones(models.Model):
-    institucion = models.ForeignKey(Instituciones, on_delete=models.CASCADE, blank=True, null=True)
-    trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
-
     def __str__(self):
         return self.trabajo.titulo
 

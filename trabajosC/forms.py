@@ -1,4 +1,6 @@
 from django import forms
+from matplotlib import widgets
+from django.db.models import Q
 
 from .models import *
 from django.forms import ModelForm
@@ -77,8 +79,8 @@ class AutoresForm2(ModelForm):
         widgets = {
 	        'tipo_identificacion':forms.TextInput(attrs={'class':'form-control'}),
             'identificacion':forms.TextInput(attrs={'class':'form-control'}),            
-            'Nombres':forms.TextInput(attrs={'class':'form-control'}),
-            'Apellidos':forms.TextInput(attrs={'class':'form-control'}),
+            'Nombres':forms.TextInput(attrs={'class':'form-control','placeholder': 'Ingrese su nombre completo'}),
+            'Apellidos':forms.TextInput(attrs={'class':'form-control','placeholder': 'Ingrese su apellido completo'}),
             'especialidad':forms.Select(attrs={'class':'form-control'}),
             'miembro':forms.Select(attrs={'class':'form-control'},choices=MIEMBROS),
             'email':forms.TextInput(attrs={'class':'form-control','type':'email'}),
@@ -117,8 +119,8 @@ class AutoresForm3(ModelForm):
 
         }
         widgets = {          
-            'Nombres':forms.TextInput(attrs={'class':'form-control'}),
-            'Apellidos':forms.TextInput(attrs={'class':'form-control'}),
+            'Nombres':forms.TextInput(attrs={'class':'form-control','placeholder': 'Ingrese su nombre completo'},),
+            'Apellidos':forms.TextInput(attrs={'class':'form-control','placeholder': 'Ingrese su apellido completo'}),
             'miembro':forms.Select(attrs={'class':'form-control'},choices=MIEMBROS),
             'email':forms.TextInput(attrs={'class':'form-control','type':'email'}),
             'institucion':forms.TextInput(attrs={'class':'form-control'}),
@@ -137,6 +139,38 @@ class AutoresForm3(ModelForm):
             data['error'] = str(e)
         return data
 
+class InstitucionForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['institucion'].widget.attrs['autofocus'] = True
+        
+    class Meta:
+        model= Instituciones
+        fields = '__all__'
+
+        labels = {
+            'institucion':'Institución',
+        }
+        widgets = {
+             'institucion':forms.TextInput(attrs={'class': 'form-control '}),
+        }
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                inst = form.clean()
+                instituciones = Instituciones.objects.filter(Q(institucion__icontains=inst['institucion']))
+                if instituciones:
+                    data['error'] = 'No es posible registrar la institución, ya existe'
+                else:
+                    instance = form.save()
+                    data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
 
 class CursosForm(ModelForm):
     class Meta:
@@ -154,8 +188,7 @@ class CursosForm(ModelForm):
             'ciudad':forms.TextInput(attrs={'class':'form-control'}),
             'user':forms.Select(attrs={'class':'form-control'}),
         }
-        
-        
+                
 class TrabajosCForm(ModelForm):
 
     class Meta:
@@ -165,10 +198,9 @@ class TrabajosCForm(ModelForm):
             'tipo_trabajo':'Tipo de trabajo',
             'subtipo_trabajo':'subTipo',
             'Autor_correspondencia':'Autor Correspondencia',
-            'otros_autores':'Autores',
             'titulo':'Titulo',
             'observaciones':'Observaciones',
-            'institucion_principal':'Institucion principal',
+            'institucion_principal':'Institucion principal del trabajo',
             'resumen_esp':'Resumen en español',
             'palabras_claves':'Palabras claves',
             'resumen_ingles':'Resumen en ingles',
@@ -181,10 +213,9 @@ class TrabajosCForm(ModelForm):
             'tipo_trabajo':forms.Select(attrs={'class':'form-control'},choices=CATEGORIAS),
             'subtipo_trabajo':forms.Select(attrs={'class':'form-control'},choices=SUBCATEGORIAS),
 	        'Autor_correspondencia':forms.Select(attrs={'class':'form-control select2'}),
-	        'otros_autores':forms.SelectMultiple(attrs={'class':'form-control select2'}),
 	        'titulo':forms.TextInput(attrs={'class':'form-control'}),
             'observaciones':forms.TextInput(attrs={'class':'form-control'}),            
-            'institucion_principal':forms.TextInput(attrs={'class':'form-control'}),
+            'institucion_principal':forms.Select(attrs={'class':'form-control select2'}),
             'resumen_esp':forms.TextInput(attrs={'class':'form-control'}),
             'palabras_claves':forms.TextInput(attrs={'class':'form-control'}), 
             'resumen_ingles':forms.TextInput(attrs={'class':'form-control'}),
@@ -209,7 +240,7 @@ class TablasForm(ModelForm):
         model= Tablas
         exclude = ['tituloT','trabajo']
         labels = {
-            'tabla' : 'Figuras, tablas, otros',
+            'tabla' : 'Otros',
         }
         widgets = {          
             'tabla':forms.FileInput(attrs={'class': 'form-control','multiple':True}),
@@ -228,17 +259,4 @@ class Trabajo_AutoresForm(ModelForm):
             'trabajo':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
             'autor':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
             
-        }
-
-class Trabajo_InstitucionesForm(ModelForm):
-    class Meta:
-        model= Trabajos_has_instituciones
-        fields = '__all__'
-        labels = {
-            'trabajo' : 'Trabajo',
-            'institucion' : 'Institucion',
-        }
-        widgets = {          
-            'trabajo':forms.Select(attrs={'class': 'form-control','multiple':True}),
-            'institucion':forms.Select(attrs={'class': 'form-control select2','multiple':True}),            
         }
