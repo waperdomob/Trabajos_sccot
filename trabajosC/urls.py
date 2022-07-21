@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import path,include
+from django.urls import path,include,re_path
 from django.conf.urls.static import static
 from django.conf import settings
 from trabajosC import views
@@ -8,8 +8,8 @@ from .views import *
 urlpatterns = [
        
     path('',views.index, name='inicio'),
-    path('create_Trabajo/', views.registrarTrabajo.as_view(), name='create_Trabajo'),
-    path('create_autor/',views.create_autor, name='registrarAutor'),
+    re_path('^ajax_especialidades/$', views.ajax_especialidades, name='ajax_especialidades'),
+    path('trabajos/create_Trabajo/', views.registrarTrabajo.as_view(), name='create_Trabajo'),
 
 ]
 if settings.DEBUG:

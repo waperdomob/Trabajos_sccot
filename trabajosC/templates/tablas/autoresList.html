@@ -1,0 +1,47 @@
+<table class="table table-light" id="autores">
+    <thead>
+        <tr>
+          <th ># Identificación</th>
+          <th >Tipo de Identificación</th>
+          <th >Nombres</th>
+          <th >Apellidos</th>
+          <th >Especialidad</th>
+          <th >Email</th>
+          <th >Celular</th>
+          <th >Institución</th>
+          <th >Ciudad</th>
+          <th >Pais</th>
+          <th ><center>Acciones</center></th>
+     </tr>
+    </thead>
+    <tbody>
+        {% for object in autores %}
+
+        <tr>
+            <td>{{object.identificacion}}</td>
+            <td>{{object.tipo_identificacion}}</td>
+            <td>{{object.Nombres}}</td>
+            <td>{{object.Apellidos}}</td>
+            <td>{{object.especialidad}}</td>
+            <td>{{object.email}}</td>
+            <td>{{object.celular}}</td>
+            <td>{{object.institucion}}</td>
+            <td>{{object.ciudad}}</td>
+            <td>{{object.pais}}</td>
+                        
+            <td>
+                <div class="d-grid gap-2 col-12 mx-auto"> 
+                    <button onclick="" class="btn btn-primary"> <i class="fa-solid fa-folder-open"></i></i></button>
+                    <button onclick="abrir_modal_editAutor(`{% url 'edit_Autor' object.id %}`)" class="btn btn-warning"> <i class="fa-solid fa-file-pen"></i></button>
+                    <button onclick="abrir_modal_deleteAutor(`{% url 'delete_Autor' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-box-archive"></i></button>
+                </div>
+                
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="d-grid gap-1 col-4 mx-auto">
+    <button onclick="abrir_modal_createAutor(`{% url 'create_Autor' %}`)" class="btn btn-success">Registrar Autor</button>
+</div>

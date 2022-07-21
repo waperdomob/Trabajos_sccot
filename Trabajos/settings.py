@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'fontawesomefree',
     'Trabajos',
     'trabajosC',
+    'Autores',
+    'Cursos',
 ]
 
 MIDDLEWARE = [
@@ -118,9 +120,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 
@@ -132,6 +134,7 @@ USE_TZ = True
 STATICFILES_DIRS = [
     BASE_DIR / 'Trabajos' / 'static',
     BASE_DIR / 'trabajosC' / 'static',
+    BASE_DIR / 'Autores' / 'static',
 ] 
 
 STATIC_URL = 'static/'

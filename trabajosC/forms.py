@@ -1,5 +1,4 @@
 from django import forms
-from matplotlib import widgets
 from django.db.models import Q
 
 from .models import *
@@ -29,37 +28,6 @@ MIEMBROS = (
 class SearchForm(forms.Form):
     documento = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Número del documento'}))
 
-class AutoresForm(ModelForm):
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['Nombres'].widget.attrs['autofocus'] = True
-        
-    class Meta:
-        model= Autores
-        fields = '__all__'
-
-        labels = {
-            'tipo_identificacion' : 'Tipo de identificacion',
-            'identificacion':'Identificacion',
-            'role':'Rol',            
-
-        }
-        widgets = {
-	        'tipo_identificacion':forms.TextInput(attrs={'class':'form-control'}),
-            'identificacion':forms.TextInput(attrs={'class':'form-control'}),            
-            'role':forms.Select(attrs={'class':'form-control'},choices=ROLES),
-            'Nombres':forms.TextInput(attrs={'class':'form-control'}),
-            'Apellidos':forms.TextInput(attrs={'class':'form-control'}),
-            'especialidad':forms.Select(attrs={'class':'form-control'}),
-            'miembro':forms.Select(attrs={'class':'form-control'},choices=MIEMBROS),
-            'email':forms.TextInput(attrs={'class':'form-control','type':'email'}),
-            'direccion':forms.TextInput(attrs={'class':'form-control'}),
-            'ciudad':forms.TextInput(attrs={'class':'form-control'}),
-            'pais':forms.TextInput(attrs={'class':'form-control'}),
-            'institucion':forms.TextInput(attrs={'class':'form-control'}),
-
-        }
 class AutoresForm2(ModelForm):
 
     
@@ -172,23 +140,6 @@ class InstitucionForm(ModelForm):
             data['error'] = str(e)
         return data
 
-class CursosForm(ModelForm):
-    class Meta:
-        model= Cursos
-        fields = '__all__'
-
-        labels = {
-            'nombre_curso':'Nombre del curso',
-        }
-        widgets = {
-	        'nombre_curso':forms.TextInput(attrs={'class':'form-control'}),
-	        'especialidad':forms.TextInput(attrs={'class':'form-control'}),
-            'fecha_inicio':forms.DateInput(attrs={'class':'form-control','type': 'date'}),
-            'fecha_fin':forms.DateInput(attrs={'class':'form-control','type': 'date'}),           
-            'ciudad':forms.TextInput(attrs={'class':'form-control'}),
-            'user':forms.Select(attrs={'class':'form-control'}),
-        }
-                
 class TrabajosCForm(ModelForm):
 
     class Meta:

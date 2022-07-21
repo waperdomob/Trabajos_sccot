@@ -10,22 +10,47 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView,ListView, UpdateView,DeleteView,DetailView
 
 from django.shortcuts import  redirect, render
-from numpy import save
-from trabajosC.forms import AutoresForm, AutoresForm2, AutoresForm3, InstitucionForm, ManuscritosForm, TablasForm, Trabajo_AutoresForm, TrabajosCForm
+from Cursos.forms import EspecialidadesForm
+from trabajosC.forms import AutoresForm2, AutoresForm3, InstitucionForm, ManuscritosForm, TablasForm, Trabajo_AutoresForm, TrabajosCForm
 
-from trabajosC.models import Autores, Cursos, Instituciones, Manuscritos, Tablas, Trabajos, Trabajos_has_autores
+from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Manuscritos, Tablas, Trabajos, Trabajos_has_autores
 
 # Create your views here.
 
 def index(request):
     if request.user.is_superuser:
         trabajos = Trabajos.objects.all()
+        autores = Autores.objects.all()
+        cursos = Cursos.objects.filter(user= request.user.id)
+        
         autores_trab = Trabajos_has_autores.objects.all()
         manuscritos = Manuscritos.objects.all().select_related('trabajo')
         
-        return render(request,'admin.html', {'trabajos':trabajos,'manuscritos':manuscritos,'autores_trab':autores_trab})
+        return render(request,'admin.html', {'autores':autores,'trabajos':trabajos,'cursos':cursos,'manuscritos':manuscritos,'autores_trab':autores_trab, 'formEspecialidad' : EspecialidadesForm()})
     else:
         return render(request,'index.html')
+
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+def ajax_especialidades(request):
+    if is_ajax(request=request):
+        data ={}
+        if request.method == 'GET':
+            especialidad = request.GET.get('especialidad')
+            with transaction.atomic():
+                especialidades = Especialidades.objects.filter(Q(especialidad__icontains=especialidad))
+                if especialidades:
+                    data['error'] = 'No es posible registrar la especialidad, ya existe'
+                else:
+                    instance = Especialidades.objects.create(especialidad=especialidad)
+                    data = instance.toJSON()
+                    data['mensaje'] = 'Especialidad creada con exito!'
+
+                return JsonResponse(data,safe=False)
+        else:                
+            return JsonResponse(data)
+       
 
 class registrarTrabajo(CreateView):
     model = Trabajos
@@ -113,7 +138,6 @@ class registrarTrabajo(CreateView):
                             a = int(i)
                             aut = Autores.objects.get(id = a)
                             Trabajos_has_autores.objects.create(trabajo_id=trab.id, autor_id =aut.id)
-                            print("save")
                         #m1.save() 
                                        
                     for file in manuscritos:
@@ -125,7 +149,6 @@ class registrarTrabajo(CreateView):
                             trabajo = trab
                             )
                         obj.save(force_insert=True )
-                        print("save")
 
                     for file in tablas:
                         fs = FileSystemStorage(location=manus_path2, base_url=manus_path2)
@@ -136,8 +159,7 @@ class registrarTrabajo(CreateView):
                             trabajo = trab
                             )
                         obj.save(force_insert=True )
-                        print("save")
-                    
+
 
         except Exception as e:
             data['error'] = str(e)
@@ -154,46 +176,6 @@ class registrarTrabajo(CreateView):
         context['tablasForm'] = TablasForm()
         context['trabajo_autorForm'] = Trabajo_AutoresForm()
         context['action'] = 'add'
-
-        return context
-
-
-class registrarAutor(CreateView):
-    model = Autores
-    form_class= TrabajosCForm
-    template_name='createTrabajo.html'
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
         
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'search_autor':
-                data = [{'id': '', 'text': '------------'}]
-                for i in Autores.objects.filter(id=request.POST['id']):
-                    data.append({'id': i.id, 'text': i.Nombres})
-            elif action == 'search_autores':
-                data = [{'id': '', 'text': '------------'}]
-                for i in Autores.objects.filter(id=request.POST['id']):
-                    data.append({'id': i.id, 'text': i.Nombres})
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data, safe=False)
-
-    def get_context_data(self, **kwargs):        
-        context = {}
-        context['title'] = 'Registrar Trabajo'
-        context['form'] = self.form_class
-        context['form2'] = AutoresForm()
 
         return context
-
-    def get(self, request, *args, **kwargs):
-        return render(request,self.template_name,self.get_context_data())
-
-def create_autor(request):
-
-    return redirect('create_Trabajo')

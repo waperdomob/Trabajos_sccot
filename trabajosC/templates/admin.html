@@ -4,94 +4,126 @@
 {%  block styles %}
     <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}"/>
   {%  endblock  %} 
 {%  block scripts %}
 <!--Fontawesome-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 <!---->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+
     <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
     <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/sweetalert2-9.10.0/sweetalert2.all.min.js' %}"></script>
+
+    <script src="{% static 'js/funciones.js' %}"></script>
+    <script src="{% static 'js/admin.js' %}"></script>
+
   {%  endblock  %}
   
 {% block content %}
-    <h2><center>Adiministrador</center></h2>
+    {% include 'especialidadesModal.html' %}
 
-    <table class="table table-light" id="trabajos">
-        <thead>
-            <tr>
-              <th >#</th>
-              <th >Tipo de Trabajo</th>
-              <th >Titulo</th>
-              <th >Autor Correspondencia</th>
-              <th ><center>Autores</center></th>
-              <th >Institucion principal</th>
-              <th >Resumen</th>
-              <th >Palabras Claves</th>
-              <th ><center>Manuscritos</center></th>
-              <th >Curso</th>
-              <th ><center>Acciones</center></th>
-         </tr>
-        </thead>
-        <tbody>
-            {% for object in trabajos %}
-
-            <tr>
-                <td>{{object.id}}</td>
-                <td>{{object.tipo_trabajo}}</td>
-                <td>{{object.titulo}}</td>
-                <td>{{object.Autor_correspondencia}}</td>
-                <td>
-                    {% for autor in autores_trab %}
-                    {% if autor.trabajo_id == object.id %}
-                    <ul>
-                        <li>{{autor.autor}}</li>
-                    </ul>
-                    {%  endif   %}
-                    {% endfor %}
-                </td>
-                <td>{{object.institucion_principal}}</td>
-                <td>{{object.resumen_esp}}</td>
-                <td>{{object.palabras_claves}}</td>
-                <td>
-                    {% for manuscrito in manuscritos %}
-                    {% if manuscrito.trabajo_id == object.id %}
-                    <ul>
-                        <li>
-                            <a href="media/{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
-                        </li>
-                    </ul>
-                    {%  endif   %}
-                    {% endfor %}
-                </td>
-                <td>{{object.curso}}</td>
-                            
-                <td>
-                    <!-- <div class="d-grid gap-2 col-12 mx-auto"> -->
-                        <button onclick="" class="btn btn-primary">Ver <i class="fa-solid fa-folder-open"></i></i></button>
-                        <button onclick="" class="btn btn-warning">Editar <i class="fa-solid fa-file-pen"></i></button><button onclick="" class="btn btn-danger">Eliminar <i class="fa-solid fa-box-archive"></i></button>
-                    <!-- </div> -->
-                    
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div class="d-grid gap-1 col-4 mx-auto">
-    <a href="{% url 'create_Trabajo'  %}" class="btn btn-success">Registrar Trabajo</a></div>
+    <h2><center>ADMINISTRADOR</center></h2>
+    <hr>
+    <div class="container botonesNav">
+        <div class="btn-group-lg" role="group" aria-label="Basic radio toggle button group">
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" >
+            <label class="btn btn-outline-primary" for="btnradio1">Autores</label>
+          
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio2">Trabajos</label>
+          
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio3">Cursos</label>
+          
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio4">Usuarios</label>
+          
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio5">Reportes</label>
+        </div>
+    </div>
+    <br>
+    <div class="container-fluid " id="contenedorTrabajos">
+        {% include 'tablas/trabajosList.html' %}
+    </div>
+    <div class="container-fluid " id="contenedorAutores" hidden>
+        {% include 'tablas/autoresList.html' %}
+        <div class="modal fade contenedor" id="crearAutor_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
+        </div>
+        <div class="modal fade contenedor" id="editAutor_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        </div>
+        <div class="modal fade contenedor" id="eliminarAutor_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        </div>
+    </div>
+    <div class="container-fluid " id="contenedorCursos" hidden>
+        {% include 'tablas/cursosList.html' %}
+        <div class="modal fade contenedor" id="crearCurso_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
+        </div>
+        <div class="modal fade contenedor" id="editCurso_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        </div>
+        <div class="modal fade contenedor" id="eliminarCurso_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        </div>
+    </div>
+    <div class="container-fluid " id="contenedorUsuarios" hidden>
+        <h4><center>Modulo usuarios</center></h4>
+    </div>
+    <div class="container-fluid " id="contenedorReportes" hidden>
+        <h4><center>Modulo reportes</center></h4>
+    </div>
+    
+    <br><br>
 {% endblock %}
 {% block javascript %}
         <script type="text/javascript">
 
-                $('#trabajos').DataTable({
-                    responsive: true,
-                    autoWidth: false
+            $('#autores').DataTable({
+                responsive: true,
+                autoWidth: false
+            });
+            $('#cursos').DataTable({
+                responsive: true,
+                autoWidth: false
+            });
+            $('#trabajos').DataTable({
+                responsive: true,
+                autoWidth: false
+            });
+           
+            
+            var $ = jQuery.noConflict(); 
+            function abrir_modal_createAutor(url){
+                $('#crearAutor_Modal').load(url, function (){
+                    $(this).modal('show');
                 });
-                
-
-            var $ = jQuery.noConflict();
-            
-            
+            }           
+            function abrir_modal_editAutor(url){
+                $('#editAutor_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            function abrir_modal_deleteAutor(url){
+                $('#eliminarAutor_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            function abrir_modal_createCurso(url){
+                $('#crearCurso_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            function abrir_modal_editCurso(url){
+                $('#editCurso_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            function abrir_modal_deleteCurso(url){
+                $('#eliminarCurso_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
         </script>
 {% endblock %}

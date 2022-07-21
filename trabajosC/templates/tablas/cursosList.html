@@ -1,0 +1,39 @@
+<table class="table table-light" id="cursos">
+    <thead>
+        <tr>
+          <th >#</th>
+          <th >Nombre Curso</th>
+          <th >Especialidad</th>
+          <th >Fecha Inscripción</th>
+          <th >Fecha Cierre</th>
+          <th >Ciudad</th>
+          <th ><center>Acciones</center></th>
+     </tr>
+    </thead>
+    <tbody>
+        {% for object in cursos %}
+
+        <tr>
+            <td>{{object.id}}</td>
+            <td>{{object.nombre_curso}}</td>
+            <td>{{object.especialidad}}</td>
+            <td>{{object.fecha_inicio|date:'d-m-Y'}}</td>
+            <td>{{object.fecha_fin|date:'d-m-Y'}}</td>
+            <td>{{object.ciudad}}</td>
+           
+            <td>
+                <div class="d-grid gap-2 col-12 mx-auto"> 
+                    
+                    <button onclick="abrir_modal_editCurso(`{% url 'edit_Curso' object.id %}`)" class="btn btn-warning"> <i class="fa-solid fa-file-pen"></i></button><button onclick="abrir_modal_deleteCurso(`{% url 'delete_Curso' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-box-archive"></i></button>
+                </div>
+                
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<div class="d-grid gap-1 col-4 mx-auto">
+    <button onclick="abrir_modal_createCurso(`{% url 'create_Curso' %}`)" class="btn btn-primary"> Registrar Curso</button>
+</div>
+<br>

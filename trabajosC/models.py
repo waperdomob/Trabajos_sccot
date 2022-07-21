@@ -43,6 +43,12 @@ class Especialidades(models.Model):
     def __str__(self):
         return self.especialidad
 
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['especialidad'] = self.especialidad
+        return item
+
+
 class Cursos(models.Model):
     nombre_curso = models.CharField(max_length=45)
     especialidad = models.ForeignKey(Especialidades, on_delete=models.CASCADE)
