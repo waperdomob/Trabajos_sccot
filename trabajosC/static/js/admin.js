@@ -42,8 +42,9 @@ $(function () {
         $('#especialidadesModal').modal('show');
     });
     $(document).on('click', '#btnAddEspec2', function() {
+        
         $('#crearAutor_Modal').modal('hide');
-        $('#especialidadesModal').modal('show');
+        $('#especialidadesModal2').modal('show');
     });
 
     $('#Espec_form1').on('submit', function (e) {
@@ -79,5 +80,37 @@ $(function () {
                 },
         });
     });
-    
+    $('#Espec_form2').on('submit', function (e) {
+        e.preventDefault();
+        const especialidad = document.getElementById('id_especialidad2').value;
+        
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_especialidad');
+        $.ajax({
+            url: 'ajax_especialidades', 
+            type: 'GET',
+            data:{ 'especialidad': especialidad} ,
+            headers: {
+                'X-CSRFToken': csrftoken
+              },
+              success: function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    message_success(data['mensaje']);
+                    $(function () {
+                        var newOption = new Option(data.especialidad, data.id, false, true);
+                        $('select[name="especialidad"]').append(newOption).trigger('change');
+
+                        $('#crearAutor_Modal').modal('show');                    
+                        $('#especialidadesModal2').modal('hide');
+                    });
+                    return false;
+                }
+                message_error(data['error']);
+              },
+              error: function(error) {
+                message_error(error)
+                $("#result").html("<p>ups... Algo salió mal</p>")
+                },
+        });
+    });
 });

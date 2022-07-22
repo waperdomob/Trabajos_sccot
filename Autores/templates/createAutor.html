@@ -44,7 +44,7 @@
                 {% endfor %}
                 <br>
                 {% for row in form %}
-                {% if  "miembro " in row.label_tag or "email" in row.label_tag or "Celular" in row.label_tag or "direccion" in row.label_tag or "ciudad" in row.label_tag or "pais" in row.label_tag %}
+                {% if  "miembro " in row.label_tag or "institucion" in row.label_tag or "email" in row.label_tag or "Celular" in row.label_tag or "direccion"  in row.label_tag or "ciudad" in row.label_tag or "pais" in row.label_tag %}
                 <div class=" container" >
                     <div class="grid-container" >
                         <label  class="textLabel" for="{{ row.html_name }}"  >

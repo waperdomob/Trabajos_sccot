@@ -3,11 +3,20 @@ from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 import json
 from django.db.models import Q
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import BaseDocTemplate, PageTemplate, Paragraph, Frame
+
+from django.views import View
 
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import CreateView,ListView, UpdateView,DeleteView,DetailView
+from django.views.generic import CreateView
 
 from django.shortcuts import  redirect, render
 from Cursos.forms import EspecialidadesForm
@@ -28,7 +37,7 @@ def index(request):
         
         return render(request,'admin.html', {'autores':autores,'trabajos':trabajos,'cursos':cursos,'manuscritos':manuscritos,'autores_trab':autores_trab, 'formEspecialidad' : EspecialidadesForm()})
     else:
-        return render(request,'index.html')
+        return redirect('create_Trabajo')
 
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
@@ -179,3 +188,66 @@ class registrarTrabajo(CreateView):
         
 
         return context
+
+
+class TrabajosPDF(View):
+
+    def get(self, request, *args, **kwargs):
+
+        trabajo = Trabajos.objects.get(pk=self.kwargs['pk'])
+        autores_trab = Trabajos_has_autores.objects.filter(trabajo_id=self.kwargs['pk'])
+        manuscritos = Manuscritos.objects.filter(trabajo_id=self.kwargs['pk'])
+        styleSheet = getSampleStyleSheet()
+        style = styleSheet['BodyText']
+        P=Paragraph('This is a very silly example',style)
+        #create Canvas
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter, bottomup=0)
+        
+        aW = 60    # available width and height
+        aH = 200
+        w,h = P.wrap(aW, aH)    # find required space
+        if w<=aW and h<=aH:
+            P.drawOn(p,0,aH)
+            aH = aH - h         # reduce the available height
+            p.setTitle(trabajo.titulo)
+            p.setFont("Helvetica-Bold", 20)
+            p.drawCentredString(300, 50, trabajo.titulo)
+            p.line(50, 100,550,100)
+            #Create a text object
+            textob = p.beginText()        
+            textob.setTextOrigin(1.2*inch, 2*inch)
+            textob.setFont("Helvetica", 14)
+            #agregar Lineas 
+            Lines = []
+            #Lines.append(trabajo.titulo)
+            Lines.append("Observaciones: ")
+            Lines.append(trabajo.observaciones)
+            Lines.append("Resumen en español: ")
+            Lines.append(trabajo.resumen_esp)
+            Lines.append("Palabras claves: ")
+            Lines.append(trabajo.palabras_claves)
+            Lines.append("Resumen en ingles: ")
+            Lines.append(trabajo.resumen_ingles)
+            Lines.append("Keywords: ")
+            Lines.append(trabajo.keywords)
+
+            #bucles
+            for line in Lines:
+                textob.textLine(line)
+            #Finish up
+            p.drawText(textob)
+            # Close the PDF object cleanly, and we're done.
+            p.showPage()
+            p.save()
+            buffer.seek(0)
+        else:
+            raise ValueError
+        
+        return FileResponse(buffer, as_attachment=True, filename='example.pdf')
+
+        """ pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font('Arial', size= 16)
+        pdf.cell(200, 10, txt = "Trial to generate a pdf file.", ln=2, align='C')
+        pdf.output('media/pdf/Attempt.pdf','F') """
