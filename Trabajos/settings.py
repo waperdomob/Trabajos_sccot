@@ -9,26 +9,27 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+basepath = '/kunden/homepages/0/d795538121/htdocs'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-1dz$ql+9wtt)8-ymme_4m*#7yoo)i4cqf&1dtg$p+nrn!%$vu2'
-
+#SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = ['192.168.1.37', 'localhost']
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['192.168.1.37', 'localhost']
+#ALLOWED_HOSTS = ['https://sccot.org/']
+#ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 
@@ -132,13 +133,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 STATICFILES_DIRS = [
-    BASE_DIR / 'Trabajos' / 'static',
-    BASE_DIR / 'trabajosC' / 'static',
-    BASE_DIR / 'Autores' / 'static',
+    BASE_DIR /'static',
 ] 
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = basepath + '/trabajosCientificos/Trabajos/Trabajos/static' 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

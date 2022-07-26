@@ -1,6 +1,6 @@
 import datetime as dtime
 from django.core.files.storage import FileSystemStorage 
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 import json
 from django.db.models import Q
 import io
@@ -9,7 +9,8 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import BaseDocTemplate, PageTemplate, Paragraph, Frame
+from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, SimpleDocTemplate, Paragraph, Spacer
+from reportlab.rl_config import defaultPageSize
 
 from django.views import View
 
@@ -20,9 +21,9 @@ from django.views.generic import CreateView
 
 from django.shortcuts import  redirect, render
 from Cursos.forms import EspecialidadesForm
-from trabajosC.forms import AutoresForm2, AutoresForm3, InstitucionForm, ManuscritosForm, TablasForm, Trabajo_AutoresForm, TrabajosCForm
+from trabajosC.forms import AutoresForm2, AutoresForm3, InstitucionForm, ManuscritosForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, TrabajosCForm
 
-from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Manuscritos, Tablas, Trabajos, Trabajos_has_autores
+from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Manuscritos, Tablas, Trabajos, Trabajos_has_autores, Trabajos_has_instituciones
 
 # Create your views here.
 
@@ -91,7 +92,7 @@ class registrarTrabajo(CreateView):
                 term = request.POST['curso_id']
                 curso = Cursos.objects.get(id=term)
                 if curso.fecha_fin < dtime.date.today():
-                    data['error'] = 'No es posible registrar el trabajo, ha exedido la fecha limite'
+                    data['error'] = 'No es posible registrar el trabajo, ha excedido la fecha limite'
                     return JsonResponse(data, safe=False)
                
             elif action == 'search_institucion':
@@ -141,6 +142,8 @@ class registrarTrabajo(CreateView):
                     
                     trab.save()
                     otros_autores = trabj['otros_autores']
+                    otras_inst = trabj['otras_instituciones']
+
 
                     for i in otros_autores:
                         if len(i) != 0:
@@ -148,7 +151,12 @@ class registrarTrabajo(CreateView):
                             aut = Autores.objects.get(id = a)
                             Trabajos_has_autores.objects.create(trabajo_id=trab.id, autor_id =aut.id)
                         #m1.save() 
-                                       
+                    for i in otras_inst:
+                        if len(i) != 0:
+                            a = int(i)
+                            inst = Instituciones.objects.get(id = a)
+                            Trabajos_has_instituciones.objects.create(trabajo_id=trab.id, institucion_id =inst.id)
+                        #m1.save() 
                     for file in manuscritos:
                         fs = FileSystemStorage(location=manus_path, base_url=manus_path)
                         name1 = fs.save(trab.Autor_correspondencia.Nombres+trab.titulo+file.name,file)
@@ -184,6 +192,8 @@ class registrarTrabajo(CreateView):
         context['manuscritosForm'] = ManuscritosForm()
         context['tablasForm'] = TablasForm()
         context['trabajo_autorForm'] = Trabajo_AutoresForm()
+        context['trabajo_instiForm'] = Trabajo_InstitucionesForm()
+
         context['action'] = 'add'
         
 
@@ -197,54 +207,90 @@ class TrabajosPDF(View):
         trabajo = Trabajos.objects.get(pk=self.kwargs['pk'])
         autores_trab = Trabajos_has_autores.objects.filter(trabajo_id=self.kwargs['pk'])
         manuscritos = Manuscritos.objects.filter(trabajo_id=self.kwargs['pk'])
+        subtitles=["Observaciones: ", "Resumen en español: ","Palabras claves: ","Resumen en ingles: ","Keywords: "]
+        pdf_name = "Prueba.pdf"
+        response = HttpResponse(content_type='application/pdf')
+        #Attachment: Para descargar el PDF, filename = nombre del archivo PDF
+        response['Content-Disposition'] = 'attachment; filename=%s' % pdf_name
+        PAGE_HEIGHT=defaultPageSize[1]; PAGE_WIDTH=defaultPageSize[0]
         styleSheet = getSampleStyleSheet()
-        style = styleSheet['BodyText']
-        P=Paragraph('This is a very silly example',style)
         #create Canvas
         buffer = io.BytesIO()
-        p = canvas.Canvas(buffer, pagesize=letter, bottomup=0)
-        
-        aW = 60    # available width and height
-        aH = 200
-        w,h = P.wrap(aW, aH)    # find required space
-        if w<=aW and h<=aH:
-            P.drawOn(p,0,aH)
-            aH = aH - h         # reduce the available height
-            p.setTitle(trabajo.titulo)
-            p.setFont("Helvetica-Bold", 20)
-            p.drawCentredString(300, 50, trabajo.titulo)
-            p.line(50, 100,550,100)
-            #Create a text object
-            textob = p.beginText()        
-            textob.setTextOrigin(1.2*inch, 2*inch)
-            textob.setFont("Helvetica", 14)
-            #agregar Lineas 
-            Lines = []
-            #Lines.append(trabajo.titulo)
-            Lines.append("Observaciones: ")
-            Lines.append(trabajo.observaciones)
-            Lines.append("Resumen en español: ")
-            Lines.append(trabajo.resumen_esp)
-            Lines.append("Palabras claves: ")
-            Lines.append(trabajo.palabras_claves)
-            Lines.append("Resumen en ingles: ")
-            Lines.append(trabajo.resumen_ingles)
-            Lines.append("Keywords: ")
-            Lines.append(trabajo.keywords)
+        doc = SimpleDocTemplate(buffer,
+                            pagesize=letter,
+                            rightMargin=40,
+                            leftMargin=40,
+                            topMargin=60,
+                            bottomMargin=30,)
+        Story = [Spacer(1,1.5*inch)]
 
-            #bucles
-            for line in Lines:
-                textob.textLine(line)
-            #Finish up
-            p.drawText(textob)
-            # Close the PDF object cleanly, and we're done.
-            p.showPage()
-            p.save()
-            buffer.seek(0)
-        else:
-            raise ValueError
-        
-        return FileResponse(buffer, as_attachment=True, filename='example.pdf')
+        styleSub = styleSheet["Heading3"]
+        style = styleSheet["Normal"]
+        Title = trabajo.titulo
+        pageinfo = "."
+
+        def myFirstPage(canvas, doc):
+            canvas.saveState()
+            canvas.setFont('Times-Bold',16)
+            canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, Title)
+            canvas.setFont('Times-Roman',9)
+            canvas.drawString(inch, 0.75 * inch, "First Page / %s" % pageinfo)
+            canvas.restoreState()
+
+        def myLaterPages(canvas, doc):
+            canvas.saveState()
+            canvas.setFont('Times-Roman',9)
+            canvas.drawString(inch, 0.75 * inch, "Page %d %s" % (doc.page, pageinfo))
+            canvas.restoreState()
+
+        for i in subtitles:
+            if "Observaciones" in i:
+                bogustext = (trabajo.observaciones)
+                subtext = (i)
+                s = Paragraph(subtext,styleSub)
+                p = Paragraph(bogustext, style)
+                Story.append(s)
+                Story.append(p)
+                Story.append(Spacer(1,0.6*inch))
+            elif "Resumen en español" in i:
+                bogustext = (trabajo.resumen_esp)
+                subtext = (i)
+                s = Paragraph(subtext,styleSub)
+                p = Paragraph(bogustext, style)
+                Story.append(s)
+                Story.append(p)
+                Story.append(Spacer(1,0.6*inch))
+            elif "Palabras claves" in i:
+                bogustext = (trabajo.palabras_claves)
+                subtext = (i)
+                s = Paragraph(subtext,styleSub)
+                p = Paragraph(bogustext, style)
+                Story.append(s)
+                Story.append(p)
+                Story.append(Spacer(1,0.6*inch))
+            elif "Resumen en ingles" in i:
+                bogustext = (trabajo.resumen_ingles)
+                subtext = (i)
+                s = Paragraph(subtext,styleSub)
+                p = Paragraph(bogustext, style)
+                Story.append(s)
+                Story.append(p)
+                Story.append(Spacer(1,0.6*inch))
+            elif "Keywords" in i:
+                bogustext = (trabajo.keywords)
+                subtext = (i)
+                s = Paragraph(subtext,styleSub)
+                p = Paragraph(bogustext, style)
+                Story.append(s)
+                Story.append(p)
+                Story.append(Spacer(1,0.6*inch))
+
+        doc.build(Story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)        
+        #buffer.seek(0)      
+        response.write(buffer.getvalue())
+        buffer.close()
+        return response
+
 
         """ pdf = FPDF()
         pdf.add_page()

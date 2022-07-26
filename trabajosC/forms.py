@@ -149,9 +149,9 @@ class TrabajosCForm(ModelForm):
             'tipo_trabajo':'Tipo de trabajo',
             'subtipo_trabajo':'subTipo',
             'Autor_correspondencia':'Autor Correspondencia',
-            'titulo':'Titulo',
+            'titulo':'Título',
             'observaciones':'Observaciones',
-            'institucion_principal':'Institucion principal del trabajo',
+            'institucion_principal':'Institución principal del trabajo',
             'resumen_esp':'Resumen en español',
             'palabras_claves':'Palabras claves',
             'resumen_ingles':'Resumen en ingles',
@@ -209,5 +209,19 @@ class Trabajo_AutoresForm(ModelForm):
         widgets = {          
             'trabajo':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
             'autor':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
+            
+        }
+
+class Trabajo_InstitucionesForm(ModelForm):
+    class Meta:
+        model= Trabajos_has_instituciones
+        fields = '__all__'
+        labels = {
+            'trabajo' : 'Trabajo',
+            'institucion' : 'Instituciones',
+        }
+        widgets = {          
+            'trabajo':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
+            'institucion':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
             
         }

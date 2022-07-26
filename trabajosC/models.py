@@ -110,6 +110,12 @@ class Trabajos_has_autores(models.Model):
     autor = models.ForeignKey(Autores, on_delete=models.CASCADE, blank=True, null=True)
     def __str__(self):
         return self.trabajo.titulo
+        
+class Trabajos_has_instituciones(models.Model):
+    trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
+    institucion = models.ForeignKey(Instituciones, on_delete=models.CASCADE, blank=True, null=True)
+    def __str__(self):
+        return self.trabajo.titulo
 
 class Manuscritos(models.Model):
     tituloM = models.CharField(max_length=100)
