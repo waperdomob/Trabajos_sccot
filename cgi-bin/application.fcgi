@@ -6,9 +6,9 @@
         
         home = '/kunden/homepages/0/d795538121/htdocs'
         try:
-            os.environ['VIRTUAL_ENV'] = os.path.join(home, 'Trabajos/env/Scripts')
+            os.environ['VIRTUAL_ENV'] = os.path.join(home, '/trabajosCientificos/Trabajos/env/Scripts')
             os.environ['PATH'] = os.environ['VIRTUAL_ENV'] + ':' + os.environ['PATH']        
-            project = os.path.join(home, 'Trabajos/Trabajos')
+            project = os.path.join(home, '/trabajosCientificos/Trabajos/Trabajos')
             # Add a custom Python path.
             sys.path.insert(0, project)
         
@@ -16,7 +16,7 @@
             os.chdir(project)
         
             # Set the DJANGO_SETTINGS_MODULE environment variable.
-            os.environ['DJANGO_SETTINGS_MODULE'] = "Trabajos/Trabajos.settings"
+            os.environ['DJANGO_SETTINGS_MODULE'] = "/trabajosCientificos/Trabajos/Trabajos.settings"
         
             from django_fastcgi.servers.fastcgi import runfastcgi
             from django.core.servers.basehttp import get_internal_wsgi_application

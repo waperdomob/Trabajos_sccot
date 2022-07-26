@@ -22,17 +22,21 @@ basepath = '/kunden/homepages/0/d795538121/htdocs'
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1dz$ql+9wtt)8-ymme_4m*#7yoo)i4cqf&1dtg$p+nrn!%$vu2'
-#SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
+#SECRET_KEY = 'django-insecure-1dz$ql+9wtt)8-ymme_4m*#7yoo)i4cqf&1dtg$p+nrn!%$vu2'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['192.168.1.37', 'localhost']
-#ALLOWED_HOSTS = ['https://sccot.org/']
+#ALLOWED_HOSTS = ['192.168.1.37', 'localhost']
+ALLOWED_HOSTS = ['https://trabajosc.sccot.org/']
 #ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-
-
+#SECURE_HSTS_SECONDS = 31536000
+#SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+#SECURE_SSL_REDIRECT = True
+#SESSION_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
+#SECURE_HSTS_PRELOAD = True
 # Application definition
 
 INSTALLED_APPS = [
@@ -64,7 +68,7 @@ ROOT_URLCONF = 'Trabajos.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['C:Users/ASUS PRIME/Desktop/WilmerP/TrabajosSccot/Trabajos/templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'DIRS': ['./templates',],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -137,7 +141,7 @@ STATICFILES_DIRS = [
 ] 
 
 STATIC_URL = 'static/'
-STATIC_ROOT = basepath + '/trabajosCientificos/Trabajos/Trabajos/static' 
+STATIC_ROOT = basepath + '/trabajosCientificos/Trabajos/static' 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
