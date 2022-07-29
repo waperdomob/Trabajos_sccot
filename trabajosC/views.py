@@ -92,7 +92,7 @@ class registrarTrabajo(CreateView):
                 term = request.POST['curso_id']
                 curso = Cursos.objects.get(id=term)
                 if curso.fecha_fin < dtime.date.today():
-                    data['error'] = 'No es posible registrar el trabajo, ha excedido la fecha limite'
+                    data['error'] = 'No es posible registrar el trabajo, ha excedido la fecha límite'
                     return JsonResponse(data, safe=False)
                
             elif action == 'search_institucion':

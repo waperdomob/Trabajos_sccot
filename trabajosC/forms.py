@@ -147,8 +147,8 @@ class TrabajosCForm(ModelForm):
         exclude = ['fecha_inicio','fecha_fin','fecha_modificacion','evaluador','modificado_por']
         labels = {
             'tipo_trabajo':'Tipo de trabajo',
-            'subtipo_trabajo':'subTipo',
-            'Autor_correspondencia':'Autor Correspondencia',
+            'subtipo_trabajo':'Subtipo',
+            'Autor_correspondencia':'Autor de correspondencia',
             'titulo':'Título',
             'observaciones':'Observaciones',
             'institucion_principal':'Institución principal del trabajo',
@@ -218,7 +218,7 @@ class Trabajo_InstitucionesForm(ModelForm):
         fields = '__all__'
         labels = {
             'trabajo' : 'Trabajo',
-            'institucion' : 'Instituciones',
+            'institucion' : 'Otras instituciones',
         }
         widgets = {          
             'trabajo':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
