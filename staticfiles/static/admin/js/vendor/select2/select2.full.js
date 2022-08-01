@@ -1,0 +1,1 @@
+/home/wilmer/Trabajos_sccot/static/static/admin/js/vendor/select2/select2.full.js

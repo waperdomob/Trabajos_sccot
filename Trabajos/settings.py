@@ -94,13 +94,13 @@ DATABASES = {
             'sql_mode': 'traditional',
         },
         'NAME': 'trabajos',
-        #'USER': 'wilmer',#para deploy
-        #'PASSWORD':'vcc2022*WP',#para deploy
-        #para local ↓
-        'USER':'root',
-        'PASSWORD':'',
-        'HOST':'localhost',
-        'PORT':'3306'
+        'USER': 'wilmer',#para deploy
+        'PASSWORD':'vcc2022*WP',#para deploy
+        #para local
+        #'USER':'root',
+        #'PASSWORD':'',
+        #'HOST':'localhost',
+        #'PORT':'3306'
     }
 }
 
@@ -139,11 +139,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'staticfiles/'
-STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 
 STATICFILES_DIRS = [
-    BASE_DIR /'staticfiles',
+    BASE_DIR /'static',
 ] 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
