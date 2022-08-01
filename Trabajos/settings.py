@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.37', 'localhost']
+ALLOWED_HOSTS = ["*"]
 #ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 #SECURE_HSTS_SECONDS = 31536000
@@ -94,10 +94,10 @@ DATABASES = {
             'sql_mode': 'traditional',
         },
         'NAME': 'trabajos',
-        'USER': 'root',
-        'PASSWORD':'',
-        'HOST':'localhost',
-        'PORT':'3306'
+        'USER': 'wilmer',
+        'PASSWORD':'vcc2022*WP',
+        #'HOST':'localhost',
+        #'PORT':'3306'
     }
 }
 

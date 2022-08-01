@@ -1,0 +1,1 @@
+/home/wilmer/Trabajos_sccot/static/admin/js/change_form.js
