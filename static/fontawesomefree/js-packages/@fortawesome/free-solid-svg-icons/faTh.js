@@ -1,1 +1,23 @@
-/home/wilmer/Trabajos_sccot/static/fontawesomefree/js-packages/@fortawesome/free-solid-svg-icons/faTh.js
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+var source = require('./faTableCells');
+exports.definition = {
+  prefix: source.prefix,
+  iconName: source.iconName,
+  icon: [
+    source.width,
+    source.height,
+    source.aliases,
+    source.unicode,
+    source.svgPathData
+  ]};
+
+exports.faTh = exports.definition;
+exports.prefix = source.prefix;
+exports.iconName = source.iconName;
+exports.width = source.width;
+exports.height = source.height;
+exports.ligatures = source.aliases;
+exports.unicode = source.unicode;
+exports.svgPathData = source.svgPathData;
+exports.aliases = source.aliases;

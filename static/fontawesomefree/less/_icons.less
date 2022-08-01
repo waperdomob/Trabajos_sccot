@@ -1,1 +1,9 @@
-/home/wilmer/Trabajos_sccot/static/fontawesomefree/less/_icons.less
+// specific icon class definition
+// -------------------------
+
+/* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
+   readers do not read off random characters that represent icons */
+
+each(.fa-icons(), {
+  .@{fa-css-prefix}-@{key}::before { content: @value; }
+});

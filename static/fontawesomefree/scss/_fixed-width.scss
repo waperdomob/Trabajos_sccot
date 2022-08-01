@@ -1,1 +1,7 @@
-/home/wilmer/Trabajos_sccot/static/fontawesomefree/scss/_fixed-width.scss
+// fixed-width icons
+// -------------------------
+
+.#{$fa-css-prefix}-fw {
+  text-align: center;
+  width: $fa-fw-width;
+}

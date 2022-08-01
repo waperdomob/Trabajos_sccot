@@ -1,1 +1,15 @@
-/home/wilmer/Trabajos_sccot/static/css/index.css
+#trabajos td  {
+    vertical-align:middle;
+}
+#autores td,th  {
+    text-align: center;
+    vertical-align:middle;
+}
+#cursos td,th  {
+    text-align: center;
+    vertical-align:middle;
+}
+.botonesNav {
+    display: flex;
+    justify-content: center;
+}
