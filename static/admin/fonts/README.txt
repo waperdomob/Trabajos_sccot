@@ -1,0 +1,1 @@
+/home/wilmer/Trabajos_sccot/static/admin/fonts/README.txt

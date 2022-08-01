@@ -1,0 +1,1 @@
+/home/wilmer/Trabajos_sccot/static/admin/css/vendor/select2/LICENSE-SELECT2.md
