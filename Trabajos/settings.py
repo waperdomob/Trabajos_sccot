@@ -24,11 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = 'django-insecure-1dz$ql+9wtt)8-ymme_4m*#7yoo)i4cqf&1dtg$p+nrn!%$vu2'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 #ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
+CSRF_TRUSTED_ORIGINS=['https://*.trabajos.sccot.org']
 #SECURE_HSTS_SECONDS = 31536000
 #SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 #SECURE_SSL_REDIRECT = True

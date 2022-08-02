@@ -1,6 +1,7 @@
 from django.contrib import admin
 from trabajosC import *
 from trabajosC.models import *
+from import_export.admin import ImportExportModelAdmin
 # Register your models here.
 
 
@@ -17,7 +18,7 @@ class cursosAdmin(admin.ModelAdmin):
     list_display=("nombre_curso","especialidad","fecha_inicio","fecha_fin","ciudad",)
 
 
-class autoresAdmin(admin.ModelAdmin):
+class autoresAdmin(ImportExportModelAdmin):
     list_display=("id","tipo_identificacion","identificacion","role","Nombres","Apellidos","miembro","email",)
 
 class trabajosAdmin(admin.ModelAdmin):

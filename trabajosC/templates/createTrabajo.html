@@ -39,7 +39,7 @@
     {% include 'institucionModal.html' %}
     {% include 'institucionModal2.html' %}
     {% include 'modalesInfo.html' %}
-
+	
     <br>
     {% if messages %}
     <ul class="messages">
@@ -54,6 +54,7 @@
         {% endfor %}
     </ul>
     {% endif %}
+
     <div class="container">
         <form action="" id="trabajo_form" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
