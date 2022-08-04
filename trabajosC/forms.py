@@ -1,3 +1,4 @@
+from ast import keyword
 from django import forms
 from django.db.models import Q
 
@@ -26,7 +27,8 @@ MIEMBROS = (
     ('No','No'),
 )
 class SearchForm(forms.Form):
-    documento = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Número del documento'}))
+    palabras_cl = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Ingrese una palabra'}))
+    keyword_ls = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Enter a word'}))
 
 class AutoresForm2(ModelForm):
 
@@ -140,6 +142,72 @@ class InstitucionForm(ModelForm):
             data['error'] = str(e)
         return data
 
+class Palabras_clavesForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['palabra'].widget.attrs['autofocus'] = True
+        
+    class Meta:
+        model= Palabras_claves
+        fields = '__all__'
+
+        labels = {
+            'palabra':'Palabra clave',
+        }
+        widgets = {
+             'palabra':forms.TextInput(attrs={'class': 'form-control '}),
+        }
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                palb = form.clean()
+                palabras = Palabras_claves.objects.filter(Q(palabra__icontains=palb['palabra']))
+                if palabras:
+                    data['error'] = 'No es posible registrar la palabra clave, ya existe'
+                else:
+                    instance = form.save()
+                    data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+class KeywordForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['keyword'].widget.attrs['autofocus'] = True
+        
+    class Meta:
+        model= Keywords
+        fields = '__all__'
+
+        labels = {
+            'keyword':'Keyword',
+        }
+        widgets = {
+             'keyword':forms.TextInput(attrs={'class': 'form-control '}),
+        }
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                inst = form.clean()
+                keywords = Keywords.objects.filter(Q(keyword__icontains=inst['keyword']))
+                if keywords:
+                    data['error'] = 'No es posible registrar la keyword, ya existe'
+                else:
+                    instance = form.save()
+                    data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
 class TrabajosCForm(ModelForm):
 
     class Meta:
@@ -153,9 +221,7 @@ class TrabajosCForm(ModelForm):
             'observaciones':'Observaciones',
             'institucion_principal':'Institución principal del trabajo',
             'resumen_esp':'Resumen en español',
-            'palabras_claves':'Palabras claves',
             'resumen_ingles':'Resumen en ingles',
-            'keywords':'Keywords',
             'curso':'Curso',
             'fecha_subida':'Fecha de subida',
 
@@ -168,9 +234,7 @@ class TrabajosCForm(ModelForm):
             'observaciones':forms.TextInput(attrs={'class':'form-control'}),            
             'institucion_principal':forms.Select(attrs={'class':'form-control select2'}),
             'resumen_esp':forms.TextInput(attrs={'class':'form-control'}),
-            'palabras_claves':forms.TextInput(attrs={'class':'form-control'}), 
             'resumen_ingles':forms.TextInput(attrs={'class':'form-control'}),
-            'keywords':forms.TextInput(attrs={'class':'form-control '}),
 	        'curso':forms.Select(attrs={'class':'form-control'}),
         }
 
@@ -222,6 +286,31 @@ class Trabajo_InstitucionesForm(ModelForm):
         }
         widgets = {          
             'trabajo':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
-            'institucion':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
-            
+            'institucion':forms.Select(attrs={'class': 'form-control select2','multiple':True}),  
+        }
+
+class Trabajo_PalabrasForm(ModelForm):
+    class Meta:
+        model= Trabajos_has_palabras
+        fields = '__all__'
+        labels = {
+            'trabajo' : 'Trabajo',
+            'palabra' : 'Palabras Claves',
+        }
+        widgets = {          
+            'trabajo':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
+            'palabra':forms.Select(attrs={'class': 'form-control select2','multiple':True, 'readonly':True}),            
+        }
+
+class Trabajo_KeywordsForm(ModelForm):
+    class Meta:
+        model= Trabajos_has_Keywords
+        fields = '__all__' 
+        labels = {
+            'trabajo' : 'Trabajo',
+            'keyword' : 'Keywords',
+        }
+        widgets = {          
+            'trabajo':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
+            'keyword':forms.Select(attrs={'class': 'form-control select2','multiple':True, 'readonly':True}),            
         }

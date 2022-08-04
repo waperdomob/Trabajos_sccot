@@ -38,7 +38,15 @@
                 </td>
                 <td>{{object.institucion_principal}}</td>
                 <td>{{object.resumen_esp}}</td>
-                <td>{{object.palabras_claves}}</td>
+                <td>
+                    {% for palabra in palab_trab %}
+                    {% if palabra.trabajo_id == object.id %}
+                    <ul>
+                        <li>{{palabra.palabra}}</li>
+                    </ul>
+                    {%  endif   %}
+                    {% endfor %}
+                </td>
                 <td>
                     {% for manuscrito in manuscritos %}
                     {% if manuscrito.trabajo_id == object.id %}

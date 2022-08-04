@@ -93,9 +93,7 @@ class Trabajos(models.Model):
     observaciones=models.TextField(null=True, blank=True)
     institucion_principal=models.ForeignKey(Instituciones, on_delete=models.CASCADE)
     resumen_esp=models.TextField()
-    palabras_claves=models.TextField()
     resumen_ingles=models.TextField()
-    keywords=models.TextField()
     fecha_subida = models.DateTimeField(auto_now_add=True)
     fecha_modificacion = models.DateField('ultima modificacion',null=True, blank=True)
     curso = models.ForeignKey(Cursos, on_delete=models.CASCADE)
@@ -130,3 +128,37 @@ class Tablas(models.Model):
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     def __str__(self):
         return self.tituloT
+
+class Palabras_claves(models.Model):
+    palabra = models.CharField(max_length=45)
+
+    def __str__(self):
+        return self.palabra
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['palabra'] = self.palabra
+        return item
+
+class Trabajos_has_palabras(models.Model):
+    trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
+    palabra = models.ForeignKey(Palabras_claves, on_delete=models.CASCADE, blank=True, null=True)
+    def __str__(self):
+        return self.palabra.palabra
+
+class Keywords(models.Model):
+    keyword = models.CharField(max_length=45)
+
+    def __str__(self):
+        return self.keyword
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['keyword'] = self.keyword
+        return item
+
+class Trabajos_has_Keywords(models.Model):
+    trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
+    keyword = models.ForeignKey(Keywords, on_delete=models.CASCADE, blank=True, null=True)
+    def __str__(self):
+        return self.keyword.keyword

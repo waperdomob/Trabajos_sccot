@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = 'django-insecure-1dz$ql+9wtt)8-ymme_4m*#7yoo)i4cqf&1dtg$p+nrn!%$vu2'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
+#DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ["*"]
 #ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 CSRF_TRUSTED_ORIGINS=['https://*.trabajos.sccot.org']
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fontawesomefree',
+    'import_export',
     # apps
     'Trabajos',
     'trabajosC',
@@ -94,13 +95,13 @@ DATABASES = {
             'sql_mode': 'traditional',
         },
         'NAME': 'trabajos',
-        'USER': 'wilmer',#para deploy
-        'PASSWORD':'vcc2022*WP',#para deploy
+        #'USER': 'wilmer',#para deploy
+        #'PASSWORD':'vcc2022*WP',#para deploy
         #para local
-        #'USER':'root',
-        #'PASSWORD':'',
-        #'HOST':'localhost',
-        #'PORT':'3306'
+        'USER':'root',
+        'PASSWORD':'',
+        'HOST':'localhost',
+        'PORT':'3306'
     }
 }
 
@@ -143,7 +144,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 
 STATICFILES_DIRS = [
-    BASE_DIR /'static',
+    BASE_DIR /'static/',
 ] 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

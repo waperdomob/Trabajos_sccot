@@ -21,9 +21,9 @@ from django.views.generic import CreateView
 
 from django.shortcuts import  redirect, render
 from Cursos.forms import EspecialidadesForm
-from trabajosC.forms import AutoresForm2, AutoresForm3, InstitucionForm, ManuscritosForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, TrabajosCForm
+from trabajosC.forms import AutoresForm2, AutoresForm3, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, SearchForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
 
-from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Manuscritos, Tablas, Trabajos, Trabajos_has_autores, Trabajos_has_instituciones
+from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_instituciones, Trabajos_has_palabras
 
 # Create your views here.
 
@@ -34,9 +34,11 @@ def index(request):
         cursos = Cursos.objects.filter(user= request.user.id)
         
         autores_trab = Trabajos_has_autores.objects.all()
+        palabras_trab = Trabajos_has_palabras.objects.all()
+
         manuscritos = Manuscritos.objects.all().select_related('trabajo')
         
-        return render(request,'admin.html', {'autores':autores,'trabajos':trabajos,'cursos':cursos,'manuscritos':manuscritos,'autores_trab':autores_trab, 'formEspecialidad' : EspecialidadesForm()})
+        return render(request,'admin.html', {'autores':autores,'trabajos':trabajos,'cursos':cursos,'manuscritos':manuscritos,'autores_trab':autores_trab,'palab_trab':palabras_trab, 'formEspecialidad' : EspecialidadesForm()})
     else:
         return redirect('create_Trabajo')
 
@@ -104,7 +106,37 @@ class registrarTrabajo(CreateView):
                     item = i.toJSON()
                     item['text'] = i.institucion
                     data.append(item)
-               
+            
+            elif action == 'search_palabrasClaves':
+                data = []
+                term = request.POST['term']
+                palabras = Palabras_claves.objects.filter(
+                    Q(palabra__icontains=term))[0:10]
+                for i in palabras:
+                    item = i.toJSON()
+                    item['text'] = i.palabra
+                    data.append(item)
+            
+            elif action == 'agregar_palabras_claves':
+                with transaction.atomic():
+                    frmplb = Palabras_clavesForm(request.POST)                    
+                    data = frmplb.save()
+            
+            elif action == 'search_keywords':
+                data = []
+                term = request.POST['term']
+                keywords = Keywords.objects.filter(
+                    Q(keyword__icontains=term))[0:10]
+                for i in keywords:
+                    item = i.toJSON()
+                    item['text'] = i.keyword
+                    data.append(item)
+            
+            elif action == 'agregar_keywords':
+                with transaction.atomic():
+                    frmkey = KeywordForm(request.POST)                    
+                    data = frmkey.save()
+            
             elif action == 'create_autor1':
                 with transaction.atomic():
                     frmAutor = AutoresForm2(request.POST)
@@ -135,15 +167,27 @@ class registrarTrabajo(CreateView):
                     trab.observaciones = trabj['observaciones']
                     trab.institucion_principal_id = trabj['institucion_principal']
                     trab.resumen_esp = trabj['resumen_esp']
-                    trab.palabras_claves = trabj['palabras_claves']
                     trab.resumen_ingles = trabj['resumen_ingles']
-                    trab.keywords = trabj['keywords']
-                    trab.curso_id = trabj['curso']
                     
+                    trab.curso_id = trabj['curso']                    
                     trab.save()
                     otros_autores = trabj['otros_autores']
                     otras_inst = trabj['otras_instituciones']
 
+                    palabras_claves = trabj['palabras_claves']
+                    keywords = trabj['keywords']
+
+                    for i in palabras_claves:
+                        if len(i) != 0:
+                            a = int(i)
+                            pal = Palabras_claves.objects.get(id = a)
+                            Trabajos_has_palabras.objects.create(trabajo_id=trab.id, palabra_id =pal.id)
+                           
+                    for i in keywords:
+                        if len(i) != 0:
+                            a = int(i)
+                            key = Keywords.objects.get(id = a)
+                            Trabajos_has_Keywords.objects.create(trabajo_id=trab.id, keyword_id =key.id)
 
                     for i in otros_autores:
                         if len(i) != 0:
@@ -189,11 +233,17 @@ class registrarTrabajo(CreateView):
         context['form2'] = AutoresForm2()
         context['form3'] = AutoresForm3()
         context['form4'] = InstitucionForm()
+        context['form5'] = Palabras_clavesForm()
+        context['form6'] = KeywordForm()
+
         context['manuscritosForm'] = ManuscritosForm()
         context['tablasForm'] = TablasForm()
         context['trabajo_autorForm'] = Trabajo_AutoresForm()
         context['trabajo_instiForm'] = Trabajo_InstitucionesForm()
-
+        context['trabajo_instiForm'] = Trabajo_InstitucionesForm()
+        context['trabajo_palbForm'] = Trabajo_PalabrasForm()
+        context['trabajo_keywForm'] = Trabajo_KeywordsForm()
+        #context['search_form'] = SearchForm()
         context['action'] = 'add'
         
 
