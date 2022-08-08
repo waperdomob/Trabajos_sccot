@@ -4,18 +4,25 @@
 {%  block styles %}
     <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+    
+
+    <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>  
     <link rel="stylesheet" href="{% static 'css/index.css' %}"/>
   {%  endblock  %} 
 {%  block scripts %}
 <!--Fontawesome-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 <!---->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 
+    <script src="{% static 'lib/select2-4.0.13/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    
     <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
     <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+
     <script src="{% static 'lib/sweetalert2-9.10.0/sweetalert2.all.min.js' %}"></script>
 
     <script src="{% static 'js/funciones.js' %}"></script>
@@ -51,6 +58,8 @@
     <br>
     <div class="container-fluid " id="contenedorTrabajos">
         {% include 'tablas/trabajosList.html' %}
+        <div class="modal fade contenedor" id="evaluador_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
+        </div>
     </div>
     <div class="container-fluid " id="contenedorAutores" hidden>
         {% include 'tablas/autoresList.html' %}
@@ -80,8 +89,8 @@
     <br><br>
 {% endblock %}
 {% block javascript %}
-        <script type="text/javascript">
-
+       <script type="text/javascript">
+            
             $('#autores').DataTable({
                 responsive: true,
                 autoWidth: false
@@ -93,10 +102,8 @@
             $('#trabajos').DataTable({
                 responsive: true,
                 autoWidth: false
-            });
-           
-            
-            var $ = jQuery.noConflict(); 
+            });             
+
             function abrir_modal_createAutor(url){
                 $('#crearAutor_Modal').load(url, function (){
                     $(this).modal('show');
@@ -127,5 +134,11 @@
                     $(this).modal('show');
                 });
             }
+            function abrir_modal_evaluador(url){
+                $('#evaluador_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            
         </script>
 {% endblock %}

@@ -35,6 +35,6 @@ class EspecialidadesForm(ModelForm):
             'especialidad':'Especialidad',
         }
         widgets = {
-             'especialidad':forms.TextInput(attrs={'class': 'form-control '}),
+             'especialidad':forms.TextInput(attrs={'class': 'form-control select2'}),
         }
         

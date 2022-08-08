@@ -46,7 +46,6 @@ class AutorUpdate(UpdateView):
         context['autores'] = Autores.objects.all()        
         return context
 
-
 class deleteAutor(DeleteView):
     model = Autores
     template_name = 'autor_eliminarModal.html'
@@ -55,4 +54,12 @@ class deleteAutor(DeleteView):
         object = Autores.objects.get(id=pk)
         object.delete()
         return redirect('inicio')
- 
+
+def designarEvaluador(request,pk):
+
+    Autores.objects.filter(id = pk).update(role_id = 2)
+    return redirect('inicio')
+
+def eliminarEvaluador(request,pk):
+    Autores.objects.filter(id = pk).update(role_id = None)
+    return redirect('inicio')

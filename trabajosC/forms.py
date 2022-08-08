@@ -314,3 +314,17 @@ class Trabajo_KeywordsForm(ModelForm):
             'trabajo':forms.Select(attrs={'class': 'form-control select2','multiple':True}),
             'keyword':forms.Select(attrs={'class': 'form-control select2','multiple':True, 'readonly':True}),            
         }
+
+class EvaluadorTrabajoForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['evaluador'].queryset = Autores.objects.filter(role=2)
+    class Meta:
+        model= Trabajos
+        fields = ['evaluador']
+        labels = {
+            'evaluador' : 'Evaluador',
+        }
+        widgets = {          
+	        'evaluador':forms.Select(attrs={'class': 'form-control select2'}),
+        }

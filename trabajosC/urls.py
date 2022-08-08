@@ -10,6 +10,7 @@ urlpatterns = [
     re_path('^ajax_especialidades/$', views.ajax_especialidades, name='ajax_especialidades'),
     path('create_Trabajo/', views.registrarTrabajo.as_view(), name='create_Trabajo'),
     path('Detalle_Trabajo/<int:pk>/',login_required(views.TrabajoDetailView.as_view()), name='detalleTrabajo'),
+    path('evaluador_Trabajo/<int:pk>/',login_required(views.AsignarEvaluadorTC.as_view()), name='asignarEvaluador'),
     path('create_PDF/<int:pk>/', views.TrabajosPDF.as_view(), name='create_PDF'),
 
 ]

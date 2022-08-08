@@ -1,4 +1,5 @@
 import datetime as dtime
+import os
 from django.core.files.storage import FileSystemStorage 
 from django.http import HttpResponse, JsonResponse
 import json
@@ -11,17 +12,18 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, SimpleDocTemplate, Paragraph, Spacer
 from reportlab.rl_config import defaultPageSize
+from django.urls import reverse, reverse_lazy
 
 from django.views import View
 
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import CreateView,DetailView
+from django.views.generic import CreateView,DetailView,UpdateView
 
 from django.shortcuts import  redirect, render
 from Cursos.forms import EspecialidadesForm
-from trabajosC.forms import AutoresForm2, AutoresForm3, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, SearchForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
+from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, SearchForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
 
 from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_instituciones, Trabajos_has_palabras
 
@@ -153,6 +155,7 @@ class registrarTrabajo(CreateView):
                     data = frmInst.save()
 
             elif action == 'add':
+                with transaction.atomic():
                     cont=0
                     autores = []
                     trabj = json.loads(request.POST['trabajo'])
@@ -203,19 +206,21 @@ class registrarTrabajo(CreateView):
                         #m1.save() 
                     for file in manuscritos:
                         fs = FileSystemStorage(location=manus_path, base_url=manus_path)
-                        name1 = fs.save(trab.Autor_correspondencia.Nombres+trab.titulo+file.name,file)
+                        postfix=os.path.splitext(file.name)[1][1:]
+                        name1 = fs.save(trab.tipo_trabajo+str(trab.id)+'.'+postfix,file)
                         obj = Manuscritos(
-                            tituloM = trab.Autor_correspondencia.Nombres+trab.titulo+file.name,
+                            tituloM = trab.tipo_trabajo+str(trab.id)+'.'+postfix,
                             manuscrito = '/manuscritos/'+name1,
                             trabajo = trab
                             )
                         obj.save(force_insert=True )
 
                     for file in tablas:
+                        postfix=os.path.splitext(file.name)[1][1:]
                         fs = FileSystemStorage(location=manus_path2, base_url=manus_path2)
-                        name1 = fs.save(trab.Autor_correspondencia.Nombres+trab.titulo+file.name,file)
+                        name1 = fs.save(trab.tipo_trabajo+str(trab.id)+'.'+postfix,file)
                         obj = Tablas(
-                            tituloM = trab.Autor_correspondencia.Nombres+trab.titulo+file.name,
+                            tituloM = trab.tipo_trabajo+str(trab.id)+'.'+postfix,
                             tabla = '/otros/'+name1,
                             trabajo = trab
                             )
@@ -264,6 +269,20 @@ class TrabajoDetailView(DetailView):
                 
         return context
  
+class AsignarEvaluadorTC(UpdateView):
+    model = Trabajos
+    form_class = EvaluadorTrabajoForm
+    template_name = 'evaluador.html'
+    success_url = reverse_lazy('inicio')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)        
+        context['title'] = 'Asignar Evaluador'
+        context['entity'] = 'TrabajosCientificos'
+        context['list_url'] = reverse_lazy('inicio')
+        
+        return context
 
 class TrabajosPDF(View):
 

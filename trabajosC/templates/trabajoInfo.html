@@ -46,14 +46,20 @@
     <div class="container ">
         <h5 >OBSERVACIONES: <small>{{ object.observaciones |safe}}</small></h5>
         <br>
-        <h5 >Resumen en español: <small></h5>
+        <h5 >Resumen en español: </h5>
         <br>
         <p>{{ object.resumen_esp}}</p>
         <br>
-        <h5 >Resumen en ingles: <small></h5>
+        <h5 >Resumen en ingles: </h5>
         <br>
         <p>{{ object.resumen_ingles}}</p>
         <br>
+        {% if object.evaluador  %}
+        <h5>Evaluador asignado: </h5>
+        <br>
+        <p>{{ object.evaluador }}</p>
+        <br>
+        {%  endif   %}
         <h5>Manuscritos: </h5>
         {% if manuscritos %}
         {% for manuscrito in manuscritos %}
