@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admindocs',
     'fontawesomefree',
     'import_export',
     # apps
@@ -61,6 +62,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.admindocs.middleware.XViewMiddleware',
+
 ]
 
 ROOT_URLCONF = 'Trabajos.urls'
@@ -95,13 +98,13 @@ DATABASES = {
             'sql_mode': 'traditional',
         },
         'NAME': 'trabajos',
-        #'USER': 'wilmer',#para deploy
-        #'PASSWORD':'vcc2022*WP',#para deploy
+        'USER': 'wilmer',#para deploy
+        'PASSWORD':'vcc2022*WP',#para deploy
         #para local
-        'USER':'root',
-        'PASSWORD':'',
-        'HOST':'localhost',
-        'PORT':'3306'
+        #'USER':'root',
+        #'PASSWORD':'',
+        #'HOST':'localhost',
+        #'PORT':'3306'
     }
 }
 

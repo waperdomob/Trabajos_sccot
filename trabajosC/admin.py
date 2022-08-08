@@ -22,10 +22,7 @@ class autoresAdmin(ImportExportModelAdmin):
     list_display=("id","tipo_identificacion","identificacion","role","Nombres","Apellidos","miembro","email",)
 
 class trabajosAdmin(admin.ModelAdmin):
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        if db_field.name == "otros_autores":
-            kwargs["queryset"] = Trabajos.objects.filter(titulo=request.user)
-        return super().formfield_for_dbfield(db_field, request, **kwargs)
+    list_display=("id","titulo","Autor_correspondencia","observaciones","fecha_subida","curso",)
     
 class manusAdmin(admin.ModelAdmin):
     list_display=("tituloM","manuscrito","trabajo",)

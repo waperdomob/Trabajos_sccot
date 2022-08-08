@@ -12,7 +12,6 @@
               <th >Autor Correspondencia</th>
               <th ><center>Autores</center></th>
               <th >Institucion principal</th>
-              <th >Resumen</th>
               <th >Palabras Claves</th>
               <th ><center>Manuscritos</center></th>
               <th >Curso</th>
@@ -37,7 +36,6 @@
                     {% endfor %}
                 </td>
                 <td>{{object.institucion_principal}}</td>
-                <td>{{object.resumen_esp}}</td>
                 <td>
                     {% for palabra in palab_trab %}
                     {% if palabra.trabajo_id == object.id %}
@@ -62,8 +60,9 @@
                             
                 <td>
                     <div class="d-grid gap-2 col-12 mx-auto"> 
+                        <a href="{% url 'detalleTrabajo' object.id %}" class="btn btn-primary"> <i class="fa-solid fa-file"></i> VER</a>
                         <a href="{% url 'create_PDF' object.id %}" class="btn btn-danger"><i class="fa-solid fa-file-pdf"></i> PDF</a>
-                        <!-- <a href="{% url 'create_PDF' object.id %}" class="btn btn-danger"> <i class="fa-solid fa-file-pdf"></i> VER</a> -->
+                        
                        
                     </div>
                     

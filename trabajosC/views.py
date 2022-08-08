@@ -17,7 +17,7 @@ from django.views import View
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import CreateView
+from django.views.generic import CreateView,DetailView
 
 from django.shortcuts import  redirect, render
 from Cursos.forms import EspecialidadesForm
@@ -249,6 +249,21 @@ class registrarTrabajo(CreateView):
 
         return context
 
+class TrabajoDetailView(DetailView):
+
+    model = Trabajos
+    template_name='trabajoInfo.html'
+
+    def get_queryset(self):
+        qs = super(TrabajoDetailView, self).get_queryset()
+        return qs.filter(pk=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['manuscritos'] = Manuscritos.objects.filter(trabajo_id=self.kwargs['pk'])
+                
+        return context
+ 
 
 class TrabajosPDF(View):
 
