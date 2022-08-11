@@ -20,7 +20,8 @@ class cursosAdmin(admin.ModelAdmin):
 
 class autoresAdmin(ImportExportModelAdmin):
     list_display=("id","tipo_identificacion","identificacion","role","Nombres","Apellidos","miembro","email",)
-
+class trabajos_has_autoresAdmin(admin.ModelAdmin):
+    list_display=("id","trabajo","autor",)
 class trabajosAdmin(admin.ModelAdmin):
     list_display=("id","titulo","Autor_correspondencia","observaciones","fecha_subida","curso",)
     
@@ -36,5 +37,7 @@ admin.site.register(Cursos,cursosAdmin)
 admin.site.register(Autores,autoresAdmin)
 admin.site.register(Trabajos,trabajosAdmin)
 admin.site.register(Manuscritos,manusAdmin)
+admin.site.register(Trabajos_has_autores,trabajos_has_autoresAdmin)
+
 
 

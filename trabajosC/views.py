@@ -1,5 +1,6 @@
 import datetime as dtime
 import os
+from django.contrib import messages
 from django.core.files.storage import FileSystemStorage 
 from django.http import HttpResponse, JsonResponse
 import json
@@ -274,13 +275,33 @@ class AsignarEvaluadorTC(UpdateView):
     form_class = EvaluadorTrabajoForm
     template_name = 'evaluador.html'
     success_url = reverse_lazy('inicio')
-
+    
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=self.object)
+        Trabajo = self.object
+        otros_autores = Trabajos_has_autores.objects.filter(trabajo_id = Trabajo.id)
+        if form.is_valid():
+            for obj in otros_autores:
+                if obj.autor == form.cleaned_data['evaluador']:
+                    contador +=1
+                else:
+                    contador=0            
+            if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador']:
+                messages.success(request, 'Evaluador asignado con exito')
+                form.save()
+            else:
+                messages.error(request, 'No se puede asignar evaluador, hace parte del trabajo')
+            return redirect('inicio')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        
         context['title'] = 'Asignar Evaluador'
         context['entity'] = 'TrabajosCientificos'
-        context['list_url'] = reverse_lazy('inicio')
         
         return context
 
