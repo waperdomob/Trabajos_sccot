@@ -278,7 +278,8 @@ class AsignarEvaluadorTC(UpdateView):
     
     def post(self, request, *args, **kwargs):
         manus_path = 'media/manuscritos/'
-        out_folder = 'media\manuscritos'
+        out_folder = 'media/manuscritos'
+        contador=0
         form = self.form_class(request.POST, instance=self.object)
         Trabajo = self.object
         manuscritos = Manuscritos.objects.filter(trabajo = Trabajo)
@@ -286,7 +287,6 @@ class AsignarEvaluadorTC(UpdateView):
             manuscrito1 =i
             break
         file_name = os.path.splitext(manuscrito1.tituloM)[0]
-        print(file_name)
         otros_autores = Trabajos_has_autores.objects.filter(trabajo_id = Trabajo.id)
 
         if form.is_valid():
@@ -296,13 +296,10 @@ class AsignarEvaluadorTC(UpdateView):
             else:
                 for obj in otros_autores:
                     if obj.autor == form.cleaned_data['evaluador']:
-                        contador +=1
-                    else:
-                        contador=0            
+                        contador +=1          
                 if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador']:
-                    messages.success(request, 'Evaluador asignado con exito')
                     #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                    generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder) 
+                    generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15) 
                     ruta_pdf = 'manuscritos/'+file_name+".pdf"
                     consultaM = Manuscritos.objects.filter(tituloM = file_name+'.pdf')
                     if not consultaM:                        
@@ -313,6 +310,8 @@ class AsignarEvaluadorTC(UpdateView):
                             )
                         obj.save(force_insert=True )
                     form.save()
+                    messages.success(request, 'Evaluador asignado con exito')
+
                 else:
                     messages.error(request, 'No se puede asignar evaluador, hace parte del trabajo')
                 return redirect('inicio')

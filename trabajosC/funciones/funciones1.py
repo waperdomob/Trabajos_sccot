@@ -13,14 +13,9 @@ def convert_to_pdf_wd(input_docx, out_folder):
 #out_folder = 'media\manuscritos'
 #convert_to_pdf_wd(sample_doc, out_folder)
 
-def generate_pdf_linux(doc_path, path):
-    subprocess.call(['soffice',
-        # '--headless',
-        '--convert-to',
-        'pdf',
-        '--outdir',
-        path,
-        doc_path])
-    return doc_path
+def generate_pdf_linux(doc_path, path, timeout=None):
+    args = ['libreoffice', '--headless', '--convert-to', 'pdf', '--outdir', path, doc_path]
+
+    process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
 
 #generate_pdf_linux("docx_path.docx", "output_path") 
