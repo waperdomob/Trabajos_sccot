@@ -4,10 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 import json
 from django.db.models import Q
-import io
 from django.core.files.storage import default_storage,FileSystemStorage
-from docx2pdf import convert
-import pythoncom
 from django.urls import reverse, reverse_lazy
 from django.db import transaction
 from django.utils.decorators import method_decorator
@@ -20,6 +17,8 @@ from Cursos.forms import EspecialidadesForm
 from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
 
 from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_instituciones, Trabajos_has_palabras
+
+from trabajosC.funciones.funciones1 import convert_to_pdf_wd ,generate_pdf_linux
 
 # Create your views here.
 
@@ -279,7 +278,7 @@ class AsignarEvaluadorTC(UpdateView):
     
     def post(self, request, *args, **kwargs):
         manus_path = 'media/manuscritos/'
-        pythoncom.CoInitialize()
+        out_folder = 'media\manuscritos'
         form = self.form_class(request.POST, instance=self.object)
         Trabajo = self.object
         manuscritos = Manuscritos.objects.filter(trabajo = Trabajo)
@@ -287,6 +286,7 @@ class AsignarEvaluadorTC(UpdateView):
             manuscrito1 =i
             break
         file_name = os.path.splitext(manuscrito1.tituloM)[0]
+        print(file_name)
         otros_autores = Trabajos_has_autores.objects.filter(trabajo_id = Trabajo.id)
 
         if form.is_valid():
@@ -301,9 +301,10 @@ class AsignarEvaluadorTC(UpdateView):
                         contador=0            
                 if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador']:
                     messages.success(request, 'Evaluador asignado con exito')
-                    convert(manus_path+manuscrito1.tituloM)
+                    #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
+                    generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder) 
                     ruta_pdf = 'manuscritos/'+file_name+".pdf"
-                    consultaM = Manuscritos.objects.get(tituloM = file_name+'.pdf')
+                    consultaM = Manuscritos.objects.filter(tituloM = file_name+'.pdf')
                     if not consultaM:                        
                         obj = Manuscritos(
                             tituloM = file_name+'.pdf',
@@ -336,7 +337,6 @@ class ManuscritoEdit(UpdateView):
 
     def post(self, request, *args, **kwargs):
         manus_path = 'manuscritos/'
-        pythoncom.CoInitialize()
         form = self.form_class(request.POST, request.FILES, instance= self.object)        
         trabajo_id = self.object.trabajo_id
         doc = request.FILES['manuscrito']
