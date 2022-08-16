@@ -12,6 +12,7 @@ Login
 {%  block content   %}
 <br>
 <div class="container" >
+    <br>
     <div class="row">
         
         <!-- div derecho imagen and texto  -->
@@ -20,7 +21,7 @@ Login
             <div class="container">                
                 <div class="" >
                     <div class="container ">
-                        <img src="{% static 'img/logo1Mejorado.png' %}" alt="" width="400rem" >
+                        <img src="{% static 'img/logosccot.png' %}" alt="" width="400rem" >
                     </div>                    
                 </div>
                
@@ -42,22 +43,13 @@ Login
                     <label for="exampleInputPassword1" class="textLabel">Password</label>
                     <input type="password" class="form-control" id="Password1" name="password" required>
                 </div>
+                <br>
                 <section>
                     <div class="container">
-                        <div class="row">
-
-                            <!-- olvidarContraseña -->
-                            <div class="col-sm mt-3">                               
-                                    <i class="fas fa-key"></i>
-                                    <a class="olvidoContrase" href="{% url 'password_reset' %}">
-                                        Olvidaste tu contraseña?
-                                    </a>                                
-                            </div>
-                            <div class="d-grid gap-2 col-6 mx-auto">
-                                <button class="btn btn-primary btn-lg mt-3">
-                                    Login
-                                </button>
-                            </div>
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <button class="btn btn-primary btn-lg mt-3">
+                                Login
+                            </button>
                         </div>
                     </div>
                 </section>

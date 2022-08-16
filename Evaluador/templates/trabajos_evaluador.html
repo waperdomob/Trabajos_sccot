@@ -1,0 +1,114 @@
+{%  extends "base.html" %}
+{%  block title %}
+    SCCOT
+{%  endblock    %}
+{% load static %}
+{% block styles %}
+{% endblock %}
+{% block scripts %}
+<!--Fontawesome-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<!---->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+
+{% endblock %}
+{%  block content   %}
+    <br>
+    <nav class="main-header navbar navbar-expand-md headerColor">
+    
+
+        <div class="container ">
+          <img src="{%  static 'img/logosccot.png' %}" alt="SCCOT" class="brand-image img-circle elevation-3 " height="100rem" >
+         
+    
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars" style="color:#fff; font-size:28px;"></i>
+            <span class="navbar-toggler-icon"></span>
+          </button>
+    
+          <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a href="{% url 'inicio'  %}" class="nav-link textColor">Sccot</a>
+              </li>
+              <li class="nav-item">
+                {% if user.is_authenticated %}
+                      <a class="nav-link" href="{% url 'logout' %}" tabindex="-1" aria-disabled="true">logout</a>
+                    
+                {% else %}
+                    <a class="nav-link" href="{% url 'login' %}" tabindex="-1" aria-disabled="true">Login</a>
+                  {% endif %}                        
+                  </ul>
+                </li>
+            </ul>
+          </div>
+    
+        </div>
+      </nav>
+    <br>
+    <h1><center>Mis evaluaciones</center></h1>
+    <hr><br>
+    <div class="container">
+        <div class="row ">
+            <div class="col-6">
+                <h2><center>Trabajos por evaluar</center></h2><br><br>
+                {% for trabajo in  trabajos %}                
+                {% if not trabajo.calificacion %}
+                    <div class="row ">
+                        <div class="col-12 ">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h5>Titulo: <small>{{trabajo.titulo}}</small> </h5>
+                                    <h5>Tipo de trabajo: <small>{{trabajo.tipo_trabajo}}</small> </h5>
+                                </div>
+                                <div class="col-3 ">
+                                    <div class="d-grid gap-2 col-4 mx-auto">
+                                        <button type="submit" class="btn btn-primary" id="botonEnviar">Calificar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <br>
+                            <h5>Manuscrito: </h5> 
+                            {% for manuscrito in manuscritos %}
+                            {% if manuscrito.trabajo_id == trabajo.id %}
+                            <iframe id="inlineFrameExample"
+                            src="../../media/{{ manuscrito.manuscrito }}"
+                            title="Inline Frame Example"
+                            style="width:500px; height:400px;" frameborder="0"
+                            >
+                            </iframe>
+                            <br><br>
+                            <hr>
+                               <!--  <a href="../../media/{{ manuscrito.manuscrito }}" download="../../media/{{ manuscrito.manuscrito }}" style="font-size: 22px;">{{manuscrito.tituloM}}</a> -->
+                            {%  endif   %}
+                            {% endfor %}
+                        </div>
+                    </div>   
+                {% endif %}                                     
+                {% endfor %}  
+            </div>
+            <div class="col-1">                                  
+            </div>
+            <div class="col-5">
+                <h2><center>Trabajos Evaluados</center></h2><br><br>
+                {% for trabajo in  trabajos %}                
+                {% if  trabajo.calificacion %}
+                    <div class="row ${1| ,row-cols-2,row-cols-3, auto,justify-content-md-center,|}">
+                        <div class="col-6 ">
+                            <h5>Titulo: <small>{{trabajo.titulo}}</small> </h5>
+                            <h5>Tipo de trabajo: <small>{{trabajo.tipo_trabajo}}</small> </h5>
+                            <h5>Calificación: <small>{{trabajo.calificacion}}</small> </h5>
+                            <br>
+                        </div>
+                        
+                    </div>   
+                {% endif %}                                     
+                {% endfor %} 
+            </div>
+        </div>
+        <br><br>
+    </div>
+{% endblock %}

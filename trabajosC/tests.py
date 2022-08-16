@@ -11,7 +11,7 @@ import smtplib
 from trabajosC.models import Autores
 
 
-def send_email():    
+def send_email(nombre,usuario,password):    
         try:
             sent_to = "wilmer.a.p@hotmail.com"
             # Establecemos conexion con el servidor smtp de gmail
@@ -27,7 +27,7 @@ def send_email():
             mensaje['To']=sent_to
             mensaje['Subject']="Evaluación Trabajo científico."
             
-            content = render_to_string("emailEval.html")
+            content = render_to_string("emailEval.html", {'nombre': nombre, 'usuario':usuario, 'password':password,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL})
             mensaje.attach(MIMEText(content,'html'))
             # Envio del mensaje
             mailServer.sendmail(settings.EMAIL_HOST_USER,
@@ -67,6 +67,7 @@ def crear_user():
         )
     passwd = "user_prb"
     usuario.set_password(passwd)
+    send_email(user_prueba.Nombres, nombre_usuario, passwd)
     #usuario.save()
 crear_user()
 # Create your tests here.

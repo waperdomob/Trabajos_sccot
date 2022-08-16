@@ -1,47 +1,43 @@
 import datetime as dtime
 import os
 from django.contrib import messages
-from django.core.files.storage import FileSystemStorage 
 from django.http import HttpResponse, JsonResponse
 import json
 from django.db.models import Q
 import io
-from django.http import FileResponse
-from reportlab.pdfgen import canvas
-from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import BaseDocTemplate, PageTemplate, Frame, SimpleDocTemplate, Paragraph, Spacer
-from reportlab.rl_config import defaultPageSize
+from django.core.files.storage import default_storage,FileSystemStorage
+from docx2pdf import convert
+import pythoncom
 from django.urls import reverse, reverse_lazy
-
-from django.views import View
-
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView,DetailView,UpdateView
-
 from django.shortcuts import  redirect, render
+
+from django.views import View
 from Cursos.forms import EspecialidadesForm
-from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, SearchForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
+from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
 
 from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_instituciones, Trabajos_has_palabras
 
 # Create your views here.
 
 def index(request):
-    if request.user.is_superuser:
-        trabajos = Trabajos.objects.all()
-        autores = Autores.objects.all()
-        cursos = Cursos.objects.filter(user= request.user.id)
-        
-        autores_trab = Trabajos_has_autores.objects.all()
-        palabras_trab = Trabajos_has_palabras.objects.all()
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            trabajos = Trabajos.objects.all().only("id","tipo_trabajo", "subtipo_trabajo","titulo","Autor_correspondencia", "institucion_principal","curso")
+            autores = Autores.objects.all().defer( "especialidad","direccion")
+            cursos = Cursos.objects.filter(user= request.user.id)
+            
+            autores_trab = Trabajos_has_autores.objects.all()
+            palabras_trab = Trabajos_has_palabras.objects.all()
 
-        manuscritos = Manuscritos.objects.all().select_related('trabajo')
-        
-        return render(request,'admin.html', {'autores':autores,'trabajos':trabajos,'cursos':cursos,'manuscritos':manuscritos,'autores_trab':autores_trab,'palab_trab':palabras_trab, 'formEspecialidad' : EspecialidadesForm()})
+            manuscritos = Manuscritos.objects.all().select_related('trabajo')
+            
+            return render(request,'admin.html', {'autores':autores,'trabajos':trabajos,'cursos':cursos,'manuscritos':manuscritos,'autores_trab':autores_trab,'palab_trab':palabras_trab, 'formEspecialidad' : EspecialidadesForm()})
+        else:
+            return redirect('misEvaluaciones')
     else:
         return redirect('create_Trabajo')
 
@@ -282,21 +278,43 @@ class AsignarEvaluadorTC(UpdateView):
         return super().dispatch(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
+        manus_path = 'media/manuscritos/'
+        pythoncom.CoInitialize()
         form = self.form_class(request.POST, instance=self.object)
         Trabajo = self.object
+        manuscritos = Manuscritos.objects.filter(trabajo = Trabajo)
+        for i in manuscritos:
+            manuscrito1 =i
+            break
+        file_name = os.path.splitext(manuscrito1.tituloM)[0]
         otros_autores = Trabajos_has_autores.objects.filter(trabajo_id = Trabajo.id)
+
         if form.is_valid():
-            for obj in otros_autores:
-                if obj.autor == form.cleaned_data['evaluador']:
-                    contador +=1
-                else:
-                    contador=0            
-            if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador']:
-                messages.success(request, 'Evaluador asignado con exito')
-                form.save()
+            if form.cleaned_data['evaluador'] == None:
+                messages.warning(request, 'No ha seleccionado a ningun Evaluador')
+                return redirect('inicio')
             else:
-                messages.error(request, 'No se puede asignar evaluador, hace parte del trabajo')
-            return redirect('inicio')
+                for obj in otros_autores:
+                    if obj.autor == form.cleaned_data['evaluador']:
+                        contador +=1
+                    else:
+                        contador=0            
+                if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador']:
+                    messages.success(request, 'Evaluador asignado con exito')
+                    convert(manus_path+manuscrito1.tituloM)
+                    ruta_pdf = 'manuscritos/'+file_name+".pdf"
+                    consultaM = Manuscritos.objects.get(tituloM = file_name+'.pdf')
+                    if not consultaM:                        
+                        obj = Manuscritos(
+                            tituloM = file_name+'.pdf',
+                            manuscrito = ruta_pdf,
+                            trabajo = Trabajo
+                            )
+                        obj.save(force_insert=True )
+                    form.save()
+                else:
+                    messages.error(request, 'No se puede asignar evaluador, hace parte del trabajo')
+                return redirect('inicio')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        
@@ -305,100 +323,35 @@ class AsignarEvaluadorTC(UpdateView):
         
         return context
 
-class TrabajosPDF(View):
+class ManuscritoEdit(UpdateView):
+    model = Manuscritos
+    form_class = ManuscritosForm
+    template_name = 'manus_editModal.html'
+    success_url = reverse_lazy('inicio')
 
-    def get(self, request, *args, **kwargs):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
 
-        trabajo = Trabajos.objects.get(pk=self.kwargs['pk'])
-        autores_trab = Trabajos_has_autores.objects.filter(trabajo_id=self.kwargs['pk'])
-        manuscritos = Manuscritos.objects.filter(trabajo_id=self.kwargs['pk'])
-        subtitles=["Observaciones: ", "Resumen en español: ","Palabras claves: ","Resumen en ingles: ","Keywords: "]
-        pdf_name = "Prueba.pdf"
-        response = HttpResponse(content_type='application/pdf')
-        #Attachment: Para descargar el PDF, filename = nombre del archivo PDF
-        response['Content-Disposition'] = 'attachment; filename=%s' % pdf_name
-        PAGE_HEIGHT=defaultPageSize[1]; PAGE_WIDTH=defaultPageSize[0]
-        styleSheet = getSampleStyleSheet()
-        #create Canvas
-        buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer,
-                            pagesize=letter,
-                            rightMargin=40,
-                            leftMargin=40,
-                            topMargin=60,
-                            bottomMargin=30,)
-        Story = [Spacer(1,1.5*inch)]
+    def post(self, request, *args, **kwargs):
+        manus_path = 'manuscritos/'
+        pythoncom.CoInitialize()
+        form = self.form_class(request.POST, request.FILES, instance= self.object)        
+        trabajo_id = self.object.trabajo_id
+        doc = request.FILES['manuscrito']
+        if form.is_valid():
+            if self.object.tituloM == doc.name:
+                default_storage.delete(manus_path+self.object.tituloM)
+                form.save()
+            else:
+                messages.error(request, 'El documento no tiene el mismo nombre que el subido por el autor!')
+            return redirect('inicio')
 
-        styleSub = styleSheet["Heading3"]
-        style = styleSheet["Normal"]
-        Title = trabajo.titulo
-        pageinfo = "."
-
-        def myFirstPage(canvas, doc):
-            canvas.saveState()
-            canvas.setFont('Times-Bold',16)
-            canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, Title)
-            canvas.setFont('Times-Roman',9)
-            canvas.drawString(inch, 0.75 * inch, "First Page / %s" % pageinfo)
-            canvas.restoreState()
-
-        def myLaterPages(canvas, doc):
-            canvas.saveState()
-            canvas.setFont('Times-Roman',9)
-            canvas.drawString(inch, 0.75 * inch, "Page %d %s" % (doc.page, pageinfo))
-            canvas.restoreState()
-
-        for i in subtitles:
-            if "Observaciones" in i:
-                bogustext = (trabajo.observaciones)
-                subtext = (i)
-                s = Paragraph(subtext,styleSub)
-                p = Paragraph(bogustext, style)
-                Story.append(s)
-                Story.append(p)
-                Story.append(Spacer(1,0.6*inch))
-            elif "Resumen en español" in i:
-                bogustext = (trabajo.resumen_esp)
-                subtext = (i)
-                s = Paragraph(subtext,styleSub)
-                p = Paragraph(bogustext, style)
-                Story.append(s)
-                Story.append(p)
-                Story.append(Spacer(1,0.6*inch))
-            elif "Palabras claves" in i:
-                bogustext = (trabajo.palabras_claves)
-                subtext = (i)
-                s = Paragraph(subtext,styleSub)
-                p = Paragraph(bogustext, style)
-                Story.append(s)
-                Story.append(p)
-                Story.append(Spacer(1,0.6*inch))
-            elif "Resumen en ingles" in i:
-                bogustext = (trabajo.resumen_ingles)
-                subtext = (i)
-                s = Paragraph(subtext,styleSub)
-                p = Paragraph(bogustext, style)
-                Story.append(s)
-                Story.append(p)
-                Story.append(Spacer(1,0.6*inch))
-            elif "Keywords" in i:
-                bogustext = (trabajo.keywords)
-                subtext = (i)
-                s = Paragraph(subtext,styleSub)
-                p = Paragraph(bogustext, style)
-                Story.append(s)
-                Story.append(p)
-                Story.append(Spacer(1,0.6*inch))
-
-        doc.build(Story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)        
-        #buffer.seek(0)      
-        response.write(buffer.getvalue())
-        buffer.close()
-        return response
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)        
+        context['title'] = 'Editar Manuscrito'
+        context['manus'] = Manuscritos.objects.all()        
+        return context
 
 
-        """ pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font('Arial', size= 16)
-        pdf.cell(200, 10, txt = "Trial to generate a pdf file.", ln=2, align='C')
-        pdf.output('media/pdf/Attempt.pdf','F') """

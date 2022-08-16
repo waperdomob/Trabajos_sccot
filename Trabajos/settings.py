@@ -24,17 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = 'django-insecure-1dz$ql+9wtt)8-ymme_4m*#7yoo)i4cqf&1dtg$p+nrn!%$vu2'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-#DEBUG = True
+#DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ["*"]
 #ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 CSRF_TRUSTED_ORIGINS=['https://*.trabajos.sccot.org']
-#SECURE_HSTS_SECONDS = 31536000
-#SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-#SECURE_SSL_REDIRECT = True
-#SESSION_COOKIE_SECURE = True
-#CSRF_COOKIE_SECURE = True
-#SECURE_HSTS_PRELOAD = True
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -52,6 +47,7 @@ INSTALLED_APPS = [
     'trabajosC',
     'Autores',
     'Cursos',
+    'Evaluador',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +61,8 @@ MIDDLEWARE = [
     'django.contrib.admindocs.middleware.XViewMiddleware',
 
 ]
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
 
 ROOT_URLCONF = 'Trabajos.urls'
 
@@ -164,6 +162,8 @@ LOGOUT_REDIRECT_URL = reverse_lazy('login')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.googlemail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'wilmerpb30@gmail.com'#←correo de pruebas. Poner correo de sccot
-EMAIL_HOST_PASSWORD = 'teamlduzaplgebvc'#poner password de sccot
+#EMAIL_HOST_USER = 'wilmerpb30@gmail.com'#←correo de pruebas. Poner correo de sccot
+#EMAIL_HOST_PASSWORD = 'teamlduzaplgebvc'#poner password de sccot
+EMAIL_HOST_USER = 'biblioteca@sccot.org.co'
+EMAIL_HOST_PASSWORD = 'VCC@2022'
 EMAIL_USE_TLS = True

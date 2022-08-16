@@ -246,7 +246,7 @@ class ManuscritosForm(ModelForm):
             'manuscrito' : 'Manuscrito anónimo',
         }
         widgets = {          
-            'manuscrito':forms.FileInput(attrs={'class':'form-control','multiple':True,'accept':"file_extension"}),
+            'manuscrito':forms.FileInput(attrs={'class':'form-control','accept':"file_extension"}),
             
         }
 

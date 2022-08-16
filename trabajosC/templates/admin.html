@@ -69,6 +69,11 @@
                 <strong>Bien:</strong> {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>WARNING:</strong> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
             {% endif %}
         {% endfor %}
     </ul>
@@ -76,6 +81,8 @@
     <div class="container-fluid " id="contenedorTrabajos">
         {% include 'tablas/trabajosList.html' %}
         <div class="modal fade contenedor" id="evaluador_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
+        </div>
+        <div class="modal fade contenedor" id="editManus_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         </div>
     </div>
     <div class="container-fluid " id="contenedorAutores" hidden>
@@ -120,7 +127,11 @@
                 responsive: true,
                 autoWidth: false
             });             
-
+            function abrir_modal_editManus(url){
+                $('#editManus_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
             function abrir_modal_createAutor(url){
                 $('#crearAutor_Modal').load(url, function (){
                     $(this).modal('show');
