@@ -1,21 +1,39 @@
-import datetime as dtime
-from django.http import JsonResponse
-from django.db.models import Q
 
-from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import CreateView, UpdateView,DeleteView,DetailView
+from django.views.generic import CreateView, UpdateView,DeleteView
 from django.urls import  reverse_lazy
 from django.shortcuts import  redirect, render
 
-from Cursos.forms import CursosForm, EspecialidadesForm
+from Cursos.forms import CursosForm
 
 from trabajosC.models import  Cursos
 
 # Create your views here.
 
 class registrarCurso(CreateView):
+    ''' Clase CreateView para registrar los cursos. 
+
+    **Context**
+
+        :model: Una instancia del modelo Cursos creado en la app trabajosC.
+        :form_class: Formulario para la creación de cursos creado en forms.py de la app Cursos.
+
+    **Methods**
+
+        :``get(self, request, *args, **kwargs)``: 
+
+            Metodo para redireccionar al template obteniendo el context de get_context_data.
+
+        :``get_context_data(self, **kwargs)``: 
+
+            Envio del context al formulario de crear cursos.
+    
+    **Template:**
+
+        :template_name: Formulario para la creación de un curso.
+            
+    '''
     model = Cursos
     form_class= CursosForm
     template_name='createCurso.html'
@@ -36,6 +54,25 @@ class registrarCurso(CreateView):
         return render(request,self.template_name,self.get_context_data())
 
 class CursoUpdate(UpdateView):
+    ''' Clase UpdateView para actualizar los cursos. 
+
+    **Context** 
+       
+        :model:  Una instancia del modelo Cursos creado en la app trabajosC.
+        :form_class:  Formulario para la edición de cursos creado en forms.py de la app Cursos.
+        :success_url:  Al ser exitoso la actualización del curso redirecciona al index.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de editar cursos.
+    
+    **Template:**
+
+        :template_name: Formulario para la edición de un curso.
+            
+    '''
     model = Cursos
     form_class = CursosForm
     template_name = 'curso_editModal.html'
@@ -49,6 +86,23 @@ class CursoUpdate(UpdateView):
 
 
 class deleteCurso(DeleteView):
+    ''' Clase DeleteView para eliminar los cursos. 
+
+    **Context**    
+
+        :model:  Una instancia del modelo Cursos creado en la app trabajosC.
+        
+    **Methods**
+        
+        :``post(self, request,pk, *args, **kwargs)``: 
+
+            Metodo que recibe la información del curso a eliminar y al finalizar retorna al index.
+    
+    **Template:**
+
+        :template_name: Formulario para la eliminación de un curso.
+            
+    '''
     model = Cursos
     template_name = 'curso_eliminarModal.html'
 
@@ -56,4 +110,3 @@ class deleteCurso(DeleteView):
         object = Cursos.objects.get(id=pk)
         object.delete()
         return redirect('inicio')
- 

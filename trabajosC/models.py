@@ -23,11 +23,17 @@ ROLES = [
     
 
 class Roles(models.Model):
+    """
+    Roles asignados a los autores, estos pueden ser: autor_correspondencia o evaluador.
+    """
     role = models.CharField(max_length=45, choices=ROLES)
     def __str__(self):
         return self.role
 
 class Instituciones(models.Model):
+    """
+    Instituciones que se registrarán en el trabajo científico.
+    """
     institucion = models.CharField(max_length=45)
 
     def __str__(self):
@@ -39,6 +45,9 @@ class Instituciones(models.Model):
         return item
 
 class Especialidades(models.Model):
+    """
+    Especialidades de los autores(doctores).
+    """
     especialidad = models.CharField(max_length=45)
     def __str__(self):
         return self.especialidad
@@ -48,8 +57,10 @@ class Especialidades(models.Model):
         item['especialidad'] = self.especialidad
         return item
 
-
 class Cursos(models.Model):
+    """
+    Cursos disponibles para subir el trabajo científico.
+    """
     nombre_curso = models.CharField(max_length=45)
     especialidad = models.ForeignKey(Especialidades, on_delete=models.CASCADE)
     fecha_inicio = models.DateField()
@@ -60,6 +71,9 @@ class Cursos(models.Model):
         return self.nombre_curso
         
 class Autores(models.Model):
+    """
+    Doctores miembros de la Sccot que serán autores de trabajos científicos.
+    """
     tipo_identificacion = models.CharField(max_length=45,null=True, blank=True)
     identificacion = models.BigIntegerField(null=True, blank=True)
     role = models.ForeignKey(Roles,null=True, blank=True, on_delete=models.CASCADE)
@@ -86,6 +100,9 @@ class Autores(models.Model):
         return item
 
 class Trabajos(models.Model):
+    """
+    Trabajos científicos subidos por los doctores. 
+    """
     tipo_trabajo=models.CharField(max_length=45, choices=CATEGORIAS)
     subtipo_trabajo=models.CharField(max_length=45, choices=SUBCATEGORIAS,null=True, blank=True)
     titulo=models.CharField(max_length=100)
@@ -105,18 +122,29 @@ class Trabajos(models.Model):
         return self.titulo
 
 class Trabajos_has_autores(models.Model):
+    """
+    Relación Many to Many entre trabajo y autores. 
+    """
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
     autor = models.ForeignKey(Autores, on_delete=models.CASCADE, blank=True, null=True)
     def __str__(self):
         return self.trabajo.titulo
         
 class Trabajos_has_instituciones(models.Model):
+    """
+    Relación Many to Many entre trabajo e instituciones. 
+    """
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
     institucion = models.ForeignKey(Instituciones, on_delete=models.CASCADE, blank=True, null=True)
     def __str__(self):
         return self.trabajo.titulo
 
 class Manuscritos(models.Model):
+    """
+    Documento relacionado al trabajo científico:
+        - Word si es libre o ingreso
+        - Powerpoint si es E-poster
+    """
     tituloM = models.CharField(max_length=100)
     manuscrito  = models.FileField(upload_to='manuscritos/',default="")
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
@@ -124,6 +152,9 @@ class Manuscritos(models.Model):
         return self.tituloM
 
 class Tablas(models.Model):
+    """
+    Documentos adicionales del trabajo científico.
+    """
     tituloT = models.CharField(max_length=100)
     tabla  = models.FileField(upload_to='tablas/',default="",null=True, blank=True,)
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
@@ -131,6 +162,9 @@ class Tablas(models.Model):
         return self.tituloT
 
 class Palabras_claves(models.Model):
+    """
+    Palabras claves usadas en el trabajo científico. También se usarán como buscador para la siguiente fase del proyecto.
+    """
     palabra = models.CharField(max_length=45)
 
     def __str__(self):
@@ -142,12 +176,18 @@ class Palabras_claves(models.Model):
         return item
 
 class Trabajos_has_palabras(models.Model):
+    """
+    Relación Many to Many entre trabajo y palabras claves. 
+    """
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
     palabra = models.ForeignKey(Palabras_claves, on_delete=models.CASCADE, blank=True, null=True)
     def __str__(self):
         return self.palabra.palabra
 
 class Keywords(models.Model):
+    """
+    Keywords usadas en el trabajo científico. También se usarán como buscador para la siguiente fase del proyecto.
+    """
     keyword = models.CharField(max_length=45)
 
     def __str__(self):
@@ -159,6 +199,9 @@ class Keywords(models.Model):
         return item
 
 class Trabajos_has_Keywords(models.Model):
+    """
+    Relación Many to Many entre trabajo y keywords. 
+    """
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
     keyword = models.ForeignKey(Keywords, on_delete=models.CASCADE, blank=True, null=True)
     def __str__(self):

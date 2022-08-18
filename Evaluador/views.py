@@ -8,12 +8,19 @@ from trabajosC.models import Autores, Manuscritos, Trabajos
 # Create your views here.
 
 class TrabajosAsignados(TemplateView):
+    """Clase TemplateView para ver la información de los trabajos científicos asignados al evaluador.
+
+    **Context**    
+
+        ``trabajos``:  Una instancia modelo del Trabajos creado en la app trabajosC`.
+
+    **Template:**
+
+        :template_name: Template para ver la información de los trabajos científicos.
+    """
     model = Trabajos
     template_name = "trabajos_evaluador.html"
-
-    #def get(self, request, *args, **kwargs):
-    #    return render(request, 'trabajos_evaluador.html')
-        
+   
     def get_context_data(self, **kwargs):   
         Evaluador = Autores.objects.get(email = self.request.user.email)     
         context = super().get_context_data(**kwargs)

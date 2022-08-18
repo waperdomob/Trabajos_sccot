@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.admindocs.middleware.XViewMiddleware',
 
 ]
+X_FRAME_OPTIONS = 'ALLOW-FROM https://sccot.org/'
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
 

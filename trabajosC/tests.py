@@ -1,6 +1,3 @@
-import sys
-import subprocess
-import re
 from django.test import TestCase
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
@@ -10,11 +7,9 @@ from djangoconvertvdoctopdf.convertor import StreamingConvertedPdf
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
-from django.core.files import File
-from docx import Document
+
 from trabajosC.models import Autores
 
-manus_path = 'media/manuscritos/'
 
 def send_email(nombre,usuario,password):    
     try:
@@ -81,29 +76,3 @@ def crear_user():
         print("usuario existente")
 #crear_user()
 # Create your tests here.
-
-
-def convert_to(folder, source, timeout=None):
-    args = [libreoffice_exec(), '--headless', '--convert-to', 'pdf', '--outdir', folder, source]
-
-    process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
-    filename = re.search('-> (.*?) using filter', process.stdout.decode())
-
-    if filename is None:
-        raise LibreOfficeError(process.stdout.decode())
-    else:
-        return filename.group(1)
-
-
-def libreoffice_exec():
-    # TODO: Provide support for more platforms
-    if sys.platform == 'darwin':
-        return '/Applications/LibreOffice.app/Contents/MacOS/soffice'
-    return 'libreoffice'
-
-
-class LibreOfficeError(Exception):
-    def __init__(self, output):
-        self.output = output
-
-convert_to('media/manuscritos',  'media/manuscritos/Ingreso86-docx', timeout=15)

@@ -10,9 +10,9 @@ from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView,DetailView,UpdateView
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.shortcuts import  redirect, render
 
-from django.views import View
 from Cursos.forms import EspecialidadesForm
 from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
 
@@ -21,8 +21,31 @@ from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Key
 from trabajosC.funciones.funciones1 import convert_to_pdf_wd ,generate_pdf_linux
 
 # Create your views here.
-
+@xframe_options_exempt
 def index(request):
+    """ 
+    Index del proyecto. 
+
+    **Context**    
+
+        ``trabajos``:  Una instancia modelo del Trabajos creado en la app trabajosC`.
+            
+        ``autores``: Una instancia modelo del Autores creado en la app trabajosC`.
+        
+        ``cursos``: Una instancia del modelo Cursos creado en la app trabajosC`.
+        
+        ``autores_trab``: Una instancia del modelo Trabajos_has_autores creado en la app trabajosC`.
+        
+        ``palabras_trab``: Una instancia del modelo Trabajos_has_palabras creado en la app trabajosC`.
+        
+        ``manuscritos``: Una instancia del modelo Manuscritos creado en la app trabajosC`.
+
+    **Returns**
+
+        1. Vista de aministrador con la lista de las instancias.
+        2. Vista del formulario de registro de trabajo si no es administrador.
+    """
+    #Validación si el usuario logeado es superuser(Admin)
     if request.user.is_authenticated:
         if request.user.is_superuser:
             trabajos = Trabajos.objects.all().only("id","tipo_trabajo", "subtipo_trabajo","titulo","Autor_correspondencia", "institucion_principal","curso")
@@ -41,9 +64,15 @@ def index(request):
         return redirect('create_Trabajo')
 
 def is_ajax(request):
+    ''' Función para Validar que el metodo enviado desde javascript sea ajax '''
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 def ajax_especialidades(request):
+    '''  Esta función recibe un request ajax para registrar especialidades desde el formulario de registro de autores.
+    **Return** 
+        1. Retorna la especialidad creada en formato Json para ser mostrada en el campo de especialidad del  formulario de registro de autores.
+        2. Retorna un mensaje de error si ya existía la especialidad o de exito al ser creada.
+    '''
     if is_ajax(request=request):
         data ={}
         if request.method == 'GET':
@@ -63,6 +92,26 @@ def ajax_especialidades(request):
        
 
 class registrarTrabajo(CreateView):
+    ''' Clase CreateView para registrar los trabajos científicos. 
+
+    **Context**  
+
+        :Trabajos:  Una instancia del modelo Trabajos creado en la app trabajosC.
+
+    **Methods**
+
+        :``post(self, request, *args, **kwargs)``: 
+
+            Recibe todas las peticiones post enviadas por AJAX desde el formulario de registro de trabajos.
+
+        :``get_context_data(self, **kwargs)``: 
+
+            Envio del context al formulario de registrar trabajos.
+
+    **Template:**
+
+        :template_name: Formulario para la creación del trabajo científico.
+    '''
     model = Trabajos
     form_class= TrabajosCForm
     template_name='createTrabajo.html'
@@ -72,6 +121,7 @@ class registrarTrabajo(CreateView):
         return super().dispatch(request, *args, **kwargs)
         
     def post(self, request, *args, **kwargs):
+        '''Recibe todas las peticiones post enviadas por AJAX desde el formulario de registro de trabajos.'''
         data = {}
         manus_path = 'media/manuscritos'
         manus_path2 = 'media/otros'
@@ -227,7 +277,8 @@ class registrarTrabajo(CreateView):
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
 
-    def get_context_data(self, **kwargs):        
+    def get_context_data(self, **kwargs):
+        '''Envio del context(forms, tiles, etc) al formulario registro de trabajos.'''        
         context = {}
         context['title'] = 'Registrar Trabajo'
         context['form'] = self.form_class
@@ -251,7 +302,16 @@ class registrarTrabajo(CreateView):
         return context
 
 class TrabajoDetailView(DetailView):
+    """Clase DetailView para ver la información del trabajo científico.
 
+    **Context**    
+
+        ``trabajos``:  Una instancia modelo del Trabajos creado en la app trabajosC`.
+
+    **Template:**
+
+        :template_name: Template para ver la información del trabajo científico.
+    """
     model = Trabajos
     template_name='trabajoInfo.html'
 
@@ -266,6 +326,29 @@ class TrabajoDetailView(DetailView):
         return context
  
 class AsignarEvaluadorTC(UpdateView):
+    ''' Clase UpdateView para actualizar el evaluador del trabajo científico. 
+
+    **Context** 
+       
+        :model:  Una instancia del modelo Trabajos creado en la app trabajosC.
+        :form_class:  Formulario para la edición del evaluador creado en forms.py de la app Trabajos.
+        :success_url:  Al ser exitoso la actualización del evaluador redirecciona al index.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de editar evaluador.
+
+        :``post(self, request,pk, *args, **kwargs)``: 
+
+            Metodo que recibe la información del evaluador seleccionado en el formulario para hacer las respectivas validaciones.
+
+    **Template:**
+
+        :template_name: Formulario para la edición del evaluador.
+            
+    '''
     model = Trabajos
     form_class = EvaluadorTrabajoForm
     template_name = 'evaluador.html'
@@ -287,19 +370,24 @@ class AsignarEvaluadorTC(UpdateView):
             manuscrito1 =i
             break
         file_name = os.path.splitext(manuscrito1.tituloM)[0]
+        postfix=os.path.splitext(manuscrito1.tituloM)[1][1:]
         otros_autores = Trabajos_has_autores.objects.filter(trabajo_id = Trabajo.id)
 
         if form.is_valid():
+            #print(request.POST.getlist('confirmacion'))
             if form.cleaned_data['evaluador'] == None:
                 messages.warning(request, 'No ha seleccionado a ningun Evaluador')
+                return redirect('inicio')
+            elif not request.POST.getlist('confirmacion'):
+                messages.warning(request, 'No ha confirmado la revision del manuscrito')
                 return redirect('inicio')
             else:
                 for obj in otros_autores:
                     if obj.autor == form.cleaned_data['evaluador']:
                         contador +=1          
-                if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador']:
-                    #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                    generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15) 
+                if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and (postfix=='docx' or postfix=='doc'):
+                    convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
+                    #generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15) 
                     ruta_pdf = 'manuscritos/'+file_name+".pdf"
                     consultaM = Manuscritos.objects.filter(tituloM = file_name+'.pdf')
                     if not consultaM:                        
@@ -311,7 +399,9 @@ class AsignarEvaluadorTC(UpdateView):
                         obj.save(force_insert=True )
                     form.save()
                     messages.success(request, 'Evaluador asignado con exito')
-
+                elif postfix=='pptx':
+                    form.save()
+                    messages.success(request, 'Evaluador asignado con exito')
                 else:
                     messages.error(request, 'No se puede asignar evaluador, hace parte del trabajo')
                 return redirect('inicio')
@@ -324,6 +414,24 @@ class AsignarEvaluadorTC(UpdateView):
         return context
 
 class ManuscritoEdit(UpdateView):
+    """Clase UpdateView para actualizar el manuscrito del trabajo científico.
+
+    **Context**  
+
+        :model:  Una instancia del modelo Manuscritos creado en la app trabajosC.
+        :form_class:  Formulario para la edición del manuscrito creado en forms.py de la app Trabajos.
+        :success_url:  Al ser exitoso la actualización del manuscrito redirecciona al index.
+
+    **Methods**
+
+        :``post(self, request, *args, **kwargs)``: 
+
+            Recibe el documento actualizado y valida si tiene el mismo nombre para poder actualizar la bd.
+
+        :``get_context_data(self, **kwargs)``: 
+
+            Envio del context al formulario de editar manuscrito.
+    """
     model = Manuscritos
     form_class = ManuscritosForm
     template_name = 'manus_editModal.html'
