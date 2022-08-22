@@ -40,7 +40,7 @@ var trabajo={
                 $('#manuscritosLabel_id').prop('hidden', true);
                 $('#eposterLabel_id').prop('hidden', false);
                 $('#id_subtipo_trabajo').prop('hidden', true);
-
+                $('#id_subtipo_trabajo').prop('required', false);
 
             }else {
                 $('#eposterLabel_id').prop('hidden', true);
@@ -49,6 +49,7 @@ var trabajo={
                 $('#tablaLabel_id').prop('hidden', false);
                 $('#subtipoLabel_id').prop('hidden', false);
                 $('#id_subtipo_trabajo').prop('hidden', false);
+                $('#id_subtipo_trabajo').prop('required', true);
 
 
             }
@@ -403,7 +404,14 @@ var trabajo={
                 }
                 else{
                     if (ext[i] === "pptx") {
-                        trabajo.items.manuscritos.push($('input[name="manuscrito"]').get(0).files[i].name);
+                        if (archivos[i].size > 	145000000 ) {
+                            const tamanioEnMb = 	150000000  / 1000000;
+                            alert(`El tamaño máximo del archivo ${archivos[i].name} debe ser menor a ${tamanioEnMb} MB`);
+                            contador ++;
+                        }
+                        else{
+                            trabajo.items.manuscritos.push($('input[name="manuscrito"]').get(0).files[i].name);
+                        }
                         
                     } 
                     else{
