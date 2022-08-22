@@ -40,7 +40,7 @@ var trabajo={
                 $('#manuscritosLabel_id').prop('hidden', true);
                 $('#eposterLabel_id').prop('hidden', false);
                 $('#id_subtipo_trabajo').prop('hidden', true);
-
+                $('#id_subtipo_trabajo').prop('required', false);
 
             }else {
                 $('#eposterLabel_id').prop('hidden', true);
@@ -49,6 +49,7 @@ var trabajo={
                 $('#tablaLabel_id').prop('hidden', false);
                 $('#subtipoLabel_id').prop('hidden', false);
                 $('#id_subtipo_trabajo').prop('hidden', false);
+                $('#id_subtipo_trabajo').prop('required', true);
 
 
             }

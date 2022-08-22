@@ -14,11 +14,10 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.shortcuts import  redirect, render
 
 from Cursos.forms import EspecialidadesForm
-from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
-
-from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_instituciones, Trabajos_has_palabras
-
-from trabajosC.funciones.funciones1 import convert_to_pdf_wd ,generate_pdf_linux
+from trabajosC.forms import *
+from trabajosC.models import *
+from Evaluador.forms import *
+from trabajosC.funciones.funciones1 import asignar_plantilla, convert_to_pdf_wd ,generate_pdf_linux
 
 # Create your views here.
 @xframe_options_exempt
@@ -364,6 +363,7 @@ class AsignarEvaluadorTC(UpdateView):
         out_folder = 'media/manuscritos'
         contador=0
         form = self.form_class(request.POST, instance=self.object)
+        plantillasF = selectPlantillaForm(request.POST)
         Trabajo = self.object
         manuscritos = Manuscritos.objects.filter(trabajo = Trabajo)
         for i in manuscritos:
@@ -381,13 +381,18 @@ class AsignarEvaluadorTC(UpdateView):
             elif not request.POST.getlist('confirmacion'):
                 messages.warning(request, 'No ha confirmado la revision del manuscrito')
                 return redirect('inicio')
+            elif plantillasF['plantilla'].value() == "0":
+                messages.warning(request, 'No ha seleccionado una plantilla de evaluación')
+                return redirect('inicio')
             else:
                 for obj in otros_autores:
                     if obj.autor == form.cleaned_data['evaluador']:
                         contador +=1          
-                if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and (postfix=='docx' or postfix=='doc'):
-                    convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                    #generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15) 
+                if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and (postfix=='docx' or postfix=='doc'):                    
+                    user = request.user#user de prueba, el user es el que se crea cuando se asigna evaluador
+                    asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
+                    #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
+                    generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15) 
                     ruta_pdf = 'manuscritos/'+file_name+".pdf"
                     consultaM = Manuscritos.objects.filter(tituloM = file_name+'.pdf')
                     if not consultaM:                        
@@ -409,8 +414,7 @@ class AsignarEvaluadorTC(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        
         context['title'] = 'Asignar Evaluador'
-        context['entity'] = 'TrabajosCientificos'
-        
+        context['evaluacionesform'] =selectPlantillaForm()
         return context
 
 class ManuscritoEdit(UpdateView):

@@ -1,0 +1,30 @@
+    {% for plantilla in  plantillaECC %}                
+    {% if plantilla.trabajo_id == trabajo.id %}
+        <button onclick="abrir_modal_plantilla1(`{% url 'evaluacionECC' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>ENVIAR</button>
+    {% endif %}
+    {% endfor %}
+    {% for plantilla in  plantillaPruebasDX %}                
+    {% if plantilla.trabajo_id == trabajo.id %}
+        <button onclick="abrir_modal_plantilla2(`{% url 'evaluacionPruebasDX' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>ENVIAR</button>
+    {% endif %}
+    {% endfor %}
+    {% for plantilla in  plantillaRSyMA %}                
+    {% if plantilla.trabajo_id == trabajo.id %}
+        <button onclick="abrir_modal_plantilla3(`{% url 'evaluacionRSyMA' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>ENVIAR</button>
+    {% endif %}
+    {% endfor %}
+    {% for plantilla in  plantillaSERIECASOSyCORTETRANSVERSAL %}                
+    {% if plantilla.trabajo_id == trabajo.id %}
+        <button onclick="abrir_modal_plantilla4(`{% url 'evaluacionSCyCT' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>ENVIAR</button>
+    {% endif %}
+    {% endfor %}
+    {% for plantilla in  plantillaCASOSyCONTROLES %}                
+    {% if plantilla.trabajo_id == trabajo.id %}
+        <button onclick="abrir_modal_plantilla5(`{% url 'evaluacionCyC' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>ENVIAR</button>
+    {% endif %}
+    {% endfor %}
+    {% for plantilla in  plantillaCOHORTES %}                
+    {% if plantilla.trabajo_id == trabajo.id %}
+        <button onclick="abrir_modal_plantilla6(`{% url 'evaluacionCOHORTES' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>ENVIAR</button>
+    {% endif %}
+    {% endfor %}
