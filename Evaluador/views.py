@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.views.generic import CreateView,DetailView,UpdateView
 from django.urls import  reverse_lazy
 from django.views.generic.base import TemplateView
-from django.db.models import Q
+from django.db.models import Q,F, Sum
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import  redirect, render
+import pandas as pd
 from statistics import mean
 
 from Evaluador.forms import RSyMAForm, casosyControlesForm, cohortesForm, eccForm, plantillaSCyCTForm, pruebasDXForm
@@ -38,7 +39,7 @@ class TrabajosAsignados(TemplateView):
             context['plantillaECC'] = plantillaECC.objects.all().select_related('trabajo')
             context['plantillaPruebasDX'] = plantillaPruebasDX.objects.all().select_related('trabajo')
             context['plantillaRSyMA'] = plantillaRSyMA.objects.all().select_related('trabajo')
-            context['plantillaSERIECASOSyCORTETRANSVERSAL'] = plantillaSERIECASOSyCORTETRANSVERSAL.objects.filter().select_related('trabajo')
+            context['plantillaSERIECASOSyCORTETRANSVERSAL'] = plantillaSERIECASOSyCORTETRANSVERSAL.objects.all().select_related('trabajo')
             context['plantillaCASOSyCONTROLES'] = plantillaCASOSyCONTROLES.objects.all().select_related('trabajo')
             context['plantillaCOHORTES'] = plantillaCOHORTES.objects.all().select_related('trabajo')
 
@@ -71,9 +72,15 @@ class plantilla1_evaluacion(UpdateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
-            titulo = form.cleaned_data['titulo']
+            trabajo = Trabajos.objects.get(id = self.object.trabajo_id)
+            d = form.cleaned_data
+            d.pop('comite_de_etica')
+            d.pop('registroClinica')
+            total = sum(d[x] for x in d) 
+            promedio = round(total*100/(len(d)*5), 2)
             form.save()
-            #average = self.puntualidad.all().aggregate(Avg('puntualidad'))
+            trabajo.calificacion= promedio
+            trabajo.save()
             return redirect('misEvaluaciones')
 
     def get_context_data(self, **kwargs):
@@ -89,6 +96,24 @@ class plantilla2_evaluacion(UpdateView):
     template_name = "plantillas_evaluacion/plantilla2.html"
     success_url = reverse_lazy('misEvaluaciones')
 
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            trabajo = Trabajos.objects.get(id = self.object.trabajo_id)
+            d = form.cleaned_data
+            d.pop('comite_de_etica')
+            total = sum(d[x] for x in d) 
+            promedio = round(total*100/(len(d)*5), 2)
+            form.save()
+            trabajo.calificacion= promedio
+            trabajo.save()
+            return redirect('misEvaluaciones')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        
         context['title'] = 'Realizar Evaluación'
@@ -102,6 +127,24 @@ class plantilla3_evaluacion(UpdateView):
     template_name = "plantillas_evaluacion/plantilla3.html"
     success_url = reverse_lazy('misEvaluaciones')
 
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            trabajo = Trabajos.objects.get(id = self.object.trabajo_id)
+            d = form.cleaned_data
+            d.pop('comite_de_etica')
+            total = sum(d[x] for x in d) 
+            promedio = round(total*100/(len(d)*5), 2)
+            form.save()
+            trabajo.calificacion= promedio
+            trabajo.save()
+            return redirect('misEvaluaciones')
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        
         context['title'] = 'Realizar Evaluación'
@@ -114,6 +157,24 @@ class plantilla4_evaluacion(UpdateView):
     form_class = plantillaSCyCTForm
     template_name = "plantillas_evaluacion/plantilla4.html"
     success_url = reverse_lazy('misEvaluaciones')
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            trabajo = Trabajos.objects.get(id = self.object.trabajo_id)
+            d = form.cleaned_data
+            d.pop('comite_de_etica')
+            total = sum(d[x] for x in d) 
+            promedio = round(total*100/(len(d)*5), 2)
+            form.save()
+            trabajo.calificacion= promedio
+            trabajo.save()
+            return redirect('misEvaluaciones')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        
@@ -128,6 +189,24 @@ class plantilla5_evaluacion(UpdateView):
     template_name = "plantillas_evaluacion/plantilla5.html"
     success_url = reverse_lazy('misEvaluaciones')
 
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            trabajo = Trabajos.objects.get(id = self.object.trabajo_id)
+            d = form.cleaned_data
+            d.pop('comite_de_etica')
+            total = sum(d[x] for x in d) 
+            promedio = round(total*100/(len(d)*5), 2)
+            form.save()
+            trabajo.calificacion= promedio
+            trabajo.save()
+            return redirect('misEvaluaciones')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        
         context['title'] = 'Realizar Evaluación'
@@ -140,6 +219,24 @@ class plantilla6_evaluacion(UpdateView):
     form_class = cohortesForm
     template_name = "plantillas_evaluacion/plantilla6.html"
     success_url = reverse_lazy('misEvaluaciones')
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            trabajo = Trabajos.objects.get(id = self.object.trabajo_id)
+            d = form.cleaned_data
+            d.pop('Comite_de_etica')
+            total = sum(d[x] for x in d) 
+            promedio = round(total*100/(len(d)*5), 2)
+            form.save()
+            trabajo.calificacion= promedio
+            trabajo.save()
+            return redirect('misEvaluaciones')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        

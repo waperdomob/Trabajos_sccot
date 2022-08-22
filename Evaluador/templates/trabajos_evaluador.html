@@ -96,18 +96,19 @@
         {% endif %}                                     
         {% endfor %}
     </div>
-    <div class="container">        
+    <div class="container">
+        <h2><center>Trabajos Evaluados</center></h2><br><br>
+        <div class="frow ">
         {% for trabajo in  trabajos %}                
-        {% if  trabajo.calificacion %}
-            <h2><center>Trabajos Evaluados</center></h2><br><br>
-            <div class="container">
-                <h5>Titulo: <small>{{trabajo.titulo}}</small> </h5>
-                <h5>Tipo de trabajo: <small>{{trabajo.tipo_trabajo}}</small> </h5>
-                <h5>Calificación: <small>{{trabajo.calificacion}}</small> </h5>
-                <br>                
-            </div>   
+        {% if  trabajo.calificacion %}            
+                <div class="col col4 ">
+                    <h5>Titulo: <small>{{trabajo.titulo}}</small> </h5>
+                    <h5>Tipo de trabajo: <small>{{trabajo.tipo_trabajo}}</small> </h5>
+                    <h5>Calificación: <small>{{trabajo.calificacion}}</small> </h5>
+                </div>          
         {% endif %}                                     
         {% endfor %} 
+        </div>   
     </div>
     <div class="modal fade " id="plantilla1_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
     </div>

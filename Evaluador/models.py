@@ -47,8 +47,7 @@ class plantillaECC(models.Model):
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.trabajo.titulo
+    objects = models.Manager()
 
 class plantillaPruebasDX(models.Model):
     titulo=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
@@ -101,8 +100,7 @@ class plantillaRSyMA(models.Model):
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.trabajo.titulo
+    objects = models.Manager()
 
 class plantillaSERIECASOSyCORTETRANSVERSAL(models.Model):
     titulo=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
