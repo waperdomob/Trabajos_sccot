@@ -264,9 +264,9 @@ class registrarTrabajo(CreateView):
                     for file in tablas:
                         postfix=os.path.splitext(file.name)[1][1:]
                         fs = FileSystemStorage(location=manus_path2, base_url=manus_path2)
-                        name1 = fs.save(trab.tipo_trabajo+str(trab.id)+'.'+postfix,file)
+                        name1 = fs.save("anexo"+trab.tipo_trabajo+str(trab.id)+'.'+postfix,file)
                         obj = Tablas(
-                            tituloM = trab.tipo_trabajo+str(trab.id)+'.'+postfix,
+                            tituloT = "anexo"+trab.tipo_trabajo+str(trab.id)+'.'+postfix,
                             tabla = '/otros/'+name1,
                             trabajo = trab
                             )
