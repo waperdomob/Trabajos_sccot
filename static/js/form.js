@@ -445,6 +445,7 @@ var trabajo={
                     parameters.append('tablas', document.getElementById('id_tabla').files[i]);                    
                 }
                 submit_trabajo_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                    message_success("Trabajo registrado con exito!");
                     location.href = '/';
                 });
             }            

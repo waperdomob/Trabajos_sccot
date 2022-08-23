@@ -271,7 +271,7 @@ class registrarTrabajo(CreateView):
                             trabajo = trab
                             )
                         obj.save(force_insert=True )
-
+                    messages.success(request, 'Trabajo cargado con exito!')
 
         except Exception as e:
             data['error'] = str(e)
@@ -322,7 +322,7 @@ class TrabajoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['manuscritos'] = Manuscritos.objects.filter(trabajo_id=self.kwargs['pk'])
-                
+        context['anexos'] = Tablas.objects.filter(trabajo_id=self.kwargs['pk'])        
         return context
  
 class AsignarEvaluadorTC(UpdateView):
