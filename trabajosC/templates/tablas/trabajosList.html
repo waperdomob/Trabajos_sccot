@@ -22,7 +22,7 @@
             {% for object in trabajos %}
     
             <tr>
-                <td>{{object.id}}</td>
+                <td>{{object.identificador}}</td>
                 <td>{{object.tipo_trabajo}}</td>
                 <td>{{object.titulo}}</td>
                 <td>{{object.Autor_correspondencia}}</td>
@@ -65,6 +65,9 @@
                         <button onclick="abrir_modal_evaluador(`{% url 'asignarEvaluador' object.id %}`)"  class="btn btn-warning"><i class="fa-solid fa-hand-pointer"></i> Asignar Evaluador</button>
                         {% for manuscrito in manuscritos %}
                         {% if manuscrito.trabajo_id == object.id and '.doc' in manuscrito.tituloM %}
+                        <button onclick="abrir_modal_editManus(`{% url 'editar_manuscrito' manuscrito.id %}`)" class="btn btn-primary"><i class="fa-solid fa-file-edit"></i> Editar Manuscrito</button>
+                        {%  endif   %}
+                        {% if manuscrito.trabajo_id == object.id and '.ppt' in manuscrito.tituloM or manuscrito.trabajo_id == object.id and '.mp4' in manuscrito.tituloM or manuscrito.trabajo_id == object.id and '.mov' in manuscrito.tituloM or manuscrito.trabajo_id == object.id and '.avi' in manuscrito.tituloM %}
                         <button onclick="abrir_modal_editManus(`{% url 'editar_manuscrito' manuscrito.id %}`)" class="btn btn-primary"><i class="fa-solid fa-file-edit"></i> Editar Manuscrito</button>
                         {%  endif   %}
                         {% endfor %}                      

@@ -103,6 +103,7 @@ class Trabajos(models.Model):
     """
     Trabajos científicos subidos por los doctores. 
     """
+    identificador = models.CharField(max_length=45,null=True,blank=True)
     tipo_trabajo=models.CharField(max_length=45, choices=CATEGORIAS)
     subtipo_trabajo=models.CharField(max_length=45, choices=SUBCATEGORIAS,null=True, blank=True)
     titulo=models.CharField(max_length=100)
@@ -146,7 +147,7 @@ class Manuscritos(models.Model):
         - Powerpoint si es E-poster
     """
     tituloM = models.CharField(max_length=100)
-    manuscrito  = models.FileField(upload_to='manuscritos/',default="")
+    manuscrito  = models.FileField()
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     def __str__(self):
         return self.tituloM
@@ -156,7 +157,7 @@ class Tablas(models.Model):
     Documentos adicionales del trabajo científico.
     """
     tituloT = models.CharField(max_length=100)
-    tabla  = models.FileField(upload_to='tablas/',default="",null=True, blank=True,)
+    tabla  = models.FileField(null=True, blank=True,)
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     def __str__(self):
         return self.tituloT
