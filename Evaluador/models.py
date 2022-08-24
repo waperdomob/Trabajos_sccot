@@ -29,7 +29,7 @@ class plantillaECC(models.Model):
     daprpi = models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     pcmeISE = models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     comite_de_etica=models.CharField(max_length=2,choices=CHOICES,blank=False, default='SI',help_text='Métodos')
-    registroClinica=models.CharField(max_length=2,choices=CHOICES,blank=False)
+    registroClinica=models.CharField(max_length=2,choices=CHOICES,blank=False, default='SI')
     doeEvP=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     dcve=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     Tam_muestra =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
@@ -44,6 +44,7 @@ class plantillaECC(models.Model):
     lrcdpcr =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     asevc =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     avear =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    calificacion = models.FloatField(null=True, blank=True)
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
@@ -70,6 +71,7 @@ class plantillaPruebasDX(models.Model):
     lrcdpcr =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     asevc =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     avear =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    calificacion = models.FloatField(null=True, blank=True)
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
@@ -97,6 +99,7 @@ class plantillaRSyMA(models.Model):
     lrcdpcr =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     asevc =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     avear =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    calificacion = models.FloatField(null=True, blank=True)
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
@@ -122,6 +125,7 @@ class plantillaSERIECASOSyCORTETRANSVERSAL(models.Model):
     lrcdpcr =models.IntegerField(choices=CALIFICACION,default=1,blank=False,)
     asevc =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     avear =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    calificacion = models.FloatField(null=True, blank=True)
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
@@ -150,6 +154,7 @@ class plantillaCASOSyCONTROLES(models.Model):
     lrcdpcr =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     asevc =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     avear =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    calificacion = models.FloatField(null=True, blank=True)
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
@@ -178,6 +183,7 @@ class plantillaCOHORTES(models.Model):
     lrcdpcr =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     asevc =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     avear =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    calificacion = models.FloatField(null=True, blank=True)
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 

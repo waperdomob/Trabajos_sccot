@@ -65,8 +65,13 @@ class AutoresForm2(ModelForm):
         form = super()
         try:
             if form.is_valid():
-                instance = form.save()
-                data = instance.toJSON()
+                aut = form.clean()
+                autores = Autores.objects.filter(Q(email__icontains=aut['email']))
+                if autores:
+                    data['error'] = 'No es posible registrar el autor, ya existe'
+                else:
+                    instance = form.save()
+                    data = instance.toJSON()
             else:
                 data['error'] = form.errors
         except Exception as e:
@@ -319,11 +324,13 @@ class EvaluadorTrabajoForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['evaluador'].queryset = Autores.objects.filter(role=2)
     class Meta:
-        model= Trabajos
-        fields = ['evaluador']
+        model= Trabajos_has_evaluadores
+        fields = '__all__'
         labels = {
+            'trabajo' : 'Trabajo',
             'evaluador' : 'Evaluador',
         }
         widgets = {          
-	        'evaluador':forms.Select(attrs={'class': 'form-control select2'}),
+            'trabajo':forms.Select(attrs={'class': 'form-control select2'}),
+            'evaluador':forms.Select(attrs={'class': 'form-control select2'}),            
         }

@@ -18,7 +18,7 @@ from Cursos.forms import EspecialidadesForm
 from Evaluador.forms import selectPlantillaForm
 from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
 
-from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_instituciones, Trabajos_has_palabras
+from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_evaluadores, Trabajos_has_instituciones, Trabajos_has_palabras
 
 from trabajosC.funciones.funciones1 import asignar_plantilla, convert_to_pdf_wd ,generate_pdf_linux
 from trabajosC.funciones.funciones2 import email_confirmTC, handle_uploaded_file
@@ -393,12 +393,13 @@ class AsignarEvaluadorTC(UpdateView):
         return super().dispatch(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
-        manus_path = 'media/manuscritos/'
-        out_folder = 'media/manuscritos'
-        contador=0
-        form = self.form_class(request.POST, instance=self.object)
-        plantillasF = selectPlantillaForm(request.POST)
         Trabajo = self.object
+        nombre_curso = Trabajo.curso.nombre_curso
+        manus_path = 'media/manuscritos/'+nombre_curso+'/'
+        out_folder = 'media/manuscritos/'+nombre_curso
+        contador=0
+        form = self.form_class(request.POST)
+        plantillasF = selectPlantillaForm(request.POST)
         manuscritos = Manuscritos.objects.filter(trabajo = Trabajo)
         for i in manuscritos:
             manuscrito1 =i
@@ -406,9 +407,7 @@ class AsignarEvaluadorTC(UpdateView):
         file_name = os.path.splitext(manuscrito1.tituloM)[0]
         postfix=os.path.splitext(manuscrito1.tituloM)[1][1:]
         otros_autores = Trabajos_has_autores.objects.filter(trabajo_id = Trabajo.id)
-
         if form.is_valid():
-            #print(request.POST.getlist('confirmacion'))
             if form.cleaned_data['evaluador'] == None:
                 messages.warning(request, 'No ha seleccionado a ningun Evaluador')
                 return redirect('inicio')
@@ -427,7 +426,7 @@ class AsignarEvaluadorTC(UpdateView):
                     asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
                     #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
                     generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15) 
-                    ruta_pdf = 'manuscritos/'+file_name+".pdf"
+                    ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
                     consultaM = Manuscritos.objects.filter(tituloM = file_name+'.pdf')
                     if not consultaM:                        
                         obj = Manuscritos(
@@ -436,10 +435,14 @@ class AsignarEvaluadorTC(UpdateView):
                             trabajo = Trabajo
                             )
                         obj.save(force_insert=True )
-                    form.save()
+                    T_has_E = form.save(commit=False)
+                    T_has_E.trabajo_id = Trabajo.id
+                    T_has_E.save()
                     messages.success(request, 'Evaluador asignado con exito')
-                elif postfix=='pptx':
-                    form.save()
+                elif postfix=='pptx' or postfix=='ppt' or postfix=='mp4' or postfix=='mov' or postfix=='avi':
+                    T_has_E = form.save(commit=False)
+                    T_has_E.trabajo_id = Trabajo.id
+                    T_has_E.save()
                     messages.success(request, 'Evaluador asignado con exito')
                 else:
                     messages.error(request, 'No se puede asignar evaluador, hace parte del trabajo')

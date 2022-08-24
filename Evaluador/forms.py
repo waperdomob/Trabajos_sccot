@@ -19,7 +19,7 @@ CHOICES =(
 class eccForm(ModelForm):
     class Meta:
         model= plantillaECC
-        exclude = ('trabajo','user')
+        exclude = ('trabajo','user','calificacion')
 
         labels = {
             'titulo' : 'Titulo',
@@ -77,7 +77,7 @@ class eccForm(ModelForm):
 class pruebasDXForm(ModelForm):
     class Meta:
         model= plantillaPruebasDX
-        exclude = ('trabajo','user')
+        exclude = ('trabajo','user','calificacion')
 
         labels = {
             'titulo' : 'Titulo',
@@ -129,7 +129,7 @@ class pruebasDXForm(ModelForm):
 class RSyMAForm(ModelForm):
     class Meta:
         model= plantillaRSyMA
-        exclude = ('trabajo','user')
+        exclude = ('trabajo','user','calificacion')
 
         labels = {
             'titulo' : 'Titulo',
@@ -181,7 +181,7 @@ class RSyMAForm(ModelForm):
 class plantillaSCyCTForm(ModelForm):
     class Meta:
         model= plantillaSERIECASOSyCORTETRANSVERSAL
-        exclude = ('trabajo','user')
+        exclude = ('trabajo','user','calificacion')
 
         labels = {
             'titulo' : 'Titulo',
@@ -231,7 +231,7 @@ class plantillaSCyCTForm(ModelForm):
 class casosyControlesForm(ModelForm):
     class Meta:
         model= plantillaCASOSyCONTROLES
-        exclude = ('trabajo','user')
+        exclude = ('trabajo','user','calificacion')
 
         labels = {
             'titulo' : 'Titulo',
@@ -285,7 +285,7 @@ class casosyControlesForm(ModelForm):
 class cohortesForm(ModelForm):
     class Meta:
         model= plantillaCOHORTES
-        exclude = ('trabajo','user')
+        exclude = ('trabajo','user','calificacion')
 
         labels = {
             'titulo' : 'Titulo',

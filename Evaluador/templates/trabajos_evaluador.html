@@ -57,12 +57,12 @@
             <h2><center>Trabajos por evaluar</center></h2><br><br>
         {% endif %}            
         
-        {% for trabajo in  trabajos %}                
+        {% for trabajo in  trabajos %}
         {% if not trabajo.calificacion %}
             <div class="row ${1| ,row-cols-2,row-cols-3, auto,justify-content-md-center,|}">
                 <div class="col-7">
-                    <h5>Titulo: <small>{{trabajo.titulo}}</small> </h5>
-                    <h5>Tipo de trabajo: <small>{{trabajo.tipo_trabajo}}</small> </h5>
+                    <h5>Titulo: <small>{{trabajo.trabajo.titulo}}</small> </h5>
+                    <h5>Tipo de trabajo: <small>{{trabajo.trabajo.tipo_trabajo}}</small> </h5>
                 </div>
                 <div class="col-5 ">
                     <div class="d-grid gap-2 col-4 mx-auto">                        
@@ -72,7 +72,7 @@
             </div>
             <br>
             {% for manuscrito in manuscritos %}
-            {% if manuscrito.trabajo_id == trabajo.id and ".pdf" in manuscrito.tituloM  %}
+            {% if manuscrito.trabajo_id == trabajo.trabajo.id and ".pdf" in manuscrito.tituloM  %}
             <div id="Iframe-Master-CC-and-Rs" class="set-margin set-padding set-border set-box-shadow center-block-horiz">                
                 <div class="responsive-wrapper responsive-wrapper-wxh-572x612" >
                     <iframe id="inlineFrameExample" class="responsive-iframe" 
@@ -85,7 +85,7 @@
                     <a href="../../media/{{manuscrito.manuscrito}}" download="../../media/{{manuscrito.manuscrito}}" class="btn btn-success" id="btn-download"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>  
                 </div>
             </div>
-            {% elif manuscrito.trabajo_id == trabajo.id and "pptx" in manuscrito.tituloM %}
+            {% elif manuscrito.trabajo_id == trabajo.trabajo.id and "pptx" in manuscrito.tituloM %}
             <div class="d-grid gap-2 col-2 mx-auto">
                 <a href="../../media/{{manuscrito.manuscrito}}" class="btn btn-success"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>
             </div>
@@ -99,11 +99,11 @@
     <div class="container">
         <h2><center>Trabajos Evaluados</center></h2><br><br>
         <div class="frow ">
-        {% for trabajo in  trabajos %}                
-        {% if  trabajo.calificacion %}            
+        {% for trabajo in  trabajos %}
+        {% if  trabajo.calificacion %}
                 <div class="col col4 ">
-                    <h5>Titulo: <small>{{trabajo.titulo}}</small> </h5>
-                    <h5>Tipo de trabajo: <small>{{trabajo.tipo_trabajo}}</small> </h5>
+                    <h5>Titulo: <small>{{trabajo.trabajo.titulo}}</small> </h5>
+                    <h5>Tipo de trabajo: <small>{{trabajo.trabajo.tipo_trabajo}}</small> </h5>
                     <h5>Calificación: <small>{{trabajo.calificacion}}</small> </h5>
                 </div>          
         {% endif %}                                     

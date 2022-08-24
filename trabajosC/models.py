@@ -115,13 +115,22 @@ class Trabajos(models.Model):
     fecha_subida = models.DateTimeField(auto_now_add=True)
     fecha_modificacion = models.DateField('ultima modificacion',null=True, blank=True)
     curso = models.ForeignKey(Cursos, on_delete=models.CASCADE)
-    evaluador = models.ForeignKey(Autores,null=True, blank=True, on_delete=models.CASCADE,related_name='+')
     calificacion = models.FloatField(null=True, blank=True)
     modificado_por = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.titulo
 
+class Trabajos_has_evaluadores(models.Model):
+    """
+    Relación Many to Many entre trabajo y evaluadores(autores con role evaluador). 
+    """
+    trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE,  blank=True, null=True)
+    evaluador = models.ForeignKey(Autores, on_delete=models.CASCADE, blank=True, null=True)
+    calificacion = models.FloatField(null=True, blank=True)
+    def __str__(self):
+        return self.evaluador.get_full_name
+        
 class Trabajos_has_autores(models.Model):
     """
     Relación Many to Many entre trabajo y autores. 
@@ -129,7 +138,7 @@ class Trabajos_has_autores(models.Model):
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
     autor = models.ForeignKey(Autores, on_delete=models.CASCADE, blank=True, null=True)
     def __str__(self):
-        return self.trabajo.titulo
+        return self.autor.get_full_name
         
 class Trabajos_has_instituciones(models.Model):
     """
