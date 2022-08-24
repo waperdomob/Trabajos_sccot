@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 import json
 from django.db.models import Q
 from django.core.files.storage import default_storage,FileSystemStorage
+from django.core.files.base import ContentFile
 from django.urls import reverse, reverse_lazy
 from django.db import transaction
 from django.utils.decorators import method_decorator
@@ -15,6 +16,7 @@ from django.shortcuts import  redirect, render
 
 from Cursos.forms import EspecialidadesForm
 from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
+from trabajosC.funciones.funciones2 import handle_uploaded_file
 
 from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_instituciones, Trabajos_has_palabras
 
@@ -48,9 +50,9 @@ def index(request):
     #Validación si el usuario logeado es superuser(Admin)
     if request.user.is_authenticated:
         if request.user.is_superuser:
-            trabajos = Trabajos.objects.all().only("id","tipo_trabajo", "subtipo_trabajo","titulo","Autor_correspondencia", "institucion_principal","curso")
+            trabajos = Trabajos.objects.all().only("identificador","tipo_trabajo", "subtipo_trabajo","titulo","Autor_correspondencia", "institucion_principal","curso")
             autores = Autores.objects.all().defer( "especialidad","direccion")
-            cursos = Cursos.objects.filter(user= request.user.id)
+            cursos = Cursos.objects.all()
             
             autores_trab = Trabajos_has_autores.objects.all()
             palabras_trab = Trabajos_has_palabras.objects.all()
@@ -243,30 +245,55 @@ class registrarTrabajo(CreateView):
                             a = int(i)
                             aut = Autores.objects.get(id = a)
                             Trabajos_has_autores.objects.create(trabajo_id=trab.id, autor_id =aut.id)
-                        #m1.save() 
+
                     for i in otras_inst:
                         if len(i) != 0:
                             a = int(i)
                             inst = Instituciones.objects.get(id = a)
                             Trabajos_has_instituciones.objects.create(trabajo_id=trab.id, institucion_id =inst.id)
-                        #m1.save() 
+
                     for file in manuscritos:
                         fs = FileSystemStorage(location=manus_path, base_url=manus_path)
                         postfix=os.path.splitext(file.name)[1][1:]
-                        name1 = fs.save(trab.tipo_trabajo+str(trab.id)+'.'+postfix,file)
-                        obj = Manuscritos(
-                            tituloM = trab.tipo_trabajo+str(trab.id)+'.'+postfix,
+                        nombre_curso = trab.curso.nombre_curso
+                        if "Libre" in trab.tipo_trabajo or "Ingreso" in trab.tipo_trabajo:
+                            cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(Q(tipo_trabajo__icontains="Libre") | Q(tipo_trabajo__icontains="Ingreso")).count()
+                            if "Libre" in trab.tipo_trabajo:
+                                name1 = fs.save(nombre_curso+'/'+"LI"+str(cant_trabajos)+'.'+postfix,file)
+                                obj = Manuscritos(
+                                tituloM = "LI"+str(cant_trabajos)+'.'+postfix,
+                                manuscrito = '/manuscritos/'+name1,
+                                trabajo = trab
+                                )
+                                trab.identificador = 'LI'+str(cant_trabajos)
+                            else:
+                                name1 = fs.save(nombre_curso+'/'+"IN"+str(cant_trabajos)+'.'+postfix,file)
+                                obj = Manuscritos(
+                                tituloM = "IN"+str(cant_trabajos)+'.'+postfix,
+                                manuscrito = '/manuscritos/'+name1,
+                                trabajo = trab
+                                )
+                                trab.identificador = 'LI'+str(cant_trabajos)
+
+                        elif "E-poster" in trab.tipo_trabajo:
+                            cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(tipo_trabajo__icontains="E-poster").count()
+                            name1 = fs.save(nombre_curso+'/'+"EP"+str(cant_trabajos)+'.'+postfix,file)
+                            obj = Manuscritos(
+                            tituloM = "EP"+str(cant_trabajos)+'.'+postfix,
                             manuscrito = '/manuscritos/'+name1,
                             trabajo = trab
                             )
+                            trab.identificador = 'EP'+str(cant_trabajos)
+                            
+                        trab.save()
                         obj.save(force_insert=True )
 
                     for file in tablas:
                         postfix=os.path.splitext(file.name)[1][1:]
                         fs = FileSystemStorage(location=manus_path2, base_url=manus_path2)
-                        name1 = fs.save("anexo"+trab.tipo_trabajo+str(trab.id)+'.'+postfix,file)
+                        name1 = fs.save(nombre_curso+'/'+"anexo"+trab.tipo_trabajo+str(cant_trabajos)+'.'+postfix,file)
                         obj = Tablas(
-                            tituloT = "anexo"+trab.tipo_trabajo+str(trab.id)+'.'+postfix,
+                            tituloT = "anexo"+trab.tipo_trabajo+str(cant_trabajos)+'.'+postfix,
                             tabla = '/otros/'+name1,
                             trabajo = trab
                             )
@@ -443,17 +470,24 @@ class ManuscritoEdit(UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        manus_path = 'manuscritos/'
         form = self.form_class(request.POST, request.FILES, instance= self.object)        
         trabajo_id = self.object.trabajo_id
+        trb = Trabajos.objects.get(id = trabajo_id)
+        curso = Cursos.objects.get(id = trb.curso_id)
+        old_path = 'manuscritos/'
+        manus_path = 'manuscritos/'+str(curso)+'/'
         doc = request.FILES['manuscrito']
         if form.is_valid():
-            if self.object.tituloM == doc.name:
-                default_storage.delete(manus_path+self.object.tituloM)
-                form.save()
-            else:
-                messages.error(request, 'El documento no tiene el mismo nombre que el subido por el autor!')
-            return redirect('inicio')
+            #if self.object.tituloM == doc.name:
+                default_storage.delete(old_path+self.object.tituloM)#para corregir ruta de los trabajos, cambiar old_path por manus_path cuando se arreglen.
+                handle_uploaded_file(manus_path,doc)
+                manus =Manuscritos.objects.get(id=self.object.id)
+                manus.tituloM = doc.name
+                manus.manuscrito = manus_path+doc.name
+                manus.save()
+            #else:
+            #    messages.error(request, 'El documento no tiene el mismo nombre que el subido por el autor!')
+                return redirect('inicio')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        

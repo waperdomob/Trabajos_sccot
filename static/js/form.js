@@ -403,7 +403,7 @@ var trabajo={
                     }
                 }
                 else{
-                    if (ext[i] === "pptx") {
+                    if (ext[i] === "pptx" || ext[i] ==="mp4" || ext[i] ==="mov" || ext[i] ==="avi") {
                         if (archivos[i].size > 	150000000 ) {
                             const tamanioEnMb = 	150000000  / 1000000;
                             alert(`El tamaño máximo del archivo ${archivos[i].name} debe ser menor a ${tamanioEnMb} MB`);
@@ -415,7 +415,7 @@ var trabajo={
                         
                     } 
                     else{
-                        alert(`El  archivo ${archivos[i].name} debe ser documento powerPoint`);
+                        alert(`El  archivo ${archivos[i].name} debe ser documento powerPoint o video`);
                         contador ++;
                     }
                 }
