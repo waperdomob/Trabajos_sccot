@@ -16,7 +16,7 @@ from django.shortcuts import  redirect, render
 
 from Cursos.forms import EspecialidadesForm
 from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
-from trabajosC.funciones.funciones2 import handle_uploaded_file
+from trabajosC.funciones.funciones2 import email_confirmTC, handle_uploaded_file
 
 from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_instituciones, Trabajos_has_palabras
 
@@ -298,6 +298,10 @@ class registrarTrabajo(CreateView):
                             trabajo = trab
                             )
                         obj.save(force_insert=True )
+                    AutorP = Autores.objects.get(id = trab.Autor_correspondencia_id)
+                    nombre = AutorP.get_full_name()
+                    correo = AutorP.email
+                    email_confirmTC(nombre, correo, trab.titulo)
                     messages.success(request, 'Trabajo cargado con exito!')
 
         except Exception as e:
@@ -474,20 +478,19 @@ class ManuscritoEdit(UpdateView):
         trabajo_id = self.object.trabajo_id
         trb = Trabajos.objects.get(id = trabajo_id)
         curso = Cursos.objects.get(id = trb.curso_id)
-        old_path = 'manuscritos/'
         manus_path = 'manuscritos/'+str(curso)+'/'
         doc = request.FILES['manuscrito']
         if form.is_valid():
-            #if self.object.tituloM == doc.name:
-                default_storage.delete(old_path+self.object.tituloM)#para corregir ruta de los trabajos, cambiar old_path por manus_path cuando se arreglen.
+            if self.object.tituloM == doc.name:
+                default_storage.delete(manus_path+self.object.tituloM)
                 handle_uploaded_file(manus_path,doc)
                 manus =Manuscritos.objects.get(id=self.object.id)
                 manus.tituloM = doc.name
                 manus.manuscrito = manus_path+doc.name
                 manus.save()
-            #else:
-            #    messages.error(request, 'El documento no tiene el mismo nombre que el subido por el autor!')
-                return redirect('inicio')
+            else:
+                messages.error(request, 'El documento no tiene el mismo nombre que el subido por el autor!')
+            return redirect('inicio')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        

@@ -3,7 +3,6 @@ from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.wsgi import *
-from djangoconvertvdoctopdf.convertor import StreamingConvertedPdf
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
@@ -15,7 +14,7 @@ def handle_uploaded_file(ruta,f):
         for chunk in f.chunks():
             destination.write(chunk)
 
-def send_email(nombre,correo):    
+def email_confirmTC(nombre,correo,trabajo):    
     try:
         sent_to = correo
         # Establecemos conexion con el servidor smtp de gmail
@@ -29,9 +28,9 @@ def send_email(nombre,correo):
         mensaje = MIMEMultipart()
         mensaje['From']=settings.EMAIL_HOST_USER
         mensaje['To']=sent_to
-        mensaje['Subject']="Recibido Trabajo científico."
+        mensaje['Subject']="Trabajo científico Recibido."
         
-        content = render_to_string("emailConfirm.html", {'nombre': nombre, 'correo':correo})
+        content = render_to_string("emailConfirm.html", {'nombre': nombre, 'correosoporte':"revistacolombiana@sccot.org.co",'trabajo':trabajo})
         mensaje.attach(MIMEText(content,'html'))
         # Envio del mensaje
         mailServer.sendmail(settings.EMAIL_HOST_USER,
