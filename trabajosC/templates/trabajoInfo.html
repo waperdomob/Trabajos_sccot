@@ -3,8 +3,33 @@
     Detalle Trabajo
 {%  endblock    %}
 {% load static %}
-{%  block styles %}
 
+{%  block styles %}
+    <style>
+        .frow {
+        clear:both;
+        padding:10px;
+    }
+    
+    .frow .col {
+        display: block;
+        float:left;
+        margin: 1% 0 1% 1.6%;
+        background:rgb(252, 248, 248);
+        padding:2%;
+    }
+    
+    .frow .col:first-child { margin-left: 0; }
+    
+    .frow .col4 {
+      width: 33.2%;
+    }
+        
+    @media only screen and (max-width: 480px) {
+        .col {  margin: 1% 0 1% 0%;  margin-left: 0 !important;}
+        .frow .col3, .frow .col4 { width: 100%; }
+    }
+    </style>
 {%  endblock  %}
 {%  block content   %}
 <div class="container">
@@ -14,7 +39,7 @@
     <div class="container">
         <div class="row ">            
             <div class="col-4 ">
-                <h5 >Código. {{ object.id|safe }}</h5>
+                <h5 >Código. {{ object.identificador|safe }}</h5>
             </div>
             <div class="col-6 ">
                 <h5 >Fecha Registro: {{ object.fecha_subida|date:"d/m/Y H:i:s" }}</h5>
@@ -54,20 +79,16 @@
         <br>
         <p>{{ object.resumen_ingles}}</p>
         <br>
-        {% if object.evaluador  %}
-        <h5>Evaluador asignado: </h5>
-        <br>
-        <p>{{ object.evaluador }}</p>
-        <br>
-        {%  endif   %}
-        <h5>Manuscritos: </h5>
         {% if manuscritos %}
+        <h5>Manuscritos: </h5>
         {% for manuscrito in manuscritos %}
-        <ul>
-            <li style="font-size: 20px;">
-                <a href="media/{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
-            </li>
-        </ul>
+        <div class="container">
+            <ul>
+                <li style="font-size: 20px;">
+                    <a href="media/{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
+                </li>
+            </ul>
+        </div>
         {% endfor %}
         {%  endif   %}
         <br>
@@ -84,8 +105,24 @@
         {%  endif   %}
     </div>
     <br>
-    <div class="d-grid gap-1 col-4 mx-auto">
-        <a href="{% url 'inicio'  %}" class="btn btn-success">Regresar</a>
+    <div class="container">
+        {% if evaluadores  %}
+            <h2><center>Evaluadores asignados</center></h2>
+            <div class="frow">
+                {% for evaluador in  evaluadores %}
+                    <div class="col col4 ">
+                        <h5>Titulo: <small>{{evaluador.evaluador}}</small> </h5>
+                        <h5>Calificación: <small>{{evaluador.calificacion}}</small> </h5>
+                    </div>                                      
+                {% endfor %} 
+            </div>   
+        {%  endif   %}
+    </div>
+    <br>
+    <div class="container-fluid !justify !spacing">
+        <div class="d-grid gap-1 col-4 mx-auto">
+            <a href="{% url 'inicio'  %}" class="btn btn-success">Regresar</a>
+        </div>
     </div>
     <br>
     

@@ -153,7 +153,7 @@ class Manuscritos(models.Model):
     """
     Documento relacionado al trabajo científico:
         - Word si es libre o ingreso
-        - Powerpoint si es E-poster
+        - Powerpoint o video si es E-poster
     """
     tituloM = models.CharField(max_length=100)
     manuscrito  = models.FileField()
