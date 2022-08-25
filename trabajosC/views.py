@@ -303,7 +303,7 @@ class registrarTrabajo(CreateView):
                     AutorP = Autores.objects.get(id = trab.Autor_correspondencia_id)
                     nombre = AutorP.get_full_name()
                     correo = AutorP.email
-                    email_confirmTC(nombre, correo, trab.titulo)
+                    #email_confirmTC(nombre, correo, trab.titulo)
                     messages.success(request, 'Trabajo cargado con exito!')
 
         except Exception as e:
@@ -423,13 +423,18 @@ class AsignarEvaluadorTC(UpdateView):
                     if obj.autor == form.cleaned_data['evaluador']:
                         contador +=1          
                 if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and (postfix=='docx' or postfix=='doc'):                    
+                    previews_evaluadores = Trabajos_has_evaluadores.objects.filter(trabajo_id=Trabajo.id)
+                    for prev_evl in previews_evaluadores:
+                        if prev_evl.evaluador == form.cleaned_data['evaluador']:
+                            messages.error(request, 'No se puede asignar evaluador, ya fue asignado previamente')
+                            return redirect('inicio')
                     user = request.user#user de prueba, el user es el que se crea cuando se asigna evaluador
-                    asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
-                    #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                    generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15) 
+                    asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user) 
                     ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
                     consultaM = Manuscritos.objects.filter(tituloM = file_name+'.pdf')
-                    if not consultaM:                        
+                    if not consultaM:         
+                        convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
+                        #generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)               
                         obj = Manuscritos(
                             tituloM = file_name+'.pdf',
                             manuscrito = ruta_pdf,
@@ -438,9 +443,10 @@ class AsignarEvaluadorTC(UpdateView):
                         obj.save(force_insert=True )
                     T_has_E = form.save(commit=False)
                     T_has_E.trabajo_id = Trabajo.id
+                    print(T_has_E.evaluador)
                     T_has_E.save()
                     messages.success(request, 'Evaluador asignado con exito')
-                elif postfix=='pptx' or postfix=='ppt' or postfix=='mp4' or postfix=='mov' or postfix=='avi':
+                elif contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and postfix=='pptx' or postfix=='ppt' or postfix=='mp4' or postfix=='mov' or postfix=='avi':
                     T_has_E = form.save(commit=False)
                     T_has_E.trabajo_id = Trabajo.id
                     T_has_E.save()

@@ -1,3 +1,5 @@
+from datetime import datetime
+from django.contrib import messages
 from django.shortcuts import render
 from django.views.generic import CreateView,DetailView,UpdateView
 from django.urls import  reverse_lazy
@@ -73,17 +75,21 @@ class plantilla1_evaluacion(UpdateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
-            trabajo_Evaluador = Trabajos_has_evaluadores.objects.get(trabajo_id = self.object.trabajo_id)
-            d = form.cleaned_data
-            d.pop('comite_de_etica')
-            d.pop('registroClinica')
-            total = sum(d[x] for x in d) 
-            promedio = round(total*100/(len(d)*5), 2)
-            plantilla = form.save(commit=False)
-            plantilla.calificacion = promedio
-            plantilla.save()
-            trabajo_Evaluador.calificacion= promedio
-            trabajo_Evaluador.save()
+            trabajo_Evaluador = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.object.trabajo_id)
+            for obj in trabajo_Evaluador:
+                if obj.evaluador.email == self.object.user.email:
+                    d = form.cleaned_data
+                    d.pop('comite_de_etica')
+                    d.pop('registroClinica')
+                    total = sum(d[x] for x in d) 
+                    promedio = round(total*100/(len(d)*5), 2)
+                    plantilla = form.save(commit=False)
+                    plantilla.calificacion = promedio
+                    plantilla.save()
+                    obj.calificacion= promedio
+                    obj.fecha_evaluacion= datetime.today()
+                    obj.save()
+                
             return redirect('misEvaluaciones')
 
     def get_context_data(self, **kwargs):
@@ -107,16 +113,21 @@ class plantilla2_evaluacion(UpdateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
-            trabajo_Evaluador = Trabajos_has_evaluadores.objects.get(trabajo_id = self.object.trabajo_id)
-            d = form.cleaned_data
-            d.pop('comite_de_etica')
-            total = sum(d[x] for x in d) 
-            promedio = round(total*100/(len(d)*5), 2)
-            plantilla = form.save(commit=False)
-            plantilla.calificacion = promedio
-            plantilla.save()
-            trabajo_Evaluador.calificacion= promedio
-            trabajo_Evaluador.save()
+            trabajo_Evaluador = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.object.trabajo_id)
+            for obj in trabajo_Evaluador:
+                if obj.evaluador.email == self.object.user.email:
+                    d = form.cleaned_data
+                    d.pop('comite_de_etica')
+                    d.pop('registroClinica')
+                    total = sum(d[x] for x in d) 
+                    promedio = round(total*100/(len(d)*5), 2)
+                    plantilla = form.save(commit=False)
+                    plantilla.calificacion = promedio
+                    plantilla.save()
+                    obj.calificacion= promedio
+                    obj.fecha_evaluacion= datetime.today()
+                    obj.save()
+            
             return redirect('misEvaluaciones')
 
     def get_context_data(self, **kwargs):
@@ -140,16 +151,21 @@ class plantilla3_evaluacion(UpdateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
-            trabajo_Evaluador = Trabajos_has_evaluadores.objects.get(trabajo_id = self.object.trabajo_id)
-            d = form.cleaned_data
-            d.pop('comite_de_etica')
-            total = sum(d[x] for x in d) 
-            promedio = round(total*100/(len(d)*5), 2)
-            plantilla = form.save(commit=False)
-            plantilla.calificacion = promedio
-            plantilla.save()
-            trabajo_Evaluador.calificacion= promedio
-            trabajo_Evaluador.save()
+            trabajo_Evaluador = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.object.trabajo_id)
+            for obj in trabajo_Evaluador:
+                if obj.evaluador.email == self.object.user.email:
+                    d = form.cleaned_data
+                    d.pop('comite_de_etica')
+                    d.pop('registroClinica')
+                    total = sum(d[x] for x in d) 
+                    promedio = round(total*100/(len(d)*5), 2)
+                    plantilla = form.save(commit=False)
+                    plantilla.calificacion = promedio
+                    plantilla.save()
+                    obj.calificacion= promedio
+                    obj.fecha_evaluacion= datetime.today()
+                    obj.save()
+                
             return redirect('misEvaluaciones')
     
     def get_context_data(self, **kwargs):
@@ -173,16 +189,21 @@ class plantilla4_evaluacion(UpdateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
-            trabajo_Evaluador = Trabajos_has_evaluadores.objects.get(trabajo_id = self.object.trabajo_id)
-            d = form.cleaned_data
-            d.pop('comite_de_etica')
-            total = sum(d[x] for x in d) 
-            promedio = round(total*100/(len(d)*5), 2)
-            plantilla = form.save(commit=False)
-            plantilla.calificacion = promedio
-            plantilla.save()
-            trabajo_Evaluador.calificacion= promedio
-            trabajo_Evaluador.save()
+            trabajo_Evaluador = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.object.trabajo_id)
+            for obj in trabajo_Evaluador:
+                if obj.evaluador.email == self.object.user.email:
+                    d = form.cleaned_data
+                    d.pop('comite_de_etica')
+                    d.pop('registroClinica')
+                    total = sum(d[x] for x in d) 
+                    promedio = round(total*100/(len(d)*5), 2)
+                    plantilla = form.save(commit=False)
+                    plantilla.calificacion = promedio
+                    plantilla.save()
+                    obj.calificacion= promedio
+                    obj.fecha_evaluacion= datetime.today()
+                    obj.save()
+                
             return redirect('misEvaluaciones')
 
     def get_context_data(self, **kwargs):
@@ -206,16 +227,21 @@ class plantilla5_evaluacion(UpdateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
-            trabajo_Evaluador = Trabajos_has_evaluadores.objects.get(trabajo_id = self.object.trabajo_id)
-            d = form.cleaned_data
-            d.pop('comite_de_etica')
-            total = sum(d[x] for x in d) 
-            promedio = round(total*100/(len(d)*5), 2)
-            plantilla = form.save(commit=False)
-            plantilla.calificacion = promedio
-            plantilla.save()
-            trabajo_Evaluador.calificacion= promedio
-            trabajo_Evaluador.save()
+            trabajo_Evaluador = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.object.trabajo_id)
+            for obj in trabajo_Evaluador:
+                if obj.evaluador.email == self.object.user.email:
+                    d = form.cleaned_data
+                    d.pop('comite_de_etica')
+                    d.pop('registroClinica')
+                    total = sum(d[x] for x in d) 
+                    promedio = round(total*100/(len(d)*5), 2)
+                    plantilla = form.save(commit=False)
+                    plantilla.calificacion = promedio
+                    plantilla.save()
+                    obj.calificacion= promedio
+                    obj.fecha_evaluacion= datetime.today()
+                    obj.save()
+                            
             return redirect('misEvaluaciones')
 
     def get_context_data(self, **kwargs):
@@ -239,16 +265,22 @@ class plantilla6_evaluacion(UpdateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
-            trabajo_Evaluador = Trabajos_has_evaluadores.objects.get(trabajo_id = self.object.trabajo_id)
-            d = form.cleaned_data
-            d.pop('Comite_de_etica')
-            total = sum(d[x] for x in d) 
-            promedio = round(total*100/(len(d)*5), 2)
-            plantilla = form.save(commit=False)
-            plantilla.calificacion = promedio
-            plantilla.save()
-            trabajo_Evaluador.calificacion= promedio
-            trabajo_Evaluador.save()
+            trabajo_Evaluador = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.object.trabajo_id)
+            for obj in trabajo_Evaluador:
+                if obj.evaluador.email == self.object.user.email:
+                    d = form.cleaned_data
+                    d.pop('comite_de_etica')
+                    d.pop('registroClinica')
+                    total = sum(d[x] for x in d) 
+                    promedio = round(total*100/(len(d)*5), 2)
+                    plantilla = form.save(commit=False)
+                    plantilla.calificacion = promedio
+                    plantilla.save()
+                    obj.calificacion= promedio
+                    obj.fecha_evaluacion= datetime.today()
+                    obj.save()
+                
+            
             return redirect('misEvaluaciones')
 
     def get_context_data(self, **kwargs):
