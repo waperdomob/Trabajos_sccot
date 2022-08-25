@@ -273,7 +273,7 @@ class registrarTrabajo(CreateView):
                                 manuscrito = '/manuscritos/'+name1,
                                 trabajo = trab
                                 )
-                                trab.identificador = 'LI'+str(cant_trabajos)
+                                trab.identificador = 'IN'+str(cant_trabajos)
 
                         elif "E-poster" in trab.tipo_trabajo:
                             cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(tipo_trabajo__icontains="E-poster").count()
