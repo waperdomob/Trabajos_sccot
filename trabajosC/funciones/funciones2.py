@@ -14,7 +14,7 @@ def handle_uploaded_file(ruta,f):
         for chunk in f.chunks():
             destination.write(chunk)
 
-def email_confirmTC(nombre,correo,trabajo):    
+def email_confirmTC(nombre,correo,trabajo, curso):    
     try:
         sent_to = correo
         # Establecemos conexion con el servidor smtp de gmail
@@ -30,7 +30,7 @@ def email_confirmTC(nombre,correo,trabajo):
         mensaje['To']=sent_to
         mensaje['Subject']="Trabajo científico Recibido."
         
-        content = render_to_string("emailConfirm.html", {'nombre': nombre, 'correosoporte':"revistacolombiana@sccot.org.co",'trabajo':trabajo})
+        content = render_to_string("emailConfirm.html", {'nombre': nombre, 'correosoporte':"revistacolombiana@sccot.org.co",'trabajo':trabajo, 'curso':curso})
         mensaje.attach(MIMEText(content,'html'))
         # Envio del mensaje
         mailServer.sendmail(settings.EMAIL_HOST_USER,
