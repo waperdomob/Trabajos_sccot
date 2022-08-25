@@ -68,7 +68,7 @@ class Cursos(models.Model):
     ciudad = models.CharField(max_length=45)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     def __str__(self):
-        return self.nombre_curso
+        return self.nombre_curso+" "+self.fecha_fin.strftime("%d %B, %Y")
         
 class Autores(models.Model):
     """
