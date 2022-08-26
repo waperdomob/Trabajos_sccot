@@ -307,7 +307,7 @@ class registrarTrabajo(CreateView):
                         nombre = AutorP.get_full_name()
                         correo = AutorP.email
                         n_curso = trab.curso
-                        email_confirmTC(nombre, "wilmer.a.p@hotmail.com", trab.titulo,n_curso)
+                        email_confirmTC(nombre, correo, trab.titulo,n_curso)
                         messages.success(request, 'Trabajo cargado con exito!')
 
         except Exception as e:
