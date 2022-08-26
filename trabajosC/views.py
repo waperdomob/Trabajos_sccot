@@ -221,89 +221,94 @@ class registrarTrabajo(CreateView):
                     trab.resumen_ingles = trabj['resumen_ingles']
                     
                     trab.curso_id = trabj['curso']                    
-                    trab.save()
-                    otros_autores = trabj['otros_autores']
-                    otras_inst = trabj['otras_instituciones']
-
-                    palabras_claves = trabj['palabras_claves']
-                    keywords = trabj['keywords']
-
-                    for i in palabras_claves:
-                        if len(i) != 0:
-                            a = int(i)
-                            pal = Palabras_claves.objects.get(id = a)
-                            Trabajos_has_palabras.objects.create(trabajo_id=trab.id, palabra_id =pal.id)
-                           
-                    for i in keywords:
-                        if len(i) != 0:
-                            a = int(i)
-                            key = Keywords.objects.get(id = a)
-                            Trabajos_has_Keywords.objects.create(trabajo_id=trab.id, keyword_id =key.id)
-
-                    for i in otros_autores:
-                        if len(i) != 0:
-                            a = int(i)
-                            aut = Autores.objects.get(id = a)
-                            Trabajos_has_autores.objects.create(trabajo_id=trab.id, autor_id =aut.id)
-
-                    for i in otras_inst:
-                        if len(i) != 0:
-                            a = int(i)
-                            inst = Instituciones.objects.get(id = a)
-                            Trabajos_has_instituciones.objects.create(trabajo_id=trab.id, institucion_id =inst.id)
-
-                    for file in manuscritos:
-                        fs = FileSystemStorage(location=manus_path, base_url=manus_path)
-                        postfix=os.path.splitext(file.name)[1][1:]
-                        nombre_curso = trab.curso.nombre_curso
-                        if "Libre" in trab.tipo_trabajo or "Ingreso" in trab.tipo_trabajo:
-                            cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(Q(tipo_trabajo__icontains="Libre") | Q(tipo_trabajo__icontains="Ingreso")).count()
-                            if "Libre" in trab.tipo_trabajo:
-                                name1 = fs.save(nombre_curso+'/'+"LI"+str(cant_trabajos)+'.'+postfix,file)
-                                obj = Manuscritos(
-                                tituloM = "LI"+str(cant_trabajos)+'.'+postfix,
-                                manuscrito = '/manuscritos/'+name1,
-                                trabajo = trab
-                                )
-                                trab.identificador = 'LI'+str(cant_trabajos)
-                            else:
-                                name1 = fs.save(nombre_curso+'/'+"IN"+str(cant_trabajos)+'.'+postfix,file)
-                                obj = Manuscritos(
-                                tituloM = "IN"+str(cant_trabajos)+'.'+postfix,
-                                manuscrito = '/manuscritos/'+name1,
-                                trabajo = trab
-                                )
-                                trab.identificador = 'IN'+str(cant_trabajos)
-
-                        elif "E-poster" in trab.tipo_trabajo:
-                            cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(tipo_trabajo__icontains="E-poster").count()
-                            name1 = fs.save(nombre_curso+'/'+"EP"+str(cant_trabajos)+'.'+postfix,file)
-                            obj = Manuscritos(
-                            tituloM = "EP"+str(cant_trabajos)+'.'+postfix,
-                            manuscrito = '/manuscritos/'+name1,
-                            trabajo = trab
-                            )
-                            trab.identificador = 'EP'+str(cant_trabajos)
-                            
+                    curso = Cursos.objects.get(id = trab.curso_id)
+                    if curso.fecha_fin < dtime.date.today():
+                        data['error'] = 'No es posible registrar el trabajo, ha excedido la fecha límite'
+                        return JsonResponse(data, safe=False)
+                    else:
                         trab.save()
-                        obj.save(force_insert=True )
-
-                    for file in tablas:
-                        postfix=os.path.splitext(file.name)[1][1:]
-                        fs = FileSystemStorage(location=manus_path2, base_url=manus_path2)
-                        name1 = fs.save(nombre_curso+'/'+"anexo"+trab.tipo_trabajo+str(cant_trabajos)+'.'+postfix,file)
-                        obj = Tablas(
-                            tituloT = "anexo"+trab.tipo_trabajo+str(cant_trabajos)+'.'+postfix,
-                            tabla = '/otros/'+name1,
-                            trabajo = trab
-                            )
-                        obj.save(force_insert=True )
-                    AutorP = Autores.objects.get(id = trab.Autor_correspondencia_id)
-                    nombre = AutorP.get_full_name()
-                    correo = AutorP.email
-                    n_curso = trab.curso
-                    email_confirmTC(nombre, correo, trab.titulo,n_curso)
-                    messages.success(request, 'Trabajo cargado con exito!')
+                        otros_autores = trabj['otros_autores']
+                        otras_inst = trabj['otras_instituciones']
+    
+                        palabras_claves = trabj['palabras_claves']
+                        keywords = trabj['keywords']
+    
+                        for i in palabras_claves:
+                            if len(i) != 0:
+                                a = int(i)
+                                pal = Palabras_claves.objects.get(id = a)
+                                Trabajos_has_palabras.objects.create(trabajo_id=trab.id, palabra_id =pal.id)
+                               
+                        for i in keywords:
+                            if len(i) != 0:
+                                a = int(i)
+                                key = Keywords.objects.get(id = a)
+                                Trabajos_has_Keywords.objects.create(trabajo_id=trab.id, keyword_id =key.id)
+    
+                        for i in otros_autores:
+                            if len(i) != 0:
+                                a = int(i)
+                                aut = Autores.objects.get(id = a)
+                                Trabajos_has_autores.objects.create(trabajo_id=trab.id, autor_id =aut.id)
+    
+                        for i in otras_inst:
+                            if len(i) != 0:
+                                a = int(i)
+                                inst = Instituciones.objects.get(id = a)
+                                Trabajos_has_instituciones.objects.create(trabajo_id=trab.id, institucion_id =inst.id)
+    
+                        for file in manuscritos:
+                            fs = FileSystemStorage(location=manus_path, base_url=manus_path)
+                            postfix=os.path.splitext(file.name)[1][1:]
+                            nombre_curso = trab.curso.nombre_curso
+                            if "Libre" in trab.tipo_trabajo or "Ingreso" in trab.tipo_trabajo:
+                                cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(Q(tipo_trabajo__icontains="Libre") | Q(tipo_trabajo__icontains="Ingreso")).count()
+                                if "Libre" in trab.tipo_trabajo:
+                                    name1 = fs.save(nombre_curso+'/'+"LI"+str(cant_trabajos)+'.'+postfix,file)
+                                    obj = Manuscritos(
+                                    tituloM = "LI"+str(cant_trabajos)+'.'+postfix,
+                                    manuscrito = '/manuscritos/'+name1,
+                                    trabajo = trab
+                                    )
+                                    trab.identificador = 'LI'+str(cant_trabajos)
+                                else:
+                                    name1 = fs.save(nombre_curso+'/'+"IN"+str(cant_trabajos)+'.'+postfix,file)
+                                    obj = Manuscritos(
+                                    tituloM = "IN"+str(cant_trabajos)+'.'+postfix,
+                                    manuscrito = '/manuscritos/'+name1,
+                                    trabajo = trab
+                                    )
+                                    trab.identificador = 'IN'+str(cant_trabajos)
+    
+                            elif "E-poster" in trab.tipo_trabajo:
+                                cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(tipo_trabajo__icontains="E-poster").count()
+                                name1 = fs.save(nombre_curso+'/'+"EP"+str(cant_trabajos)+'.'+postfix,file)
+                                obj = Manuscritos(
+                                tituloM = "EP"+str(cant_trabajos)+'.'+postfix,
+                                manuscrito = '/manuscritos/'+name1,
+                                trabajo = trab
+                                )
+                                trab.identificador = 'EP'+str(cant_trabajos)
+                                
+                            trab.save()
+                            obj.save(force_insert=True )
+    
+                        for file in tablas:
+                            postfix=os.path.splitext(file.name)[1][1:]
+                            fs = FileSystemStorage(location=manus_path2, base_url=manus_path2)
+                            name1 = fs.save(nombre_curso+'/'+"anexo"+trab.tipo_trabajo+str(cant_trabajos)+'.'+postfix,file)
+                            obj = Tablas(
+                                tituloT = "anexo"+trab.tipo_trabajo+str(cant_trabajos)+'.'+postfix,
+                                tabla = '/otros/'+name1,
+                                trabajo = trab
+                                )
+                            obj.save(force_insert=True )
+                        AutorP = Autores.objects.get(id = trab.Autor_correspondencia_id)
+                        nombre = AutorP.get_full_name()
+                        correo = AutorP.email
+                        n_curso = trab.curso
+                        email_confirmTC(nombre, "wilmer.a.p@hotmail.com", trab.titulo,n_curso)
+                        messages.success(request, 'Trabajo cargado con exito!')
 
         except Exception as e:
             data['error'] = str(e)
