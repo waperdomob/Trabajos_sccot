@@ -275,7 +275,7 @@ class registrarTrabajo(CreateView):
                                 manuscrito = '/manuscritos/'+name1,
                                 trabajo = trab
                                 )
-                                trab.identificador = 'LI'+str(cant_trabajos)
+                                trab.identificador = 'IN'+str(cant_trabajos)
 
                         elif "E-poster" in trab.tipo_trabajo:
                             cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(tipo_trabajo__icontains="E-poster").count()
@@ -303,7 +303,8 @@ class registrarTrabajo(CreateView):
                     AutorP = Autores.objects.get(id = trab.Autor_correspondencia_id)
                     nombre = AutorP.get_full_name()
                     correo = AutorP.email
-                    #email_confirmTC(nombre, correo, trab.titulo)
+                    n_curso = trab.curso
+                    email_confirmTC(nombre, correo, trab.titulo,n_curso)
                     messages.success(request, 'Trabajo cargado con exito!')
 
         except Exception as e:
@@ -495,7 +496,7 @@ class ManuscritoEdit(UpdateView):
         trabajo_id = self.object.trabajo_id
         trb = Trabajos.objects.get(id = trabajo_id)
         curso = Cursos.objects.get(id = trb.curso_id)
-        manus_path = 'manuscritos/'+str(curso)+'/'
+        manus_path = 'manuscritos/'+str(curso.nombre_curso)+'/'
         doc = request.FILES['manuscrito']
         if form.is_valid():
             if self.object.tituloM == doc.name:
