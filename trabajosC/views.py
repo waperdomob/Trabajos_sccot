@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView,DetailView,UpdateView
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.shortcuts import  redirect, render
+from django.contrib.auth.decorators import login_required
 
 from Cursos.forms import EspecialidadesForm
 from Evaluador.forms import selectPlantillaForm
@@ -21,7 +22,7 @@ from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, In
 from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_evaluadores, Trabajos_has_instituciones, Trabajos_has_palabras
 
 from trabajosC.funciones.funciones1 import asignar_plantilla, convert_to_pdf_wd ,generate_pdf_linux
-from trabajosC.funciones.funciones2 import email_confirmTC, handle_uploaded_file
+from trabajosC.funciones.funciones2 import crear_user, email_confirmTC, handle_uploaded_file
 from trabajosC.funciones.funciones1 import convert_to_pdf_wd ,generate_pdf_linux
 
 # Create your views here.
@@ -304,7 +305,7 @@ class registrarTrabajo(CreateView):
                     nombre = AutorP.get_full_name()
                     correo = AutorP.email
                     n_curso = trab.curso
-                    email_confirmTC(nombre, correo, trab.titulo,n_curso)
+                    email_confirmTC(nombre, "wilmer.a.p@hotmail.com", trab.titulo,n_curso)
                     messages.success(request, 'Trabajo cargado con exito!')
 
         except Exception as e:
@@ -429,10 +430,15 @@ class AsignarEvaluadorTC(UpdateView):
                         if prev_evl.evaluador == form.cleaned_data['evaluador']:
                             messages.error(request, 'No se puede asignar evaluador, ya fue asignado previamente')
                             return redirect('inicio')
-                    user = request.user#user de prueba, el user es el que se crea cuando se asigna evaluador
-                    asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user) 
+                    id_evaluador= Autores.objects.get(id=form.cleaned_data['evaluador'].id)
+                    print(id_evaluador.id)
+                    if id_evaluador.id != 2885 and id_evaluador.id !=2886:
+                        messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
+                        return redirect('inicio')
+                    user = crear_user(id_evaluador.id)
+                    asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
                     ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
-                    consultaM = Manuscritos.objects.filter(tituloM = file_name+'.pdf')
+                    consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)
                     if not consultaM:         
                         convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
                         #generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)               
@@ -444,7 +450,6 @@ class AsignarEvaluadorTC(UpdateView):
                         obj.save(force_insert=True )
                     T_has_E = form.save(commit=False)
                     T_has_E.trabajo_id = Trabajo.id
-                    print(T_has_E.evaluador)
                     T_has_E.save()
                     messages.success(request, 'Evaluador asignado con exito')
                 elif contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and postfix=='pptx' or postfix=='ppt' or postfix=='mp4' or postfix=='mov' or postfix=='avi':
@@ -517,4 +522,20 @@ class ManuscritoEdit(UpdateView):
         context['manus'] = Manuscritos.objects.all()        
         return context
 
+@login_required
+def promedioTC(request, pk):
+    notaf = 0
+    cant_notas=0
+    trabajo = Trabajos.objects.get(id=pk)
+    evaluaciones= Trabajos_has_evaluadores.objects.filter(trabajo_id=pk)
+    for nota in evaluaciones:
+        cant_notas+=1
+        notaf = notaf+nota.calificacion
+    
+    notaf = round(notaf/cant_notas,2)
+    trabajo.calificacion = notaf
+    trabajo.modificado_por_id = request.user.id
+    trabajo.fecha_modificacion = dtime.datetime.today()
+    trabajo.save()
 
+    return redirect('detalleTrabajo',pk)

@@ -75,10 +75,10 @@
         padding:2%;
     }
     
-    .frow .col:first-child { margin-left: 0; }
+    .frow .col:first-child { margin-left: 1.6; }
     
     .frow .col4 {
-      width: 33.2%;
+      width: 30%;
     }
         
     @media only screen and (max-width: 480px) {

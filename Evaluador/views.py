@@ -118,7 +118,6 @@ class plantilla2_evaluacion(UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
-                    d.pop('registroClinica')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -156,7 +155,6 @@ class plantilla3_evaluacion(UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
-                    d.pop('registroClinica')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -194,7 +192,6 @@ class plantilla4_evaluacion(UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
-                    d.pop('registroClinica')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -232,7 +229,6 @@ class plantilla5_evaluacion(UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
-                    d.pop('registroClinica')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -270,7 +266,6 @@ class plantilla6_evaluacion(UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
-                    d.pop('registroClinica')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)

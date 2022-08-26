@@ -15,6 +15,7 @@
               <th >Palabras Claves</th>
               <th ><center>Manuscritos</center></th>
               <th >Curso</th>
+              <th >Calificación</th>
               <th ><center>Acciones</center></th>
          </tr>
         </thead>
@@ -57,7 +58,8 @@
                     {% endfor %}
                 </td>
                 <td>{{object.curso}}</td>
-                            
+                <td>{{object.calificacion}}</td>
+                    
                 <td>
                     <div class="d-grid gap-2 col-12 mx-auto"> 
                         <a href="{% url 'detalleTrabajo' object.id %}" class="btn btn-success"> <i class="fa-solid fa-file"></i> VER</a>
