@@ -505,6 +505,7 @@ class ManuscritoEdit(UpdateView):
                 manus.tituloM = doc.name
                 manus.manuscrito = manus_path+doc.name
                 manus.save()
+                messages.success(request, 'El documento ha sido actualizado!')
             else:
                 messages.error(request, 'El documento no tiene el mismo nombre que el subido por el autor!')
             return redirect('inicio')
