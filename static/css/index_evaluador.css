@@ -61,3 +61,28 @@
         visibility: hidden;
         }
     }
+
+    .frow {
+        clear:both;
+        padding:10px;
+    }
+    
+    .frow .col {
+        display: block;
+        float:left;
+        margin: 1% 0 1% 1.6%;
+        background:rgb(252, 248, 248);
+        padding:2%;
+    }
+    
+    .frow .col:first-child { margin-left: 1.6; }
+    
+    .frow .col4 {
+      width: 30%;
+    }
+        
+    @media only screen and (max-width: 480px) {
+        .col {  margin: 1% 0 1% 0%;  margin-left: 0 !important;}
+        .frow .col3, .frow .col4 { width: 100%; }
+    }
+    

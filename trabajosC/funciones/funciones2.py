@@ -39,3 +39,105 @@ def email_confirmTC(nombre,correo,trabajo, curso):
         print("Correo enviado correctamente")
     except Exception as e:
         print(e)
+
+def send_emailEvaluador(nombre,usuario,password,correo):    
+    try:
+        sent_to = correo
+        # Establecemos conexion con el servidor smtp de gmail
+        mailServer = smtplib.SMTP(settings.EMAIL_HOST,settings.EMAIL_PORT)
+        print(mailServer.ehlo())
+        mailServer.starttls()
+        print(mailServer.ehlo())
+        mailServer.login(settings.EMAIL_HOST_USER,settings.EMAIL_HOST_PASSWORD)
+        print("conectado..")
+        # Construimos el mensaje simple
+        mensaje = MIMEMultipart()
+        mensaje['From']=settings.EMAIL_HOST_USER
+        mensaje['To']=sent_to
+        mensaje['Subject']="Evaluación Trabajo científico."
+        
+        content = render_to_string("emailEval.html", {'nombre': nombre, 'usuario':usuario, 'password':password,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
+        mensaje.attach(MIMEText(content,'html'))
+        # Envio del mensaje
+        mailServer.sendmail(settings.EMAIL_HOST_USER,
+                        sent_to,
+                        mensaje.as_string())
+        print("Correo enviado correctamente")
+    except Exception as e:
+        print(e)
+
+def send_emailEvaluador2(nombre,usuario,correo):    
+    try:
+        sent_to = correo
+        # Establecemos conexion con el servidor smtp de gmail
+        mailServer = smtplib.SMTP(settings.EMAIL_HOST,settings.EMAIL_PORT)
+        print(mailServer.ehlo())
+        mailServer.starttls()
+        print(mailServer.ehlo())
+        mailServer.login(settings.EMAIL_HOST_USER,settings.EMAIL_HOST_PASSWORD)
+        print("conectado..")
+        # Construimos el mensaje simple
+        mensaje = MIMEMultipart()
+        mensaje['From']=settings.EMAIL_HOST_USER
+        mensaje['To']=sent_to
+        mensaje['Subject']="Evaluación Trabajo científico."
+        
+        content = render_to_string("emailEval2.html", {'nombre': nombre, 'usuario':usuario,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
+        mensaje.attach(MIMEText(content,'html'))
+        # Envio del mensaje
+        mailServer.sendmail(settings.EMAIL_HOST_USER,
+                        sent_to,
+                        mensaje.as_string())
+        print("Correo enviado correctamente")
+    except Exception as e:
+        print(e)
+
+def crear_user(idEvaluador):
+    username_encontrado = False
+    User = get_user_model()
+    new_user = Autores.objects.get(id=idEvaluador)
+    nombres = new_user.Nombres.lower().split()
+    apellidos = new_user.Apellidos.lower().split()
+    correo = new_user.email
+
+    if len(nombres) == 1 and len(apellidos)>=2:
+        nombre_usuario = nombres[0:3]+apellidos[0]+apellidos[1][0]
+    elif len(nombres) == 1 and len(apellidos)==1:
+        nombre_usuario = nombres[0:3]+apellidos
+    elif len(nombres) >= 2 and len(apellidos)==1:
+        nombre_usuario = nombres[0][0]+nombres[1][0]+apellidos
+    elif len(nombres) >=2 and len(apellidos)>=2:
+        nombre_usuario = nombres[0][0]+nombres[1][0]+apellidos[0]+apellidos[1][0]
+
+    contador = 0
+    
+    while username_encontrado == False:
+        users = User.objects.filter(username = nombre_usuario)
+        if users:
+            nombre_usuario+=str(contador)
+        else:
+            username_encontrado = True
+        contador +=1
+
+    user_check = User.objects.filter(email = correo)
+    if not user_check: 
+        usuario = User(
+            is_superuser=False,
+            is_staff=False,
+            username=nombre_usuario,
+            first_name=new_user.Nombres,
+            last_name=new_user.Apellidos,
+            email=correo,
+            is_active=True,
+        )
+        passwd = "TCsccot2022"
+        usuario.set_password(passwd)
+        send_emailEvaluador(new_user.Nombres, nombre_usuario, passwd,correo)
+        usuario.save()
+        print("usuario creado.")
+        return usuario
+    else:
+        for value in user_check:
+            send_emailEvaluador2(value.first_name, value.username,correo)
+            print("usuario existente.")
+            return value

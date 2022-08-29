@@ -3,8 +3,23 @@
     Detalle Trabajo
 {%  endblock    %}
 {% load static %}
-{%  block styles %}
 
+{%  block styles %}
+    <style>
+        .frow {
+        clear:both;
+        padding:10px;
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 0;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: calc(var(--bs-gutter-y) * -1);
+        margin-right: calc(var(--bs-gutter-x) * -.5);
+        margin-left: calc(var(--bs-gutter-x) * -.5);
+    }
+    
+    </style>
+    <link rel="stylesheet" href="{% static 'css/index_evaluador.css' %}"/>
 {%  endblock  %}
 {%  block content   %}
 <div class="container">
@@ -14,7 +29,7 @@
     <div class="container">
         <div class="row ">            
             <div class="col-4 ">
-                <h5 >Código. {{ object.id|safe }}</h5>
+                <h5 >Código. {{ object.identificador|safe }}</h5>
             </div>
             <div class="col-6 ">
                 <h5 >Fecha Registro: {{ object.fecha_subida|date:"d/m/Y H:i:s" }}</h5>
@@ -54,20 +69,16 @@
         <br>
         <p>{{ object.resumen_ingles}}</p>
         <br>
-        {% if object.evaluador  %}
-        <h5>Evaluador asignado: </h5>
-        <br>
-        <p>{{ object.evaluador }}</p>
-        <br>
-        {%  endif   %}
-        <h5>Manuscritos: </h5>
         {% if manuscritos %}
+        <h5>Manuscritos: </h5>
         {% for manuscrito in manuscritos %}
-        <ul>
-            <li style="font-size: 20px;">
-                <a href="media/{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
-            </li>
-        </ul>
+        <div class="container">
+            <ul>
+                <li style="font-size: 20px;">
+                    <a href="media/{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
+                </li>
+            </ul>
+        </div>
         {% endfor %}
         {%  endif   %}
         <br>
@@ -84,8 +95,38 @@
         {%  endif   %}
     </div>
     <br>
-    <div class="d-grid gap-1 col-4 mx-auto">
-        <a href="{% url 'inicio'  %}" class="btn btn-success">Regresar</a>
+    <div class="container">
+        {% if evaluadores  %}
+        <hr>
+            <h2><center>Evaluadores asignados</center></h2>
+            <div class="frow">
+                {% for evaluador in  evaluadores %}
+                    <div class="col col4 ">
+                        <h5>Nombre: <small>{{evaluador.evaluador}}</small> </h5>
+                        <h5>Calificación: <small>{{evaluador.calificacion}}</small> </h5>
+                        <h5>Fecha: <small>{{evaluador.fecha_evaluacion}}</small></h5>
+                    </div>                                      
+                {% endfor %} 
+            </div>
+        
+        {% if object.calificacion %}
+        <h2><strong><center>CALIFICACIÓN = {{object.calificacion}}</center></strong></h2>
+        <br>
+        {% endif %}
+        <h3><strong><center>SACAR PROMEDIO</center></strong></h3>
+        <div class="container-fluid !justify !spacing">
+            <div class="d-grid gap-1 col-4 mx-auto">
+                <a href="{% url 'promediarEvaluacion' object.id %}" class="btn btn-warning">PROMEDIO</a>
+            </div>
+        </div>
+        {%  endif   %}
+    </div>
+    <hr>
+    <br>
+    <div class="container-fluid !justify !spacing">
+        <div class="d-grid gap-1 col-4 mx-auto">
+            <a href="{% url 'inicio'  %}" class="btn btn-success">Regresar</a>
+        </div>
     </div>
     <br>
     

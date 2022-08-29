@@ -23,6 +23,16 @@
                   <br>
                   {%  endif %}
                   {% endfor %}
+                  
+                  {% for row in evaluacionesform %}
+                    <label  class="textLabel" for="{{ row.html_name }}" >
+                      {{ row.label_tag }}
+                    </label>
+                    <div class="input-group">
+                      {{ row }} 
+                    </div>
+                  {% endfor %}
+                  <br>
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="confirmacion">
                     <label class="form-check-label" for="flexCheckDefault">

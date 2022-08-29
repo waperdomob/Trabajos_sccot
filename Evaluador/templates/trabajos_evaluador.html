@@ -28,7 +28,7 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav ms-auto">
               <li class="nav-item">
-                <a href="{% url 'inicio'  %}" class="nav-link textColor">{{  user.first_name }}</a>
+                <a href="{% url 'inicio'  %}" class="nav-link textColor">{{  user.username }}</a>
               </li>
               <li class="nav-item">
                 {% if user.is_authenticated %}
@@ -46,25 +46,33 @@
       </nav>
     <br>
     <div class="container ">
-        <h1><center>Mis evaluaciones</center></h1>
-        <hr><br>
-        <h2><center>Trabajos por evaluar</center></h2><br><br>
-        {% for trabajo in  trabajos %}                
+        
+        {% if user.is_superuser %}
+            <h1><center>Evaluaciones</center></h1>
+            <hr><br>
+            <h2><center>Trabajos por evaluar</center></h2><br><br>
+        {% else %}
+            <h1><center>Mis evaluaciones</center></h1>
+            <hr><br>
+            <h2><center>Trabajos por evaluar</center></h2><br><br>
+        {% endif %}            
+        
+        {% for trabajo in  trabajos %}
         {% if not trabajo.calificacion %}
             <div class="row ${1| ,row-cols-2,row-cols-3, auto,justify-content-md-center,|}">
                 <div class="col-7">
-                    <h5>Titulo: <small>{{trabajo.titulo}}</small> </h5>
-                    <h5>Tipo de trabajo: <small>{{trabajo.tipo_trabajo}}</small> </h5>
+                    <h5>Titulo: <small>{{trabajo.trabajo.titulo}}</small> </h5>
+                    <h5>Tipo de trabajo: <small>{{trabajo.trabajo.tipo_trabajo}}</small> </h5>
                 </div>
                 <div class="col-5 ">
-                    <div class="d-grid gap-2 col-4 mx-auto">
-                        <button type="submit" class="btn btn-primary" id="botonEnviar">Calificar</button>
+                    <div class="d-grid gap-2 col-4 mx-auto">                        
+                        {% include 'botones_plantilla.html' %}
                     </div>
                 </div>
             </div>
             <br>
             {% for manuscrito in manuscritos %}
-            {% if manuscrito.trabajo_id == trabajo.id %}
+            {% if manuscrito.trabajo_id == trabajo.trabajo.id and ".pdf" in manuscrito.tituloM  %}
             <div id="Iframe-Master-CC-and-Rs" class="set-margin set-padding set-border set-box-shadow center-block-horiz">                
                 <div class="responsive-wrapper responsive-wrapper-wxh-572x612" >
                     <iframe id="inlineFrameExample" class="responsive-iframe" 
@@ -76,26 +84,81 @@
                 <div class="d-grid gap-2 col-12 mx-auto">
                     <a href="../../media/{{manuscrito.manuscrito}}" download="../../media/{{manuscrito.manuscrito}}" class="btn btn-success" id="btn-download"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>  
                 </div>
-                      
             </div>
-            {%  endif   %}
+            {% elif manuscrito.trabajo_id == trabajo.trabajo.id and "pptx" in manuscrito.tituloM %}
+            <div class="d-grid gap-2 col-2 mx-auto">
+                <a href="../../media/{{manuscrito.manuscrito}}" class="btn btn-success"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>
+            </div>
+            {%  endif    %}
             {% endfor %}
             <hr>
             
         {% endif %}                                     
         {% endfor %}
     </div>
-    <div class="container">        
-        {% for trabajo in  trabajos %}                
+    <div class="container">
+        <h2><center>Trabajos Evaluados</center></h2><br><br>
+        <div class="frow ">
+        {% for trabajo in  trabajos %}
         {% if  trabajo.calificacion %}
-            <h2><center>Trabajos Evaluados</center></h2><br><br>
-            <div class="container">
-                <h5>Titulo: <small>{{trabajo.titulo}}</small> </h5>
-                <h5>Tipo de trabajo: <small>{{trabajo.tipo_trabajo}}</small> </h5>
-                <h5>Calificación: <small>{{trabajo.calificacion}}</small> </h5>
-                <br>                
-            </div>   
+                <div class="col col4 ">
+                    <h5>Titulo: <small>{{trabajo.trabajo.titulo}}</small> </h5>
+                    <h5>Tipo de trabajo: <small>{{trabajo.trabajo.tipo_trabajo}}</small> </h5>
+                    <h5>Calificación: <small>{{trabajo.calificacion}}</small> </h5>
+                    <h5>Fecha de Calificación: <small>{{trabajo.fecha_evaluacion    }}</small> </h5>
+
+                </div>          
         {% endif %}                                     
         {% endfor %} 
+        </div>   
     </div>
+    <div class="modal fade " id="plantilla1_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
+    </div>
+    <div class="modal fade " id="plantilla2_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    </div>
+    <div class="modal fade " id="plantilla3_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    </div>
+    <div class="modal fade " id="plantilla4_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
+    </div>
+    <div class="modal fade " id="plantilla5_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    </div>
+    <div class="modal fade " id="plantilla6_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    </div>
+{% endblock %}
+
+{% block javascript %}
+       <script type="text/javascript">
+                              
+            function abrir_modal_plantilla1(url){
+                $('#plantilla1_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            function abrir_modal_plantilla2(url){
+                $('#plantilla2_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }           
+            function abrir_modal_plantilla3(url){
+                $('#plantilla3_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            function abrir_modal_plantilla4(url){
+                $('#plantilla4_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            function abrir_modal_plantilla5(url){
+                $('#plantilla5_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            function abrir_modal_plantilla6(url){
+                $('#plantilla6_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
+            
+        </script>
 {% endblock %}

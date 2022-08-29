@@ -13,13 +13,16 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView,DetailView,UpdateView
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.shortcuts import  redirect, render
+from django.contrib.auth.decorators import login_required
 
 from Cursos.forms import EspecialidadesForm
+from Evaluador.forms import selectPlantillaForm
 from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
-from trabajosC.funciones.funciones2 import email_confirmTC, handle_uploaded_file
 
-from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_instituciones, Trabajos_has_palabras
+from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_evaluadores, Trabajos_has_instituciones, Trabajos_has_palabras
 
+from trabajosC.funciones.funciones1 import asignar_plantilla, convert_to_pdf_wd ,generate_pdf_linux
+from trabajosC.funciones.funciones2 import crear_user, email_confirmTC, handle_uploaded_file
 from trabajosC.funciones.funciones1 import convert_to_pdf_wd ,generate_pdf_linux
 
 # Create your views here.
@@ -310,6 +313,7 @@ class registrarTrabajo(CreateView):
                         email_confirmTC(nombre, correo, trab.titulo,n_curso)
                         messages.success(request, 'Trabajo cargado con exito!')
 
+
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
@@ -359,7 +363,8 @@ class TrabajoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['manuscritos'] = Manuscritos.objects.filter(trabajo_id=self.kwargs['pk'])
-        context['anexos'] = Tablas.objects.filter(trabajo_id=self.kwargs['pk'])        
+        context['anexos'] = Tablas.objects.filter(trabajo_id=self.kwargs['pk'])
+        context['evaluadores'] = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.kwargs['pk'] )
         return context
  
 class AsignarEvaluadorTC(UpdateView):
@@ -397,11 +402,13 @@ class AsignarEvaluadorTC(UpdateView):
         return super().dispatch(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
-        manus_path = 'media/manuscritos/'
-        out_folder = 'media/manuscritos'
-        contador=0
-        form = self.form_class(request.POST, instance=self.object)
         Trabajo = self.object
+        nombre_curso = Trabajo.curso.nombre_curso
+        manus_path = 'media/manuscritos/'+nombre_curso+'/'
+        out_folder = 'media/manuscritos/'+nombre_curso
+        contador=0
+        form = self.form_class(request.POST)
+        plantillasF = selectPlantillaForm(request.POST)
         manuscritos = Manuscritos.objects.filter(trabajo = Trabajo)
         for i in manuscritos:
             manuscrito1 =i
@@ -409,35 +416,52 @@ class AsignarEvaluadorTC(UpdateView):
         file_name = os.path.splitext(manuscrito1.tituloM)[0]
         postfix=os.path.splitext(manuscrito1.tituloM)[1][1:]
         otros_autores = Trabajos_has_autores.objects.filter(trabajo_id = Trabajo.id)
-
         if form.is_valid():
-            #print(request.POST.getlist('confirmacion'))
             if form.cleaned_data['evaluador'] == None:
                 messages.warning(request, 'No ha seleccionado a ningun Evaluador')
                 return redirect('inicio')
             elif not request.POST.getlist('confirmacion'):
                 messages.warning(request, 'No ha confirmado la revision del manuscrito')
                 return redirect('inicio')
+            elif plantillasF['plantilla'].value() == "0":
+                messages.warning(request, 'No ha seleccionado una plantilla de evaluación')
+                return redirect('inicio')
             else:
                 for obj in otros_autores:
                     if obj.autor == form.cleaned_data['evaluador']:
                         contador +=1          
-                if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and (postfix=='docx' or postfix=='doc'):
-                    convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                    #generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15) 
-                    ruta_pdf = 'manuscritos/'+file_name+".pdf"
-                    consultaM = Manuscritos.objects.filter(tituloM = file_name+'.pdf')
-                    if not consultaM:                        
+                if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and (postfix=='docx' or postfix=='doc'):                    
+                    previews_evaluadores = Trabajos_has_evaluadores.objects.filter(trabajo_id=Trabajo.id)
+                    for prev_evl in previews_evaluadores:
+                        if prev_evl.evaluador == form.cleaned_data['evaluador']:
+                            messages.error(request, 'No se puede asignar evaluador, ya fue asignado previamente')
+                            return redirect('inicio')
+                    id_evaluador= Autores.objects.get(id=form.cleaned_data['evaluador'].id)
+                    print(id_evaluador.id)
+                    if id_evaluador.id != 2885 and id_evaluador.id !=2886:
+                        messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
+                        return redirect('inicio')
+                    user = crear_user(id_evaluador.id)
+                    asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
+                    ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
+                    consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)
+                    if not consultaM:         
+                        convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
+                        #generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)               
                         obj = Manuscritos(
                             tituloM = file_name+'.pdf',
                             manuscrito = ruta_pdf,
                             trabajo = Trabajo
                             )
                         obj.save(force_insert=True )
-                    form.save()
+                    T_has_E = form.save(commit=False)
+                    T_has_E.trabajo_id = Trabajo.id
+                    T_has_E.save()
                     messages.success(request, 'Evaluador asignado con exito')
-                elif postfix=='pptx':
-                    form.save()
+                elif contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and postfix=='pptx' or postfix=='ppt' or postfix=='mp4' or postfix=='mov' or postfix=='avi':
+                    T_has_E = form.save(commit=False)
+                    T_has_E.trabajo_id = Trabajo.id
+                    T_has_E.save()
                     messages.success(request, 'Evaluador asignado con exito')
                 else:
                     messages.error(request, 'No se puede asignar evaluador, hace parte del trabajo')
@@ -446,8 +470,7 @@ class AsignarEvaluadorTC(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)        
         context['title'] = 'Asignar Evaluador'
-        context['entity'] = 'TrabajosCientificos'
-        
+        context['evaluacionesform'] =selectPlantillaForm()
         return context
 
 class ManuscritoEdit(UpdateView):
@@ -494,6 +517,7 @@ class ManuscritoEdit(UpdateView):
                 manus.tituloM = doc.name
                 manus.manuscrito = manus_path+doc.name
                 manus.save()
+                messages.success(request, 'El documento ha sido actualizado!')
             else:
                 messages.error(request, 'El documento no tiene el mismo nombre que el subido por el autor!')
             return redirect('inicio')
@@ -504,4 +528,20 @@ class ManuscritoEdit(UpdateView):
         context['manus'] = Manuscritos.objects.all()        
         return context
 
+@login_required
+def promedioTC(request, pk):
+    notaf = 0
+    cant_notas=0
+    trabajo = Trabajos.objects.get(id=pk)
+    evaluaciones= Trabajos_has_evaluadores.objects.filter(trabajo_id=pk)
+    for nota in evaluaciones:
+        cant_notas+=1
+        notaf = notaf+nota.calificacion
+    
+    notaf = round(notaf/cant_notas,2)
+    trabajo.calificacion = notaf
+    trabajo.modificado_por_id = request.user.id
+    trabajo.fecha_modificacion = dtime.datetime.today()
+    trabajo.save()
 
+    return redirect('detalleTrabajo',pk)
