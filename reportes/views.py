@@ -77,9 +77,12 @@ class reporteTC(TemplateView):
                         i.curso.nombre_curso,
                         i.titulo,
                         i.tipo_trabajo,
+                        i.subtipo_trabajo,
                         i.Autor_correspondencia.get_full_name(),
+                        i.Autor_correspondencia.email,
                         autores[j],
                         i.institucion_principal.institucion,
+                        i.Autor_correspondencia.ciudad,
                         i.fecha_subida.strftime('%Y-%m-%d'),
                         i.curso.fecha_fin.strftime('%Y-%m-%d'),
                         format(i.calificacion),
@@ -91,7 +94,7 @@ class reporteTC(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Reporte Trabajos Cientificos'
+        context['title'] = 'Reporte Trabajos Científicos'
         context['list_url'] = reverse_lazy('reportes')
         context['form'] = reportForm()
         context['action'] = 'search_report'
