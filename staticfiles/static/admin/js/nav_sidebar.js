@@ -1,1 +1,0 @@
-/home/wilmer/Trabajos_sccot/static/static/admin/js/nav_sidebar.js
