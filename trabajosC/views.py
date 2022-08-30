@@ -144,8 +144,10 @@ class registrarTrabajo(CreateView):
                     data.append(item)
                     
             elif action == 'search_curso':
+                print("prueba")
                 term = request.POST['curso_id']
                 curso = Cursos.objects.get(id=term)
+                print(term)
                 if curso.fecha_fin < dtime.date.today():
                     data['error'] = 'No es posible registrar el trabajo, ha excedido la fecha límite'
                     return JsonResponse(data, safe=False)
@@ -437,7 +439,6 @@ class AsignarEvaluadorTC(UpdateView):
                             messages.error(request, 'No se puede asignar evaluador, ya fue asignado previamente')
                             return redirect('inicio')
                     id_evaluador= Autores.objects.get(id=form.cleaned_data['evaluador'].id)
-                    print(id_evaluador.id)
                     if id_evaluador.id != 2885 and id_evaluador.id !=2886:
                         messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
                         return redirect('inicio')
@@ -446,8 +447,8 @@ class AsignarEvaluadorTC(UpdateView):
                     ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
                     consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)
                     if not consultaM:         
-                        convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                        #generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)               
+                        #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
+                        generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)
                         obj = Manuscritos(
                             tituloM = file_name+'.pdf',
                             manuscrito = ruta_pdf,

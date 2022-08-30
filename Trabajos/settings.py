@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'Autores',
     'Cursos',
     'Evaluador',
+    'reportes',
 ]
 
 MIDDLEWARE = [

@@ -69,7 +69,11 @@ class Cursos(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     def __str__(self):
         return self.nombre_curso+" "+self.fecha_fin.strftime("%d %B, %Y")
-        
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['nombre_curso'] = self.nombre_curso
+        return item   
 class Autores(models.Model):
     """
     Doctores miembros de la Sccot que serán autores de trabajos científicos.

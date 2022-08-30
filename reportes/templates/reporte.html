@@ -1,0 +1,142 @@
+{%  extends "base.html" %}
+{%  block title %}
+    SCCOT
+{%  endblock    %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+    <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/> 
+    <link rel="stylesheet" href="{% static 'css/report.css' %}"/> 
+{% endblock %}
+{% block scripts %}
+<!--Fontawesome-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<!---->
+    
+    <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/moment-2.25.3/moment.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/daterangepicker-3.1/spanish.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lib/daterangepicker-3.1/daterangepicker.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/daterangepicker-3.1/daterangepicker.css' %}" />
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/css/buttons.bootstrap.min.css' %}"/>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/dataTables.buttons.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/jszip-2.5.0/jszip.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/pdfmake-0.1.36/pdfmake.js' %}" type="text/javascript"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/pdfmake-0.1.36/vfs_fonts.js' %}" type="text/javascript"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/buttons.html5.min.js' %}" type="text/javascript"></script>
+    <script type="text/javascript" src="{% static 'js/reports.js' %}"></script>
+
+
+{% endblock %}
+{%  block content   %}
+<h2><center>ADMINISTRADOR</center></h2>
+<hr>
+<div class="container botonesNav">
+    <div class="btn-group-lg" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" >
+        <a class="btn btn-outline-primary" for="btnradio1" href="{% url 'inicio'  %}">Autores</a>
+      
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked>
+        <a class="btn btn-outline-primary" for="btnradio2" href="{% url 'inicio'  %}">Trabajos</a>
+      
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+        <a class="btn btn-outline-primary" for="btnradio3" href="{% url 'inicio'  %}">Cursos</a>
+      
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+        <a class="btn btn-outline-primary" for="btnradio4" href="{% url 'inicio'  %}">Usuarios</a>
+      
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off" checked>
+        <a class="btn btn-outline-primary" for="btnradio5" href="{% url 'reportes'  %}">Reportes</a>
+    </div>
+</div>
+<br>
+    <div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-chart-bar"></i>
+            {{ title }}
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="frow">
+            <!-- <div class="col-lg-4">
+                <div class="form-group">
+                    <label for="">Rango de fechas:</label>
+                    {{form.date_range}}
+                </div>
+            </div> -->
+            <div class="col col3">
+                <div class="form-group">
+                    <label for="">Curso:</label>
+                    {{form.curso}}
+                </div>
+            </div>
+            <div class="col col3">
+                <div class="form-group">
+                    <label for="">Autor:</label>
+                    {{form.autor}}
+                </div>
+            </div>
+            <div class="col col3">
+                <div class="form-group">
+                    <label for="">Institucion:</label>
+                    {{form.institucion}}
+                </div>
+            </div>
+            <div class="col col3">
+                <div class="form-group">
+                    <label for="">Tipo de Trabajo:</label>
+                    {{form.tipoTrabajo}}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="button" class="aplybtn btn btn-primary btn-flat" id="botonEnviar" name="filtrar"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
+        </div>
+        <hr>
+        <table class="table table-bordered" id="data">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Curso</th>
+                    <th scope="col">Titulo</th>
+                    <th scope="col">Tipo de Trabajo</th>
+                    <th scope="col">Autor Correspondencia</th>
+                    <th scope="col">Autores</th>
+                    <th scope="col">Institución Principal</th>
+                    <th scope="col">Fecha de registro</th>
+                    <th scope="col">Fecha cierre</th>
+                    <th scope="col">Calificación</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+            <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                <i class="fas fa-sync"></i> Refrescar
+            </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="application/javascript">
+    $(function () {
+        $('#data').DataTable({
+            responsive: true,
+            autoWidth: false
+        });
+    });
+</script>
+{% endblock %}
