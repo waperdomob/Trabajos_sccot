@@ -5,15 +5,14 @@ from django.http import HttpResponse, JsonResponse
 import json
 from django.db.models import Q
 from django.core.files.storage import default_storage,FileSystemStorage
-from django.core.files.base import ContentFile
 from django.urls import reverse, reverse_lazy
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView,DetailView,UpdateView
-from django.views.decorators.clickjacking import xframe_options_exempt
 from django.shortcuts import  redirect, render
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from Cursos.forms import EspecialidadesForm
 from Evaluador.forms import selectPlantillaForm
@@ -26,7 +25,6 @@ from trabajosC.funciones.funciones2 import crear_user, email_confirmTC, handle_u
 from trabajosC.funciones.funciones1 import convert_to_pdf_wd ,generate_pdf_linux
 from usuario.mixins import IsSuperuserMixin
 # Create your views here.
-@xframe_options_exempt
 def index(request):
     """ 
     Index del proyecto. 
@@ -344,7 +342,7 @@ class registrarTrabajo(CreateView):
 
         return context
 
-class TrabajoDetailView(IsSuperuserMixin,DetailView):
+class TrabajoDetailView(LoginRequiredMixin,IsSuperuserMixin,DetailView):
     """Clase DetailView para ver la información del trabajo científico.
 
     **Context**    
@@ -369,7 +367,7 @@ class TrabajoDetailView(IsSuperuserMixin,DetailView):
         context['evaluadores'] = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.kwargs['pk'] )
         return context
  
-class AsignarEvaluadorTC(IsSuperuserMixin,UpdateView):
+class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
     ''' Clase UpdateView para actualizar el evaluador del trabajo científico. 
 
     **Context** 
@@ -474,7 +472,7 @@ class AsignarEvaluadorTC(IsSuperuserMixin,UpdateView):
         context['evaluacionesform'] =selectPlantillaForm()
         return context
 
-class ManuscritoEdit(IsSuperuserMixin,UpdateView):
+class ManuscritoEdit(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
     """Clase UpdateView para actualizar el manuscrito del trabajo científico.
 
     **Context**  

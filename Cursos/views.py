@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, UpdateView,DeleteView
 from django.urls import  reverse_lazy
 from django.shortcuts import  redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from Cursos.forms import CursosForm
 
@@ -11,7 +12,7 @@ from trabajosC.models import  Cursos
 from usuario.mixins import IsSuperuserMixin
 # Create your views here.
 
-class registrarCurso(IsSuperuserMixin,CreateView):
+class registrarCurso(LoginRequiredMixin,IsSuperuserMixin,CreateView):
     ''' Clase CreateView para registrar los cursos. 
 
     **Context**
@@ -53,7 +54,7 @@ class registrarCurso(IsSuperuserMixin,CreateView):
     def get(self, request, *args, **kwargs):
         return render(request,self.template_name,self.get_context_data())
 
-class CursoUpdate(IsSuperuserMixin,UpdateView):
+class CursoUpdate(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
     ''' Clase UpdateView para actualizar los cursos. 
 
     **Context** 
@@ -85,7 +86,7 @@ class CursoUpdate(IsSuperuserMixin,UpdateView):
         return context
 
 
-class deleteCurso(IsSuperuserMixin,DeleteView):
+class deleteCurso(LoginRequiredMixin,IsSuperuserMixin,DeleteView):
     ''' Clase DeleteView para eliminar los cursos. 
 
     **Context**    

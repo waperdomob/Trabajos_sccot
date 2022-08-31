@@ -8,7 +8,8 @@ from django.db.models import Q,F, Sum
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import  redirect, render
-import pandas as pd
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from statistics import mean
 
 from Evaluador.forms import RSyMAForm, casosyControlesForm, cohortesForm, eccForm, plantillaSCyCTForm, pruebasDXForm
@@ -18,7 +19,7 @@ from trabajosC.models import Autores, Manuscritos, Trabajos, Trabajos_has_evalua
 
 # Create your views here.
 
-class TrabajosAsignados(TemplateView):
+class TrabajosAsignados(LoginRequiredMixin,TemplateView):
     """Clase TemplateView para ver la información de los trabajos científicos asignados al evaluador.
 
     **Context**    
@@ -60,7 +61,7 @@ class TrabajosAsignados(TemplateView):
             context['plantillaCOHORTES'] = plantillaCOHORTES.objects.filter(user=self.request.user).select_related('trabajo')
             return context
 
-class plantilla1_evaluacion(UpdateView):
+class plantilla1_evaluacion(LoginRequiredMixin,UpdateView):
 
     model = plantillaECC
     form_class = eccForm
@@ -98,7 +99,7 @@ class plantilla1_evaluacion(UpdateView):
         context['autores'] = Autores.objects.all()        
         return context
 
-class plantilla2_evaluacion(UpdateView):
+class plantilla2_evaluacion(LoginRequiredMixin,UpdateView):
 
     model = plantillaPruebasDX
     form_class = pruebasDXForm
@@ -135,7 +136,7 @@ class plantilla2_evaluacion(UpdateView):
         context['autores'] = Autores.objects.all()        
         return context
 
-class plantilla3_evaluacion(UpdateView):
+class plantilla3_evaluacion(LoginRequiredMixin,UpdateView):
 
     model = plantillaRSyMA
     form_class = RSyMAForm
@@ -172,7 +173,7 @@ class plantilla3_evaluacion(UpdateView):
         context['autores'] = Autores.objects.all()        
         return context
 
-class plantilla4_evaluacion(UpdateView):
+class plantilla4_evaluacion(LoginRequiredMixin,UpdateView):
 
     model = plantillaSERIECASOSyCORTETRANSVERSAL
     form_class = plantillaSCyCTForm
@@ -209,7 +210,7 @@ class plantilla4_evaluacion(UpdateView):
         context['autores'] = Autores.objects.all()        
         return context
 
-class plantilla5_evaluacion(UpdateView):
+class plantilla5_evaluacion(LoginRequiredMixin,UpdateView):
 
     model = plantillaCASOSyCONTROLES
     form_class = casosyControlesForm
@@ -246,7 +247,7 @@ class plantilla5_evaluacion(UpdateView):
         context['autores'] = Autores.objects.all()        
         return context
 
-class plantilla6_evaluacion(UpdateView):
+class plantilla6_evaluacion(LoginRequiredMixin,UpdateView):
 
     model = plantillaCOHORTES
     form_class = cohortesForm

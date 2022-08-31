@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.views.generic import TemplateView
 from django.db.models import Sum
@@ -16,7 +16,7 @@ from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Tra
 from usuario.mixins import IsSuperuserMixin
 
 # Create your views here.
-class reporteTC(IsSuperuserMixin,TemplateView):
+class reporteTC(LoginRequiredMixin,IsSuperuserMixin,TemplateView):
     template_name= 'reporte.html'
 
     @method_decorator(csrf_exempt)

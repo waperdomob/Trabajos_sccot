@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, UpdateView,DeleteView
 from django.urls import  reverse_lazy
 from django.shortcuts import  redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from Autores.forms import AutoresForm
 
@@ -11,7 +12,7 @@ from trabajosC.models import Autores
 from usuario.mixins import IsSuperuserMixin
 # Create your views here.
 
-class registrarAutor(IsSuperuserMixin,CreateView):
+class registrarAutor(LoginRequiredMixin,IsSuperuserMixin,CreateView):
     ''' Clase CreateView para registrar Autores. 
 
     **Context**
@@ -52,7 +53,7 @@ class registrarAutor(IsSuperuserMixin,CreateView):
     def get(self, request, *args, **kwargs):
         return render(request,self.template_name,self.get_context_data())
 
-class AutorUpdate(IsSuperuserMixin,UpdateView):
+class AutorUpdate(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
     ''' Clase UpdateView para actualizar los autores. 
 
     **Context** 
@@ -83,7 +84,7 @@ class AutorUpdate(IsSuperuserMixin,UpdateView):
         context['autores'] = Autores.objects.all()        
         return context
 
-class deleteAutor(IsSuperuserMixin,DeleteView):
+class deleteAutor(LoginRequiredMixin,IsSuperuserMixin,DeleteView):
     ''' Clase DeleteView para eliminar los autores. 
 
     **Context**    
