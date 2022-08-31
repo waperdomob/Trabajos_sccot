@@ -49,35 +49,15 @@
             <label class="btn btn-outline-primary" for="btnradio3">Cursos</label>
           
             <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
-            <label class="btn btn-outline-primary" for="btnradio4">Usuarios</label>
+            <a class="btn btn-outline-primary" for="btnradio4" href="{% url 'user:user_list' %}">Usuarios</a>
           
             <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
             <a class="btn btn-outline-primary" for="btnradio5" href="{% url 'reportes'  %} ">Reportes</a>
         </div>
     </div>
     <br>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error:</strong> {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Bien:</strong> {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>WARNING:</strong> {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            {% endif %}
-        {% endfor %}
-    </ul>
-    {% endif %}
+    {% include 'messages.html' %}
+
     <div class="container-fluid " id="contenedorTrabajos">
         {% include 'tablas/trabajosList.html' %}
         <div class="modal fade contenedor" id="evaluador_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">

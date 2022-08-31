@@ -117,7 +117,7 @@ class Trabajos(models.Model):
     resumen_esp=models.TextField()
     resumen_ingles=models.TextField()
     fecha_subida = models.DateTimeField(auto_now_add=True)
-    fecha_modificacion = models.DateField('ultima modificacion',null=True, blank=True)
+    fecha_modificacion = models.DateField('ultima modificacion',auto_now= True,null=True, blank=True)
     curso = models.ForeignKey(Cursos, on_delete=models.CASCADE)
     calificacion = models.FloatField(null=True, blank=True)
     modificado_por = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)

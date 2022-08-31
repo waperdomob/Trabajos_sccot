@@ -1,0 +1,114 @@
+{%  extends "base.html" %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+    <style>
+        #data td  {
+            vertical-align:middle;
+        }
+    </style>
+{% endblock %}
+{% block scripts %}
+<!--Fontawesome-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<!---->
+    
+    <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/listUsers.js' %}"></script>
+
+
+{% endblock %}
+
+{% block content %}
+<h2><center>ADMINISTRADOR</center></h2>
+<hr>
+<div class="container botonesNav">
+    <div class="btn-group-lg" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" >
+        <a class="btn btn-outline-primary" for="btnradio1" href="{% url 'inicio'  %}">Autores</a>
+      
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" >
+        <a class="btn btn-outline-primary" for="btnradio2" href="{% url 'inicio'  %}">Trabajos</a>
+      
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+        <a class="btn btn-outline-primary" for="btnradio3" href="{% url 'inicio'  %}">Cursos</a>
+      
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off"checked>
+        <a class="btn btn-outline-primary" for="btnradio4" href="{% url 'user:user_list'  %}">Usuarios</a>
+      
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off" >
+        <a class="btn btn-outline-primary" for="btnradio5" href="{% url 'reportes'  %}">Reportes</a>
+    </div>
+</div>
+<br>
+{% include 'messages.html' %}
+<div class="container-fluid" >
+    <table class="table table-light" id="data">
+        <thead>
+            <tr>
+                <th >Nro</th>
+                <th >Username</th>
+                <th >Nombres</th>
+                <th >Apellidos</th>
+                <th >correo</th>
+                <th >Fecha de registro</th>
+                <th >Ultimo login</th>
+                <th >Activo</th>
+                <th >Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in usuarios %}
+    
+            <tr>
+                <td>{{object.id}}</td>
+                <td>{{object.username}}</td>
+                <td>{{object.first_name}}</td>
+                <td>{{object.last_name}}</td>
+                <td>{{object.email}}</td>
+                <td>{{object.date_joined}}</td>
+                <td>{{object.last_login}}</td>
+                <td>{{object.is_active}}</td>
+                <td>
+                    <div class="d-grid gap-2 col-12 mx-auto"> 
+                        <button onclick="abrir_modal_editUser(`{% url 'user:user_update' object.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>Edit</button>
+                        <button onclick="abrir_modal_deleteUser(`{% url 'user:user_delete' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-file-pen"></i>Eliminar</button>
+                    </div>
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade contenedor" id="edituser_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+</div>
+<div class="modal fade contenedor" id="deleteUser_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="application/javascript">
+    
+    $('#data').DataTable({
+        responsive: true,
+        autoWidth: false
+    });
+    function abrir_modal_editUser(url){
+        $('#edituser_Modal').load(url, function (){
+            $(this).modal('show');
+        });
+    }
+    function abrir_modal_deleteUser(url){
+        $('#deleteUser_Modal').load(url, function (){
+            $(this).modal('show');
+        });
+    }
+</script>
+{% endblock %}
