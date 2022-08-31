@@ -1,4 +1,4 @@
-
+from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, UpdateView,DeleteView
@@ -8,10 +8,10 @@ from django.shortcuts import  redirect, render
 from Autores.forms import AutoresForm
 
 from trabajosC.models import Autores
-
+from usuario.mixins import IsSuperuserMixin
 # Create your views here.
 
-class registrarAutor(CreateView):
+class registrarAutor(IsSuperuserMixin,CreateView):
     ''' Clase CreateView para registrar Autores. 
 
     **Context**
@@ -52,7 +52,7 @@ class registrarAutor(CreateView):
     def get(self, request, *args, **kwargs):
         return render(request,self.template_name,self.get_context_data())
 
-class AutorUpdate(UpdateView):
+class AutorUpdate(IsSuperuserMixin,UpdateView):
     ''' Clase UpdateView para actualizar los autores. 
 
     **Context** 
@@ -83,7 +83,7 @@ class AutorUpdate(UpdateView):
         context['autores'] = Autores.objects.all()        
         return context
 
-class deleteAutor(DeleteView):
+class deleteAutor(IsSuperuserMixin,DeleteView):
     ''' Clase DeleteView para eliminar los autores. 
 
     **Context**    
@@ -109,6 +109,7 @@ class deleteAutor(DeleteView):
         object.delete()
         return redirect('inicio')
 
+@login_required
 def designarEvaluador(request,pk):
     """Le asigna el rol de evaluador a un autor
 
@@ -122,6 +123,7 @@ def designarEvaluador(request,pk):
     Autores.objects.filter(id = pk).update(role_id = 2)
     return redirect('inicio')
 
+@login_required
 def eliminarEvaluador(request,pk):
     """Le quita el rol de evaluador a un autor
 

@@ -28,7 +28,7 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav ms-auto">
               <li class="nav-item">
-                <a href="{% url 'inicio'  %}" class="nav-link textColor">{{  user.username }}</a>
+                <a href="{% url 'inicio'  %}" class="nav-link textColor">{{  request.user.username }}</a>
               </li>
               <li class="nav-item">
                 {% if user.is_authenticated %}

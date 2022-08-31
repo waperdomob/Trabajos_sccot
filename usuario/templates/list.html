@@ -19,7 +19,6 @@
     <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/listUsers.js' %}"></script>
 
 
 {% endblock %}
@@ -77,7 +76,7 @@
                 <td>
                     <div class="d-grid gap-2 col-12 mx-auto"> 
                         <button onclick="abrir_modal_editUser(`{% url 'user:user_update' object.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>Edit</button>
-                        <button onclick="abrir_modal_deleteUser(`{% url 'user:user_delete' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-file-pen"></i>Eliminar</button>
+                        <button onclick="abrir_modal_deleteUser(`{% url 'user:user_delete' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-file-pen"></i>Delete</button>
                     </div>
                     
                 </td>

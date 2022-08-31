@@ -8,10 +8,10 @@ from django.shortcuts import  redirect, render
 from Cursos.forms import CursosForm
 
 from trabajosC.models import  Cursos
-
+from usuario.mixins import IsSuperuserMixin
 # Create your views here.
 
-class registrarCurso(CreateView):
+class registrarCurso(IsSuperuserMixin,CreateView):
     ''' Clase CreateView para registrar los cursos. 
 
     **Context**
@@ -53,7 +53,7 @@ class registrarCurso(CreateView):
     def get(self, request, *args, **kwargs):
         return render(request,self.template_name,self.get_context_data())
 
-class CursoUpdate(UpdateView):
+class CursoUpdate(IsSuperuserMixin,UpdateView):
     ''' Clase UpdateView para actualizar los cursos. 
 
     **Context** 
@@ -85,7 +85,7 @@ class CursoUpdate(UpdateView):
         return context
 
 
-class deleteCurso(DeleteView):
+class deleteCurso(IsSuperuserMixin,DeleteView):
     ''' Clase DeleteView para eliminar los cursos. 
 
     **Context**    

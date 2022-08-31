@@ -24,7 +24,7 @@ from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Key
 from trabajosC.funciones.funciones1 import asignar_plantilla, convert_to_pdf_wd ,generate_pdf_linux
 from trabajosC.funciones.funciones2 import crear_user, email_confirmTC, handle_uploaded_file
 from trabajosC.funciones.funciones1 import convert_to_pdf_wd ,generate_pdf_linux
-
+from usuario.mixins import IsSuperuserMixin
 # Create your views here.
 @xframe_options_exempt
 def index(request):
@@ -344,7 +344,7 @@ class registrarTrabajo(CreateView):
 
         return context
 
-class TrabajoDetailView(DetailView):
+class TrabajoDetailView(IsSuperuserMixin,DetailView):
     """Clase DetailView para ver la información del trabajo científico.
 
     **Context**    
@@ -369,7 +369,7 @@ class TrabajoDetailView(DetailView):
         context['evaluadores'] = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.kwargs['pk'] )
         return context
  
-class AsignarEvaluadorTC(UpdateView):
+class AsignarEvaluadorTC(IsSuperuserMixin,UpdateView):
     ''' Clase UpdateView para actualizar el evaluador del trabajo científico. 
 
     **Context** 
@@ -474,7 +474,7 @@ class AsignarEvaluadorTC(UpdateView):
         context['evaluacionesform'] =selectPlantillaForm()
         return context
 
-class ManuscritoEdit(UpdateView):
+class ManuscritoEdit(IsSuperuserMixin,UpdateView):
     """Clase UpdateView para actualizar el manuscrito del trabajo científico.
 
     **Context**  

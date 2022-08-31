@@ -32,14 +32,13 @@ class UserListView(LoginRequiredMixin,IsSuperuserMixin, ListView):
         context['usuarios'] = User.objects.all()
         return context
 
-class UserUpdate(UpdateView):
+class UserUpdate(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
     ''' Clase UpdateView para actualizar los usuarios. 
 
     **Context** 
        
         :model:  Una instancia del modelo Usuario .
         :form_class:  Formulario para la edición de usuarios creado en forms.py de la app usuario.
-        :success_url:  Al ser exitoso la actualización del usuario redirecciona al listado de usuarios.
         
     **Methods**
         
@@ -64,17 +63,19 @@ class UserUpdate(UpdateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():
-            pwd = form.cleaned_data['password']               
+            pwd = form.cleaned_data['password']
             u = form.save(commit=False)
-            if u.pk is None:
-                u.set_password(pwd)
+            user = User.objects.get(pk=u.pk)
+            if user.is_superuser:
+                messages.warning(request, 'El usuario es administrador, no se puede editar!')
+                return redirect('user:user_list')
             else:
-                user = User.objects.get(pk=u.pk)
                 if user.password != pwd:
                     u.set_password(pwd)
             u.save()
-            messages.success(request, 'El usuario ha sido actualizado!')                
+            messages.success(request, 'El usuario ha sido actualizado!')
             return redirect('user:user_list')
+                
         else:
             messages.error(request, 'Error al actualizar al usuario!')
             return redirect('user:user_list')

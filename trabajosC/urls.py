@@ -11,7 +11,7 @@ urlpatterns = [
     path('create_Trabajo/', views.registrarTrabajo.as_view(), name='create_Trabajo'),
     path('Detalle_Trabajo/<int:pk>/',login_required(views.TrabajoDetailView.as_view()), name='detalleTrabajo'),
     path('evaluador_Trabajo/<int:pk>/',login_required(views.AsignarEvaluadorTC.as_view()), name='asignarEvaluador'),
-    path('editar_manuscrito/<int:pk>/', views.ManuscritoEdit.as_view(), name='editar_manuscrito'),
+    path('editar_manuscrito/<int:pk>/', login_required(views.ManuscritoEdit.as_view()), name='editar_manuscrito'),
     path('Trabajo/sacar_promedio/<int:pk>/',views.promedioTC, name='promediarEvaluacion')
 ]
 if settings.DEBUG:

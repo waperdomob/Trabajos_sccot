@@ -7,7 +7,7 @@ from reportes import views
 
 urlpatterns = [
        
-    path('', views.reporteTC.as_view(), name='reportes'),
+    path('', login_required(views.reporteTC.as_view()), name='reportes'),
     
 
 ]

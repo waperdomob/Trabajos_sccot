@@ -13,10 +13,10 @@ from django.db.models import FloatField, F
 from reportes.forms import reportForm
 from reportes.funciones.funciones import filtrar
 from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Trabajos, Trabajos_has_autores
-
+from usuario.mixins import IsSuperuserMixin
 
 # Create your views here.
-class reporteTC(TemplateView):
+class reporteTC(IsSuperuserMixin,TemplateView):
     template_name= 'reporte.html'
 
     @method_decorator(csrf_exempt)
