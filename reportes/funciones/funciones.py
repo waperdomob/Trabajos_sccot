@@ -3,6 +3,17 @@ from trabajosC.models import Trabajos
 
 
 def filtrar(curso,autor,institucion, tipoT):
+    """función para realizar el filtro en el modulo de reportes
+
+    Args:
+        curso (String): Nombre del curso.
+        autor (String): Nombre del autor de correspondencia.
+        institucion (String): Institución donde se realizó el trabajo científico.
+        tipoT (String): Tipo de trabajo científico (Libre, Ingreso, E-poster)
+
+    Returns:
+        QuerySet: Lista de objectos del modelo trabajos.
+    """    
     
     if tipoT != 'ninguna':
         search = Trabajos.objects.all().filter(tipo_trabajo=tipoT)

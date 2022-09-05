@@ -1,5 +1,8 @@
 $(function () {
-
+    /* Función que recibe los eventos en la vista del alministrador
+    Algunos eventos son: cambiar de pestaña y agregar especialidad
+    NOTA: Todos los archivos js también hay que crearlos en la carpeta staticfiles en el mismo orden para que funcionen en producción.
+    */
     $('#btnradio1').on('click', function () {
         $('#contenedorAutores').prop('hidden', false);
         $('#contenedorTrabajos').prop('hidden', true);

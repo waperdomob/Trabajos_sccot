@@ -17,6 +17,26 @@ from usuario.mixins import IsSuperuserMixin
 
 # Create your views here.
 class reporteTC(LoginRequiredMixin,IsSuperuserMixin,TemplateView):
+    ''' Clase TemplateView para visualizar los reportes de trabajos científicos. 
+
+    **Context** 
+       
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context formulario de filtros al template.
+
+        :``post(self, **kwargs, *args, **kwargs)``: 
+        
+            Función que recibe los datos del formulario de filtros, realiza el filtrado y envía los datos al template.
+            
+    **Template:**
+
+        :template_name: Template con formulario y tabla en donde se muestra el reporte.
+                    
+    '''
     template_name= 'reporte.html'
 
     @method_decorator(csrf_exempt)

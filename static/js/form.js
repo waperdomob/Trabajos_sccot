@@ -29,7 +29,11 @@ var trabajo={
 }
 
     $(function () {
-        
+        /* 
+        Función que recibe los eventos en el formulario de registro de trabajo científico.
+        Algunos eventos son: Select2 para autores, instituciones, palabras claves y keywords; cambios en lista desplegable, acciones en botones, abrir o cerrar modales y envío de formularios.
+        NOTA: Todos los archivos js también hay que crearlos en la carpeta staticfiles en el mismo orden para que funcionen en producción.
+        */
         
         $('#id_tipo_trabajo').on('change',function(){
             var selectValor = $(this).val();    

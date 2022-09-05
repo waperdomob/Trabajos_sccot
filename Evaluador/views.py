@@ -62,7 +62,25 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
             return context
 
 class plantilla1_evaluacion(LoginRequiredMixin,UpdateView):
+    ''' Clase UpdateView para realizar la evaluación de los TC. 
 
+    **Context** 
+       
+        :model:  Una instancia de la plantilla ECC en donde se guardan los datos de la evaluación.
+        :form_class:  Formulario para la realizar la evaluación del TC.
+        :success_url:  Al ser exitoso la evaluación redirecciona al index del usuario.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de realizar la evaluación.
+    
+    **Template:**
+
+        :template_name: Template en donde está el formulario para la realizar la evaluación.
+            
+    '''    
     model = plantillaECC
     form_class = eccForm
     template_name = "plantillas_evaluacion/plantilla1.html"
@@ -100,6 +118,25 @@ class plantilla1_evaluacion(LoginRequiredMixin,UpdateView):
         return context
 
 class plantilla2_evaluacion(LoginRequiredMixin,UpdateView):
+    ''' Clase UpdateView para realizar la evaluación de los TC. 
+
+    **Context** 
+       
+        :model:  Una instancia de la plantilla pruebasDX en donde se guardan los datos de la evaluación.
+        :form_class:  Formulario para la realizar la evaluación del TC.
+        :success_url:  Al ser exitoso la evaluación redirecciona al index del usuario.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de realizar la evaluación.
+    
+    **Template:**
+
+        :template_name: Template en donde está el formulario para la realizar la evaluación.
+            
+    '''
 
     model = plantillaPruebasDX
     form_class = pruebasDXForm
@@ -137,6 +174,25 @@ class plantilla2_evaluacion(LoginRequiredMixin,UpdateView):
         return context
 
 class plantilla3_evaluacion(LoginRequiredMixin,UpdateView):
+    ''' Clase UpdateView para realizar la evaluación de los TC. 
+
+    **Context** 
+       
+        :model:  Una instancia de la plantilla RS y MA en donde se guardan los datos de la evaluación.
+        :form_class:  Formulario para la realizar la evaluación del TC.
+        :success_url:  Al ser exitoso la evaluación redirecciona al index del usuario.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de realizar la evaluación.
+    
+    **Template:**
+
+        :template_name: Template en donde está el formulario para la realizar la evaluación.
+            
+    '''
 
     model = plantillaRSyMA
     form_class = RSyMAForm
@@ -174,6 +230,25 @@ class plantilla3_evaluacion(LoginRequiredMixin,UpdateView):
         return context
 
 class plantilla4_evaluacion(LoginRequiredMixin,UpdateView):
+    ''' Clase UpdateView para realizar la evaluación de los TC. 
+
+    **Context** 
+       
+        :model:  Una instancia de la plantilla SERIECASOS y CORTETRANSVERSAL en donde se guardan los datos de la evaluación.
+        :form_class:  Formulario para la realizar la evaluación del TC.
+        :success_url:  Al ser exitoso la evaluación redirecciona al index del usuario.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de realizar la evaluación.
+    
+    **Template:**
+
+        :template_name: Template en donde está el formulario para la realizar la evaluación.
+            
+    '''
 
     model = plantillaSERIECASOSyCORTETRANSVERSAL
     form_class = plantillaSCyCTForm
@@ -211,6 +286,25 @@ class plantilla4_evaluacion(LoginRequiredMixin,UpdateView):
         return context
 
 class plantilla5_evaluacion(LoginRequiredMixin,UpdateView):
+    ''' Clase UpdateView para realizar la evaluación de los TC. 
+
+    **Context** 
+       
+        :model:  Una instancia de la plantilla CASOS y CONTROLES en donde se guardan los datos de la evaluación.
+        :form_class:  Formulario para la realizar la evaluación del TC.
+        :success_url:  Al ser exitoso la evaluación redirecciona al index del usuario.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de realizar la evaluación.
+    
+    **Template:**
+
+        :template_name: Template en donde está el formulario para la realizar la evaluación.
+            
+    '''
 
     model = plantillaCASOSyCONTROLES
     form_class = casosyControlesForm
@@ -248,6 +342,25 @@ class plantilla5_evaluacion(LoginRequiredMixin,UpdateView):
         return context
 
 class plantilla6_evaluacion(LoginRequiredMixin,UpdateView):
+    ''' Clase UpdateView para realizar la evaluación de los TC. 
+
+    **Context** 
+       
+        :model:  Una instancia de la plantilla COHORTES en donde se guardan los datos de la evaluación.
+        :form_class:  Formulario para la realizar la evaluación del TC.
+        :success_url:  Al ser exitoso la evaluación redirecciona al index del usuario.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de realizar la evaluación.
+    
+    **Template:**
+
+        :template_name: Template en donde está el formulario para la realizar la evaluación.
+            
+    '''
 
     model = plantillaCOHORTES
     form_class = cohortesForm

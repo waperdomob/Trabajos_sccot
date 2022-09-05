@@ -8,6 +8,12 @@ from Evaluador.models import plantillaCASOSyCONTROLES, plantillaCOHORTES, planti
 LIBRE_OFFICE = r"C:\Program Files\LibreOffice\program\soffice.exe"
 
 def convert_to_pdf_wd(input_docx, out_folder):
+    """Función para convertir word a pdf desde windows
+
+    Args:
+        input_docx (string): ruta y nombre del documento a convertir
+        out_folder (string): ruta en donde se guardará el nuevo doc pdf
+    """    
     p = Popen([LIBRE_OFFICE, '--headless', '--convert-to', 'pdf', '--outdir',
                out_folder, input_docx])
     print([LIBRE_OFFICE, '--convert-to', 'pdf', input_docx])
@@ -15,6 +21,12 @@ def convert_to_pdf_wd(input_docx, out_folder):
 
 
 def generate_pdf_linux(doc_path, path, timeout=None):
+    """Función para convertir word a pdf desde linux
+
+    Args:
+        doc_path (string): ruta y nombre del documento a convertir
+        out_folder (string): ruta en donde se guardará el nuevo doc pdf
+    """  
     args = ['libreoffice', '--headless', '--convert-to', 'pdf', '--outdir', path, doc_path]
 
     process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)

@@ -15,6 +15,10 @@ var date_now = new moment().format('YYYY-MM-DD');
 
 
 function generarReporte() {
+    /* 
+    Función para enviar los datos al backend y cargar la información en la tabla de reporte.
+    NOTA: Todos los archivos js también hay que crearlos en la carpeta staticfiles en el mismo orden para que funcionen en producción.
+    */
     select_autor = $('select[name="autor"]').val();
     select_curso = $('select[name="curso"]').val();
     select_institucion = $('select[name="institucion"]').val();
@@ -36,7 +40,6 @@ function generarReporte() {
     parameters['institucion'] = select_institucion;
     parameters['tipoTrabajo'] = select_tipoTrabajo;
        
-    console.log(parameters)
 
     tblSale = $('#data').DataTable({
         responsive: true,
@@ -136,7 +139,10 @@ function generarReporte() {
 }
 
 $(function () {
-
+     /* 
+        Función que recibe los eventos en el template de reporte de trabajos científicos.
+        Algunos eventos son: Select2 para autor, institución y curso; evento de click en el botonEnviar.
+    */
     $('.select2').select2({
         theme: "bootstrap4",
         language: 'es',

@@ -99,7 +99,7 @@ class registrarTrabajo(CreateView):
 
     **Context**  
 
-        :Trabajos:  Una instancia del modelo Trabajos creado en la app trabajosC.
+        :model:  Una instancia del modelo Trabajos creado en la app trabajosC.
 
     **Methods**
 
@@ -124,7 +124,9 @@ class registrarTrabajo(CreateView):
         return super().dispatch(request, *args, **kwargs)
         
     def post(self, request, *args, **kwargs):
-        '''Recibe todas las peticiones post enviadas por AJAX desde el formulario de registro de trabajos.'''
+        '''Recibe todas las peticiones post enviadas por AJAX desde el formulario de registro de trabajos.
+        Se hacen validaciones de busqueda, creación de nuevos datos y registro de trabajo científico.
+        '''
         data = {}
         manus_path = 'media/manuscritos'
         manus_path2 = 'media/otros'
@@ -336,7 +338,6 @@ class registrarTrabajo(CreateView):
         context['trabajo_instiForm'] = Trabajo_InstitucionesForm()
         context['trabajo_palbForm'] = Trabajo_PalabrasForm()
         context['trabajo_keywForm'] = Trabajo_KeywordsForm()
-        #context['search_form'] = SearchForm()
         context['action'] = 'add'
         
 
@@ -347,7 +348,7 @@ class TrabajoDetailView(LoginRequiredMixin,IsSuperuserMixin,DetailView):
 
     **Context**    
 
-        ``trabajos``:  Una instancia modelo del Trabajos creado en la app trabajosC`.
+        ``model``:  Una instancia del modelo Trabajos creado en la app trabajosC`.
 
     **Template:**
 
@@ -529,6 +530,14 @@ class ManuscritoEdit(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
 
 @login_required
 def promedioTC(request, pk):
+    """Función para calcular el promedio del trabajo científico.
+
+    Args:
+        pk (int): Llave primaria del trabajo científico en el cual se realizará el cálculo del promedio.
+
+    Returns:
+        redirect: redirecciona a la url 'detalleTrabajo', en donde se ve la información del TC.
+    """    
     notaf = 0
     cant_notas=0
     trabajo = Trabajos.objects.get(id=pk)

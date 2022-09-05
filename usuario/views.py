@@ -18,6 +18,24 @@ from usuario.mixins import IsSuperuserMixin
 
 
 class UserListView(LoginRequiredMixin,IsSuperuserMixin, ListView):
+    ''' Clase ListView para listar los usuarios. 
+
+    **Context** 
+       
+        :model:  Una instancia del modelo Usuario .
+        
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al template para listar usuarios.
+    
+    **Template:**
+
+        :template_name: Template en donde se listarán a los usuarios.
+            
+    '''
     model = User
     template_name = 'list.html'
 
@@ -45,6 +63,10 @@ class UserUpdate(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
         :``get_context_data(self, **kwargs)``: 
         
             Envio del context al formulario de editar usuarios.
+        
+        :``post(self, request, *args, **kwargs)``: 
+        
+            Recibe los datos enviados desde el formulario y realiza la validación correspondiente para realizar el update.
     
     **Template:**
 
@@ -87,6 +109,28 @@ class UserUpdate(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
         return context
 
 class UserDeleteView(LoginRequiredMixin, IsSuperuserMixin, DeleteView):
+    ''' Clase DeleteView para 'eliminar' usuarios. 
+    :Nota: Un usuario no es eliminado, solo se desactiva.
+
+    **Context** 
+       
+        :model:  Una instancia del modelo Usuario .
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de eliminación usuarios.
+
+        :``post(self, request, *args, **kwargs)``: 
+        
+            Recibe los datos enviados desde el formulario y realiza la validación correspondiente para realizar el update(delete).
+    
+    **Template:**
+
+        :template_name: Formulario para la eliminación de un usuario.
+            
+    '''
     model = User
     template_name = 'user_deleteModal.html'
 

@@ -15,6 +15,10 @@ function getCookie(name) {
 }
 const csrftoken = getCookie('csrftoken');
 
+/* 
+Función para alerta de error.
+NOTA: Todos los archivos js también hay que crearlos en la carpeta staticfiles en el mismo orden para que funcionen en producción.
+*/
 function message_error(obj) {
     var html = '';
     if (typeof (obj) === 'object') {
@@ -32,6 +36,9 @@ function message_error(obj) {
         icon: 'error'
     });
 }
+/* 
+Función para alerta de de success.
+*/
 function message_success(obj) {
     var html = '';
     if (typeof (obj) === 'object') {
@@ -49,6 +56,10 @@ function message_success(obj) {
         icon: 'success'
     });
 }
+
+/* 
+Función para enviar formularios via ajax.
+*/
 function submit_with_ajax(url, title, content, parameters, callback) {
     $.confirm({
         theme: 'material',
@@ -96,6 +107,9 @@ function submit_with_ajax(url, title, content, parameters, callback) {
         }
     })
 }
+/* 
+Función para enviar el formulario de trabajo via ajax.
+*/
 function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
     $.confirm({
         theme: 'material',

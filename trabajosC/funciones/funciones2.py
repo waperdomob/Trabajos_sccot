@@ -10,11 +10,25 @@ import smtplib
 from trabajosC.models import Autores
 
 def handle_uploaded_file(ruta,f):
+    """Función para guardar un mansucrito.
+
+    Args:
+        ruta (string): dirección (path) en donde se guardará el documento
+        f (file): documento a guardar
+    """    
     with open("media/"+ruta+f.name, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
-def email_confirmTC(nombre,correo,trabajo, curso):    
+def email_confirmTC(nombre,correo,trabajo, curso):
+    """Función para enviar correo de confirmación de recibido del trabajo científico.
+
+    Args:
+        nombre (string): Nombre del autor de correspondencia del TC
+        correo (string): correo electrónico del autor de correspondencia del TC
+        trabajo (string): Título del TC
+        curso (string): Curso en el que se registró el TC
+    """        
     try:
         sent_to = correo
         # Establecemos conexion con el servidor smtp de gmail
@@ -41,6 +55,14 @@ def email_confirmTC(nombre,correo,trabajo, curso):
         print(e)
 
 def send_emailEvaluador(nombre,usuario,password,correo):    
+    """Función para enviar correo de asignación de evaluador.
+
+    Args:
+        nombre (string): Nombre del doctor asignado como evaluador.
+        usuario (string): Usuario creado para que pueda acceder a la plataforma.
+        password (string): Contraseña asignada al usuario.
+        correo (string): correo del destinatario.
+    """    
     try:
         sent_to = correo
         # Establecemos conexion con el servidor smtp de gmail
@@ -66,7 +88,14 @@ def send_emailEvaluador(nombre,usuario,password,correo):
     except Exception as e:
         print(e)
 
-def send_emailEvaluador2(nombre,usuario,correo):    
+def send_emailEvaluador2(nombre,usuario,correo): 
+    """Función para enviar correo en caso de que el usuario ya esté creado
+
+    Args:
+        nombre (string): Nombre del doctor asignado como evaluador
+        usuario (string): Usuario para acceder a la plataforma
+        correo (string): correo del destinatario.
+    """       
     try:
         sent_to = correo
         # Establecemos conexion con el servidor smtp de gmail
@@ -93,6 +122,14 @@ def send_emailEvaluador2(nombre,usuario,correo):
         print(e)
 
 def crear_user(idEvaluador):
+    """Función para crear un usuario. 
+
+    Args:
+        idEvaluador (int): id del doctor que será el evaluador de un TC.
+
+    Returns:
+        object: Objeto de la clase User que tendrá toda la información del usuario creado.
+    """    
     username_encontrado = False
     User = get_user_model()
     new_user = Autores.objects.get(id=idEvaluador)
