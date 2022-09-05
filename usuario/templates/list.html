@@ -72,12 +72,22 @@
                 <td>{{object.email}}</td>
                 <td>{{object.date_joined}}</td>
                 <td>{{object.last_login}}</td>
-                <td>{{object.is_active}}</td>
-                <td>
-                    <div class="d-grid gap-2 col-12 mx-auto"> 
-                        <button onclick="abrir_modal_editUser(`{% url 'user:user_update' object.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>Edit</button>
-                        <button onclick="abrir_modal_deleteUser(`{% url 'user:user_delete' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-file-pen"></i>Delete</button>
-                    </div>
+                <td>                    
+                    {% if object.is_active == 1 %}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked disabled>
+                      </div>
+                    {% else %}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" disabled>
+                      </div>
+                    {% endif %}
+                        
+                </td>
+                <td> 
+                        <button onclick="abrir_modal_editUser(`{% url 'user:user_update' object.id %}`)" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
+                        <button onclick="abrir_modal_deleteUser(`{% url 'user:user_delete' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-trash-alt"></i></i></button>
+                    
                     
                 </td>
             </tr>

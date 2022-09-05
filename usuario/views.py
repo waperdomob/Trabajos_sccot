@@ -96,8 +96,12 @@ class UserDeleteView(LoginRequiredMixin, IsSuperuserMixin, DeleteView):
 
     def post(self, request,pk, *args, **kwargs):        
         object = User.objects.get(id=pk)
-        object.is_active = False
-        object.save()
+        if object.is_superuser:
+            messages.warning(request, 'El usuario es administrador, no se puede eliminar!')
+            return redirect('user:user_list')
+        else:
+            object.is_active = False
+            object.save()
         messages.success(request, 'El usuario ha sido desactivado!')
         return redirect('user:user_list')
 

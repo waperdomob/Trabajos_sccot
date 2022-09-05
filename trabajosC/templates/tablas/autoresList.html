@@ -39,8 +39,8 @@
                         {% else %}
                             <a href="{% url 'eliminarEvaluador' object.id %}" class="btn btn-primary">Olvidar Evaluador</a>
                         {% endif %}
-                        <button onclick="abrir_modal_editAutor(`{% url 'edit_Autor' object.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i>Edit</button>
-                        <button onclick="abrir_modal_deleteAutor(`{% url 'delete_Autor' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-box-archive"></i>Delete</button>
+                        <button onclick="abrir_modal_editAutor(`{% url 'edit_Autor' object.id %}`)" class="btn btn-success"> <i class="fa-solid fa-file-pen"></i></button>
+                        <button onclick="abrir_modal_deleteAutor(`{% url 'delete_Autor' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-trash-alt"></i></button>
                     </div>
                     
                 </td>

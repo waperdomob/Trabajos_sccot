@@ -27,10 +27,8 @@
                 <td>{{object.ciudad}}</td>
                
                 <td>
-                    <div class="d-grid gap-2 col-12 mx-auto"> 
-                        
-                        <button onclick="abrir_modal_editCurso(`{% url 'edit_Curso' object.id %}`)" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button><button onclick="abrir_modal_deleteCurso(`{% url 'delete_Curso' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-box-archive"></i></button>
-                    </div>
+                        <button onclick="abrir_modal_editCurso(`{% url 'edit_Curso' object.id %}`)" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
+                        <button onclick="abrir_modal_deleteCurso(`{% url 'delete_Curso' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-trash-alt"></i></button>                    
                     
                 </td>
             </tr>

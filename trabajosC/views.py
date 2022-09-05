@@ -437,9 +437,9 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
                             messages.error(request, 'No se puede asignar evaluador, ya fue asignado previamente')
                             return redirect('inicio')
                     id_evaluador= Autores.objects.get(id=form.cleaned_data['evaluador'].id)
-                    if id_evaluador.id != 2885 and id_evaluador.id !=2886:
-                        messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
-                        return redirect('inicio')
+                    #if id_evaluador.id != 2885 and id_evaluador.id !=2886:
+                    #    messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
+                    #    return redirect('inicio')
                     user = crear_user(id_evaluador.id)
                     asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
                     ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
