@@ -75,7 +75,7 @@
         <div class="container">
             <ul>
                 <li style="font-size: 20px;">
-                    <a href="media/{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
+                    <a href="/media{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
                 </li>
             </ul>
         </div>
@@ -88,7 +88,7 @@
         <h5>Otros: </h5>
         <ul>
             <li>
-                <a href="media/{{ anexo.tabla }}">{{anexo.tituloT}}</a>
+                <a href="/media{{ anexo.tabla }}">{{anexo.tituloT}}</a>
             </li>
         </ul>
         {% endfor %}

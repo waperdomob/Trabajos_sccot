@@ -7,6 +7,7 @@
       <div class="modal-body contenedorModal" id="modal-body" >
           <div id="alert-box"></div>
           <div class="container" >
+            <p>Calificación de (1 a 5) Siendo 1 la menor calificación y 5 la mayor </p>
             <form action="{% url 'evaluacionPruebasDX' object.id %}" method="post">{% csrf_token %}
               {% for row in form %}              
               <div class=" container" >

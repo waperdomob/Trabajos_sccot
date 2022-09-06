@@ -29,6 +29,9 @@ class trabajos_has_institucionesAdmin(admin.ModelAdmin):
 class trabajos_has_palabrasAdmin(admin.ModelAdmin):
     list_display=("id","trabajo","palabra",)
 
+class trabajos_has_evaluadoresAdmin(admin.ModelAdmin):
+    list_display=("id","trabajo","evaluador","calificacion",)
+
 class trabajos_has_keywordsAdmin(admin.ModelAdmin):
     list_display=("id","trabajo","keyword",)
 class trabajosAdmin(admin.ModelAdmin):
@@ -50,6 +53,8 @@ admin.site.register(Trabajos_has_autores,trabajos_has_autoresAdmin)
 admin.site.register(Trabajos_has_instituciones,trabajos_has_institucionesAdmin)
 admin.site.register(Trabajos_has_palabras,trabajos_has_palabrasAdmin)
 admin.site.register(Trabajos_has_Keywords,trabajos_has_keywordsAdmin)
+admin.site.register(Trabajos_has_evaluadores,trabajos_has_evaluadoresAdmin)
+
 
 
 
