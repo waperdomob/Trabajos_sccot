@@ -11,6 +11,7 @@
               <th >Especialidad</th>
               <th >Fecha Inscripción</th>
               <th >Fecha Cierre</th>
+              <th >Fecha límite para realizar evaluación</th>
               <th >Ciudad</th>
               <th ><center>Acciones</center></th>
          </tr>
@@ -24,6 +25,8 @@
                 <td>{{object.especialidad}}</td>
                 <td>{{object.fecha_inicio|date:'d-m-Y'}}</td>
                 <td>{{object.fecha_fin|date:'d-m-Y'}}</td>
+                <td>{{object.fecha_fin_evaluacion|date:'d-m-Y'}}</td>
+
                 <td>{{object.ciudad}}</td>
                
                 <td>

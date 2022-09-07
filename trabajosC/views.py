@@ -405,6 +405,7 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
     def post(self, request, *args, **kwargs):
         Trabajo = self.object
         nombre_curso = Trabajo.curso.nombre_curso
+        fecha_fin_eva = Trabajo.curso.fecha_fin_evaluacion
         manus_path = 'media/manuscritos/'+nombre_curso+'/'
         out_folder = 'media/manuscritos/'+nombre_curso
         contador=0
@@ -441,7 +442,7 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
                     #if id_evaluador.id != 2885 and id_evaluador.id !=2886:
                     #    messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
                     #    return redirect('inicio')
-                    user = crear_user(id_evaluador.id)
+                    user = crear_user(id_evaluador.id,fecha_fin_eva)
                     asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
                     ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
                     consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)

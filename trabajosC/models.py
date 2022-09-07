@@ -64,6 +64,7 @@ class Cursos(models.Model):
     nombre_curso = models.CharField(max_length=45)
     especialidad = models.ForeignKey(Especialidades, on_delete=models.CASCADE)
     fecha_inicio = models.DateField()
+    fecha_fin_evaluacion = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField()
     ciudad = models.CharField(max_length=45)
     user = models.ForeignKey(User,on_delete=models.CASCADE)

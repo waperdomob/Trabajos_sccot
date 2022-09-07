@@ -54,7 +54,7 @@ def email_confirmTC(nombre,correo,trabajo, curso):
     except Exception as e:
         print(e)
 
-def send_emailEvaluador(nombre,usuario,password,correo):    
+def send_emailEvaluador(nombre,usuario,password,correo,fecha_fin_eva):    
     """Función para enviar correo de asignación de evaluador.
 
     Args:
@@ -62,6 +62,7 @@ def send_emailEvaluador(nombre,usuario,password,correo):
         usuario (string): Usuario creado para que pueda acceder a la plataforma.
         password (string): Contraseña asignada al usuario.
         correo (string): correo del destinatario.
+        fecha_fin_eva (date): Fecha final para realizar evaluación del TC.
     """    
     try:
         sent_to = correo
@@ -78,7 +79,7 @@ def send_emailEvaluador(nombre,usuario,password,correo):
         mensaje['To']=sent_to
         mensaje['Subject']="Evaluación Trabajo científico."
         
-        content = render_to_string("emailEval.html", {'nombre': nombre, 'usuario':usuario, 'password':password,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
+        content = render_to_string("emailEval.html", {'nombre': nombre, 'usuario':usuario, 'password':password,'fecha_fin':fecha_fin_eva,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
         mensaje.attach(MIMEText(content,'html'))
         # Envio del mensaje
         mailServer.sendmail(settings.EMAIL_HOST_USER,
@@ -88,13 +89,14 @@ def send_emailEvaluador(nombre,usuario,password,correo):
     except Exception as e:
         print(e)
 
-def send_emailEvaluador2(nombre,usuario,password,correo): 
+def send_emailEvaluador2(nombre,usuario,password,correo,fecha_fin_eva): 
     """Función para enviar correo en caso de que el usuario ya esté creado
 
     Args:
         nombre (string): Nombre del doctor asignado como evaluador
         usuario (string): Usuario para acceder a la plataforma
         correo (string): correo del destinatario.
+        fecha_fin_eva (date): Fecha final para realizar evaluación del TC.
     """       
     try:
         sent_to = correo
@@ -111,7 +113,7 @@ def send_emailEvaluador2(nombre,usuario,password,correo):
         mensaje['To']=sent_to
         mensaje['Subject']="Evaluación Trabajo científico."
         
-        content = render_to_string("emailEval2.html", {'nombre': nombre, 'usuario':usuario,'password':password,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
+        content = render_to_string("emailEval2.html", {'nombre': nombre, 'usuario':usuario,'password':password,'fecha_fin':fecha_fin_eva,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
         mensaje.attach(MIMEText(content,'html'))
         # Envio del mensaje
         mailServer.sendmail(settings.EMAIL_HOST_USER,
@@ -121,11 +123,12 @@ def send_emailEvaluador2(nombre,usuario,password,correo):
     except Exception as e:
         print(e)
 
-def crear_user(idEvaluador):
+def crear_user(idEvaluador,fecha_fin_eva):
     """Función para crear un usuario. 
 
     Args:
         idEvaluador (int): id del doctor que será el evaluador de un TC.
+        fecha_fin_eva (date): Fecha final para realizar evaluación del TC.
 
     Returns:
         object: Objeto de la clase User que tendrá toda la información del usuario creado.
@@ -169,13 +172,13 @@ def crear_user(idEvaluador):
         )
         passwd = "TCsccot2022"
         usuario.set_password(passwd)
-        send_emailEvaluador(new_user.Nombres, nombre_usuario, passwd,correo)
+        send_emailEvaluador(new_user.Nombres, nombre_usuario, passwd,correo,fecha_fin_eva)
         usuario.save()
         print("usuario creado.")
         return usuario
     else:
         passwd = "TCsccot2022"
         for value in user_check:
-            send_emailEvaluador2(value.first_name, value.username,passwd,correo)
+            send_emailEvaluador2(value.first_name, value.username,passwd,correo,fecha_fin_eva)
             print("usuario existente.")
             return value

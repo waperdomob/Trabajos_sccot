@@ -13,11 +13,13 @@ class CursosForm(ModelForm):
 
         labels = {
             'nombre_curso':'Nombre del curso',
+            'fecha_fin_evaluacion': 'Fecha límite para realizar evaluación',
         }
         widgets = {
 	        'nombre_curso':forms.TextInput(attrs={'class':'form-control'}),
 	        'especialidad':forms.Select(attrs={'class':'form-control'}),
             'fecha_inicio':forms.DateInput(format=('%Y-%m-%d'),attrs={'class':'form-control','type': 'date'}),
+            'fecha_fin_evaluacion':forms.DateInput(format=('%Y-%m-%d'),attrs={'class':'form-control','type':'date'}),
             'fecha_fin':forms.DateInput(format=('%Y-%m-%d'),attrs={'class':'form-control','type':'date'}),
             'ciudad':forms.TextInput(attrs={'class':'form-control'}),
         }
