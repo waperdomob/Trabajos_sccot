@@ -12,8 +12,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from statistics import mean
 
-from Evaluador.forms import RSyMAForm, casosyControlesForm, cohortesForm, eccForm, plantillaSCyCTForm, pruebasDXForm
-from Evaluador.models import plantillaCASOSyCONTROLES, plantillaCOHORTES, plantillaECC, plantillaPruebasDX, plantillaRSyMA, plantillaSERIECASOSyCORTETRANSVERSAL
+from Evaluador.forms import RSyMAForm, casosyControlesForm, cohortesForm, eccForm, epForm, plantillaSCyCTForm, pruebasDXForm
+from Evaluador.models import plantillaCASOSyCONTROLES, plantillaCOHORTES, plantillaECC, plantillaEP, plantillaPruebasDX, plantillaRSyMA, plantillaSERIECASOSyCORTETRANSVERSAL
 
 from trabajosC.models import Autores, Manuscritos, Trabajos, Trabajos_has_evaluadores
 
@@ -38,13 +38,14 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
             Evaluador= Autores.objects.filter(role_id=2)
             context = super().get_context_data(**kwargs)
             context['trabajos'] = Trabajos_has_evaluadores.objects.all().select_related('trabajo')      
-            context['manuscritos'] = Manuscritos.objects.filter(Q(tituloM__icontains= 'pdf')|Q(tituloM__icontains= 'pptx')).select_related('trabajo')
+            context['manuscritos'] = Manuscritos.objects.select_related('trabajo')
             context['plantillaECC'] = plantillaECC.objects.all().select_related('trabajo')
             context['plantillaPruebasDX'] = plantillaPruebasDX.objects.all().select_related('trabajo')
             context['plantillaRSyMA'] = plantillaRSyMA.objects.all().select_related('trabajo')
             context['plantillaSERIECASOSyCORTETRANSVERSAL'] = plantillaSERIECASOSyCORTETRANSVERSAL.objects.all().select_related('trabajo')
             context['plantillaCASOSyCONTROLES'] = plantillaCASOSyCONTROLES.objects.all().select_related('trabajo')
             context['plantillaCOHORTES'] = plantillaCOHORTES.objects.all().select_related('trabajo')
+            context['plantillaEP'] = plantillaEP.objects.all().select_related('trabajo')
 
             return context
         else:
@@ -52,13 +53,14 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
             context = super().get_context_data(**kwargs)
             context['trabajos'] = Trabajos_has_evaluadores.objects.filter(evaluador_id = Evaluador.id).select_related('trabajo')
             
-            context['manuscritos'] = Manuscritos.objects.filter(tituloM__icontains= 'pdf').select_related('trabajo')
+            context['manuscritos'] = Manuscritos.objects.select_related('trabajo')
             context['plantillaECC'] = plantillaECC.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaPruebasDX'] = plantillaPruebasDX.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaRSyMA'] = plantillaRSyMA.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaSERIECASOSyCORTETRANSVERSAL'] = plantillaSERIECASOSyCORTETRANSVERSAL.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaCASOSyCONTROLES'] = plantillaCASOSyCONTROLES.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaCOHORTES'] = plantillaCOHORTES.objects.filter(user=self.request.user).select_related('trabajo')
+            context['plantillaEP'] = plantillaEP.objects.all().filter(user=self.request.user).select_related('trabajo')
             return context
 
 class plantilla1_evaluacion(LoginRequiredMixin,UpdateView):
@@ -389,6 +391,61 @@ class plantilla6_evaluacion(LoginRequiredMixin,UpdateView):
                     obj.fecha_evaluacion= datetime.today()
                     obj.save()
                 
+            
+            return redirect('misEvaluaciones')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)        
+        context['title'] = 'Realizar Evaluación'
+        context['autores'] = Autores.objects.all()        
+        return context
+
+class plantillaEP_evaluacion(LoginRequiredMixin,UpdateView):
+    ''' Clase UpdateView para realizar la evaluación de los TC. 
+
+    **Context** 
+       
+        :model:  Una instancia de la plantilla de E-Poster en donde se guardan los datos de la evaluación.
+        :form_class:  Formulario para la realizar la evaluación del TC.
+        :success_url:  Al ser exitoso la evaluación redirecciona al index del usuario.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de realizar la evaluación.
+    
+    **Template:**
+
+        :template_name: Template en donde está el formulario para la realizar la evaluación.
+            
+    '''
+
+    model = plantillaEP
+    form_class = epForm
+    template_name = "plantillas_evaluacion/plantillaEP.html"
+    success_url = reverse_lazy('misEvaluaciones')
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            trabajo_Evaluador = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.object.trabajo_id)
+            for obj in trabajo_Evaluador:
+                if obj.evaluador.email == self.object.user.email:
+                    d = form.cleaned_data
+                    total = sum(d[x] for x in d) 
+                    promedio = round(total*100/(len(d)*10), 2)
+                    plantilla = form.save(commit=False)
+                    plantilla.calificacion = promedio
+                    plantilla.save()
+                    obj.calificacion= promedio
+                    obj.fecha_evaluacion= datetime.today()
+                    obj.save()                
             
             return redirect('misEvaluaciones')
 

@@ -17,5 +17,5 @@ class reportForm(forms.Form):
     curso = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control select2'}))
     autor = forms.CharField(widget=forms.Select(attrs={'class': 'form-control select2'}))
     institucion = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control select2'}))
-    tipoTrabajo = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),choices=CATEGORIAS)
+    tipoTrabajo = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control select2'}),choices=CATEGORIAS)
     

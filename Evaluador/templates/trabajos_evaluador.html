@@ -59,7 +59,7 @@
         
         {% for trabajo in  trabajos %}
         {% if not trabajo.calificacion %}
-            <div class="row ${1| ,row-cols-2,row-cols-3, auto,justify-content-md-center,|}">
+            <div class="row ${1| ,row-col-2,row-col-3, auto,justify-content-md-center,|}">
                 <div class="col-7">
                     <h5>Titulo: <small>{{trabajo.trabajo.titulo}}</small> </h5>
                     <h5>Tipo de trabajo: <small>{{trabajo.trabajo.tipo_trabajo}}</small> </h5>
@@ -82,12 +82,12 @@
                     <br>                    
                 </div> 
                 <div class="d-grid gap-2 col-12 mx-auto">
-                    <a href="../../media/{{manuscrito.manuscrito}}" download="../../media/{{manuscrito.manuscrito}}" class="btn btn-success" id="btn-download"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>  
+                    <a href="../../media/{{manuscrito.manuscrito}}" download="../../media/{{manuscrito.manuscrito}}" class="btn btn-primary" id="btn-download"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>  
                 </div>
             </div>
-            {% elif manuscrito.trabajo_id == trabajo.trabajo.id and "pptx" in manuscrito.tituloM %}
+            {% elif manuscrito.trabajo_id == trabajo.trabajo.id and "mp4" in manuscrito.tituloM or "mov" in manuscrito.tituloM or "avi" in manuscrito.tituloM %}
             <div class="d-grid gap-2 col-2 mx-auto">
-                <a href="../../media/{{manuscrito.manuscrito}}" class="btn btn-success"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>
+                <a href="../../media/{{manuscrito.manuscrito}}" class="btn btn-primary"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>
             </div>
             {%  endif    %}
             {% endfor %}
@@ -98,15 +98,15 @@
     </div>
     <div class="container">
         <h2><center>Trabajos Evaluados</center></h2><br><br>
-        <div class="frow ">
+        <div class="row ">
         {% for trabajo in  trabajos %}
         {% if  trabajo.calificacion %}
-                <div class="col col4 ">
+                <div class="col-lg-4 col-md-6  col-12">
                     <h5>Titulo: <small>{{trabajo.trabajo.titulo}}</small> </h5>
                     <h5>Tipo de trabajo: <small>{{trabajo.trabajo.tipo_trabajo}}</small> </h5>
                     <h5>Calificación: <small>{{trabajo.calificacion}}</small> </h5>
                     <h5>Fecha de Calificación: <small>{{trabajo.fecha_evaluacion    }}</small> </h5>
-
+                    <hr>
                 </div>          
         {% endif %}                                     
         {% endfor %} 
@@ -123,6 +123,8 @@
     <div class="modal fade " id="plantilla5_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     </div>
     <div class="modal fade " id="plantilla6_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    </div>
+    <div class="modal fade " id="plantillaEP_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     </div>
 {% endblock %}
 
@@ -159,6 +161,10 @@
                     $(this).modal('show');
                 });
             }
-            
+            function abrir_modal_plantillaEP(url){
+                $('#plantillaEP_Modal').load(url, function (){
+                    $(this).modal('show');
+                });
+            }
         </script>
 {% endblock %}

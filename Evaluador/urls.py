@@ -15,6 +15,8 @@ urlpatterns = [
     path('evaluacionSCyCT/<int:pk>/',views.plantilla4_evaluacion.as_view(), name='evaluacionSCyCT'),
     path('evaluacionCyC/<int:pk>/',views.plantilla5_evaluacion.as_view(), name='evaluacionCyC'),
     path('evaluacionCOHORTES/<int:pk>/',views.plantilla6_evaluacion.as_view(), name='evaluacionCOHORTES'),
+    path('evaluacionEP/<int:pk>/',views.plantillaEP_evaluacion.as_view(), name='evaluacionEP'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

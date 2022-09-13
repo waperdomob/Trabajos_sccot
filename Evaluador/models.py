@@ -16,6 +16,20 @@ CALIFICACION = (
         (5, '5'),
 
     )
+    
+CALIFICACIONEP = (
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5'),
+        (6, '6'),
+        (7, '7'),
+        (8, '8'),
+        (9, '9'),
+        (10, '10'),
+
+    )
 CHOICES = (
     ('SI', 'SI'),
     ('No', 'No')
@@ -190,3 +204,15 @@ class plantillaCOHORTES(models.Model):
     def __str__(self):
         return self.trabajo.titulo
 
+class plantillaEP(models.Model):
+    titulo=models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
+    material_metodos=models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
+    resultado=models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
+    discusion=models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
+    interes_academico = models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
+    calificacion = models.FloatField(null=True, blank=True)
+    trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.trabajo.titulo

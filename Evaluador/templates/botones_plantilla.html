@@ -29,3 +29,8 @@
         <button onclick="abrir_modal_plantilla6(`{% url 'evaluacionCOHORTES' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}
+    {% for plantilla in  plantillaEP %}
+    {% if plantilla.trabajo_id == trabajo.trabajo.id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
+        <button onclick="abrir_modal_plantillaEP(`{% url 'evaluacionEP' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+    {% endif %}
+    {% endfor %}

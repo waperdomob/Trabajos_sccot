@@ -58,7 +58,7 @@
     </div>
 </div>
 <br>
-    <div class="card card-primary">
+<div class="card card-primary">
     <div class="card-header">
         <h3 class="card-title">
             <i class="fas fa-chart-bar"></i>
@@ -66,32 +66,32 @@
         </h3>
     </div>
     <div class="card-body">
-        <div class="frow">
+        <div class="row">
             <!-- <div class="col-lg-4">
                 <div class="form-group">
                     <label for="">Rango de fechas:</label>
                     {{form.date_range}}
                 </div>
             </div> -->
-            <div class="col col3">
+            <div class="col-lg-3 col-md-6 col-12">
                 <div class="form-group">
                     <label for="">Curso:</label>
                     {{form.curso}}
                 </div>
             </div>
-            <div class="col col3">
+            <div class="col-lg-3 col-md-6 col-12">
                 <div class="form-group">
                     <label for="">Autor:</label>
                     {{form.autor}}
                 </div>
             </div>
-            <div class="col col3">
+            <div class="col-lg-3 col-md-6 col-12">
                 <div class="form-group">
                     <label for="">Institucion:</label>
                     {{form.institucion}}
                 </div>
             </div>
-            <div class="col col3">
+            <div class="col-lg-3 col-md-6 col-12">
                 <div class="form-group">
                     <label for="">Tipo de Trabajo:</label>
                     {{form.tipoTrabajo}}
@@ -100,6 +100,9 @@
         </div>
         <div class="card-footer">
             <button type="button" class="aplybtn btn btn-primary btn-flat" id="botonEnviar" name="filtrar"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
+            <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                <i class="fas fa-sync"></i> Refrescar
+            </a>
         </div>
         <hr>
         <table class="table table-bordered" id="data">
@@ -124,11 +127,6 @@
             
             </tbody>
         </table>
-    </div>
-    <div class="card-footer">
-            <a href="{{ list_url }}" class="btn btn-success btn-flat">
-                <i class="fas fa-sync"></i> Refrescar
-            </a>
     </div>
 </div>
 {% endblock %}

@@ -14,6 +14,7 @@ CHOICES =(
     ("plantillaSCyCTForm", "Plantilla Serie casos y Corte Transversal"),
     ("casosyControlesForm", "Plantilla Casos y Controles"),
     ("cohortesForm", "Plantilla Cohortes"),
+    ("epForm", "Plantilla EPoster"),
 )
 
 class eccForm(ModelForm):
@@ -339,3 +340,25 @@ class cohortesForm(ModelForm):
 class selectPlantillaForm(forms.Form):
     required_css_class = 'textLabel'
     plantilla = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),label="Plantillas de calificación",choices=CHOICES)
+
+class epForm(ModelForm):
+    class Meta:
+        model= plantillaEP
+        exclude = ('trabajo','user','calificacion')
+
+        labels = {
+            'titulo' : 'Título e introducción',
+            'material_metodos' : 'Material y métodos',
+            'resultado':'Resultados',
+            'discusion':'Discusión',
+            'interes_academico': 'Interés académico y originalidad',
+        }
+        widgets = {
+
+            'titulo':forms.Select(attrs={'class':'form-control'}),
+            'material_metodos':forms.Select(attrs={'class':'form-control'}),
+            'resultado':forms.Select(attrs={'class':'form-control'}),
+            'discusion':forms.Select(attrs={'class':'form-control'}),
+            'interes_academico':forms.Select(attrs={'class':'form-control'}),
+            
+        }

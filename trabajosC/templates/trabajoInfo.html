@@ -5,20 +5,6 @@
 {% load static %}
 
 {%  block styles %}
-    <style>
-        .frow {
-        clear:both;
-        padding:10px;
-        --bs-gutter-x: 1.5rem;
-        --bs-gutter-y: 0;
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: calc(var(--bs-gutter-y) * -1);
-        margin-right: calc(var(--bs-gutter-x) * -.5);
-        margin-left: calc(var(--bs-gutter-x) * -.5);
-    }
-    
-    </style>
     <link rel="stylesheet" href="{% static 'css/index_evaluador.css' %}"/>
 {%  endblock  %}
 {%  block content   %}
@@ -69,6 +55,38 @@
         <br>
         <p>{{ object.resumen_ingles}}</p>
         <br>
+        <div class="row">
+            <div class="col-md-6 col-12 " style="border-radius: 3px; box-shadow: 3px 3px 0px 0px #0798ec50;">
+                {% if palabrasC  %}
+                <h5><center>Palabras Claves</center></h5>
+                <div class="frow">
+                    {% for palabra in  palabrasC %}
+                        <div class="col col4 ">
+                            <h6><li>{{palabra.palabra}}</li></h6>
+                        </div>                                      
+                    {% endfor %} 
+                </div>
+                
+            {% endif %}
+            </div>
+            <div class="col-md-6 col-12" style="border-radius: 3px; box-shadow:  0px 3px 0px 0px #0798ec50;">   
+                {% if keywords  %}
+                <h5><center>Keywords</center></h5>
+                <div class="frow">
+                    {% for keyword in  keywords %}
+                        <div class="col col4 ">
+                            <h6><li>{{keyword.keyword}}</li> </h6>
+                        </div>                                      
+                    {% endfor %} 
+                </div>
+            {% endif %}
+            </div>
+        </div>
+        <br>
+        <div class="container">
+            
+        </div>
+        <br>
         {% if manuscritos %}
         <h5>Manuscritos: </h5>
         {% for manuscrito in manuscritos %}
@@ -99,9 +117,9 @@
         {% if evaluadores  %}
         <hr>
             <h2><center>Evaluadores asignados</center></h2>
-            <div class="frow">
+            <div class="row">
                 {% for evaluador in  evaluadores %}
-                    <div class="col col4 ">
+                    <div class="col-lg-4 col-md-6 col-12 ">
                         <h5>Nombre: <small>{{evaluador.evaluador}}</small> </h5>
                         <h5>Calificación: <small>{{evaluador.calificacion}}</small> </h5>
                         <h5>Fecha: <small>{{evaluador.fecha_evaluacion}}</small></h5>

@@ -366,6 +366,9 @@ class TrabajoDetailView(LoginRequiredMixin,IsSuperuserMixin,DetailView):
         context['manuscritos'] = Manuscritos.objects.filter(trabajo_id=self.kwargs['pk'])
         context['anexos'] = Tablas.objects.filter(trabajo_id=self.kwargs['pk'])
         context['evaluadores'] = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.kwargs['pk'] )
+        context['palabrasC'] = Trabajos_has_palabras.objects.filter(trabajo_id = self.kwargs['pk'] )
+        context['keywords'] = Trabajos_has_Keywords.objects.filter(trabajo_id = self.kwargs['pk'] )
+
         return context
  
 class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
@@ -418,6 +421,8 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
         file_name = os.path.splitext(manuscrito1.tituloM)[0]
         postfix=os.path.splitext(manuscrito1.tituloM)[1][1:]
         otros_autores = Trabajos_has_autores.objects.filter(trabajo_id = Trabajo.id)
+        previews_evaluadores = Trabajos_has_evaluadores.objects.filter(trabajo_id=Trabajo.id)
+
         if form.is_valid():
             if form.cleaned_data['evaluador'] == None:
                 messages.warning(request, 'No ha seleccionado a ningun Evaluador')
@@ -431,9 +436,8 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
             else:
                 for obj in otros_autores:
                     if obj.autor == form.cleaned_data['evaluador']:
-                        contador +=1          
+                        contador +=1
                 if contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and (postfix=='docx' or postfix=='doc'):                    
-                    previews_evaluadores = Trabajos_has_evaluadores.objects.filter(trabajo_id=Trabajo.id)
                     for prev_evl in previews_evaluadores:
                         if prev_evl.evaluador == form.cleaned_data['evaluador']:
                             messages.error(request, 'No se puede asignar evaluador, ya fue asignado previamente')
@@ -460,6 +464,29 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
                     T_has_E.save()
                     messages.success(request, 'Evaluador asignado con exito')
                 elif contador ==0 and Trabajo.Autor_correspondencia != form.cleaned_data['evaluador'] and postfix=='pptx' or postfix=='ppt' or postfix=='mp4' or postfix=='mov' or postfix=='avi':
+
+                    for prev_evl in previews_evaluadores:
+                        if prev_evl.evaluador == form.cleaned_data['evaluador']:
+                            messages.error(request, 'No se puede asignar evaluador, ya fue asignado previamente')
+                            return redirect('inicio')
+                    id_evaluador= Autores.objects.get(id=form.cleaned_data['evaluador'].id)
+                    #if id_evaluador.id != 2885 and id_evaluador.id !=2886:
+                    #    messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
+                    #    return redirect('inicio')
+                    user = crear_user(id_evaluador.id,fecha_fin_eva)
+                    asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
+                    if 'ppt' in postfix:                        
+                        ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
+                        consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)
+                        if not consultaM:         
+                            #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
+                            generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)
+                            obj = Manuscritos(
+                                tituloM = file_name+'.pdf',
+                                manuscrito = ruta_pdf,
+                                trabajo = Trabajo
+                                )
+                            obj.save(force_insert=True )
                     T_has_E = form.save(commit=False)
                     T_has_E.trabajo_id = Trabajo.id
                     T_has_E.save()
@@ -544,9 +571,12 @@ def promedioTC(request, pk):
     trabajo = Trabajos.objects.get(id=pk)
     evaluaciones= Trabajos_has_evaluadores.objects.filter(trabajo_id=pk)
     for nota in evaluaciones:
-        cant_notas+=1
-        notaf = notaf+nota.calificacion
-    
+        if nota.calificacion:
+            cant_notas+=1
+            notaf = notaf+nota.calificacion
+    if cant_notas==0:
+        notaf = None
+        return redirect('detalleTrabajo',pk)
     notaf = round(notaf/cant_notas,2)
     trabajo.calificacion = notaf
     trabajo.modificado_por_id = request.user.id
