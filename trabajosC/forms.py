@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from django import forms
 from django.db.models import Q
 
@@ -213,7 +214,9 @@ class KeywordForm(ModelForm):
         return data
 
 class TrabajosCForm(ModelForm):
-
+    def __init__(self,*args,**kwargs):
+        super (TrabajosCForm,self ).__init__(*args,**kwargs) 
+        self.fields['curso'].queryset = Cursos.objects.filter(fecha_fin__gte=datetime.today())
     class Meta:
         model= Trabajos
         exclude = ['fecha_inicio','fecha_fin','fecha_modificacion','evaluador','modificado_por']

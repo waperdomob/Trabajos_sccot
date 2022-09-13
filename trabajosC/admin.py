@@ -11,6 +11,10 @@ class institucionesAdmin(admin.ModelAdmin):
 class rolesAdmin(admin.ModelAdmin):
     list_display=("role",)
 
+class palabrasAdmin(ImportExportModelAdmin):
+    list_display=("palabra",)
+class keywordsAdmin(ImportExportModelAdmin):
+    list_display=("keyword",)
 class especialidadesAdmin(admin.ModelAdmin):
     list_display=("especialidad",)
 
@@ -44,6 +48,8 @@ class manusAdmin(admin.ModelAdmin):
 
 admin.site.register(Instituciones,institucionesAdmin)
 admin.site.register(Roles,rolesAdmin)
+admin.site.register(Palabras_claves,palabrasAdmin)
+admin.site.register(Keywords,keywordsAdmin)
 admin.site.register(Especialidades,especialidadesAdmin)
 admin.site.register(Cursos,cursosAdmin)
 admin.site.register(Autores,autoresAdmin)
