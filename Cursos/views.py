@@ -43,7 +43,15 @@ class registrarCurso(LoginRequiredMixin,IsSuperuserMixin,CreateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    
+    def post(self, request, *args, **kwargs):
+        curso = CursosForm(request.POST)
+        user_id=int(self.request.session.get('_auth_user_id'))
+        if curso.is_valid():
+            new_curso = curso.save(commit=False)
+            new_curso.user_id = user_id
+            new_curso.save()
+            return redirect('inicio')
+
     def get_context_data(self, **kwargs):        
         context = {}
         context['title'] = 'Registrar Curso'
