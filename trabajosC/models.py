@@ -135,7 +135,7 @@ class Trabajos_has_evaluadores(models.Model):
     calificacion = models.FloatField(null=True, blank=True)
     fecha_evaluacion = models.DateField(null=True, blank=True)
     def __str__(self):
-        return self.evaluador.get_full_name
+        return self.trabajo.titulo
         
 class Trabajos_has_autores(models.Model):
     """

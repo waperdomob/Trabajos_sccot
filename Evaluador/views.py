@@ -12,8 +12,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from statistics import mean
 
-from Evaluador.forms import RSyMAForm, casosyControlesForm, cohortesForm, eccForm, epForm, plantillaSCyCTForm, pruebasDXForm
-from Evaluador.models import plantillaCASOSyCONTROLES, plantillaCOHORTES, plantillaECC, plantillaEP, plantillaPruebasDX, plantillaRSyMA, plantillaSERIECASOSyCORTETRANSVERSAL
+from Evaluador.forms import RSyMAForm, casosyControlesForm, cohortesForm, eccForm, epForm, plantillaSCForm, plantillacorteTrasversalForm, pruebasDXForm
+from Evaluador.models import plantillaCASOSyCONTROLES, plantillaCOHORTES, plantillaECC, plantillaEP, plantillaPruebasDX, plantillaRSyMA, plantillaSERIECASOS, plantillaCORTETRANSVERSAL
 
 from trabajosC.models import Autores, Manuscritos, Trabajos, Trabajos_has_evaluadores
 
@@ -42,9 +42,10 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
             context['plantillaECC'] = plantillaECC.objects.all().select_related('trabajo')
             context['plantillaPruebasDX'] = plantillaPruebasDX.objects.all().select_related('trabajo')
             context['plantillaRSyMA'] = plantillaRSyMA.objects.all().select_related('trabajo')
-            context['plantillaSERIECASOSyCORTETRANSVERSAL'] = plantillaSERIECASOSyCORTETRANSVERSAL.objects.all().select_related('trabajo')
+            context['plantillaSERIECASOS'] = plantillaSERIECASOS.objects.all().select_related('trabajo')
             context['plantillaCASOSyCONTROLES'] = plantillaCASOSyCONTROLES.objects.all().select_related('trabajo')
             context['plantillaCOHORTES'] = plantillaCOHORTES.objects.all().select_related('trabajo')
+            context['plantillaCORTETRANSVERSAL'] = plantillaCORTETRANSVERSAL.objects.all().select_related('trabajo')
             context['plantillaEP'] = plantillaEP.objects.all().select_related('trabajo')
 
             return context
@@ -57,9 +58,10 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
             context['plantillaECC'] = plantillaECC.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaPruebasDX'] = plantillaPruebasDX.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaRSyMA'] = plantillaRSyMA.objects.filter(user=self.request.user).select_related('trabajo')
-            context['plantillaSERIECASOSyCORTETRANSVERSAL'] = plantillaSERIECASOSyCORTETRANSVERSAL.objects.filter(user=self.request.user).select_related('trabajo')
+            context['plantillaSERIECASOS'] = plantillaSERIECASOS.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaCASOSyCONTROLES'] = plantillaCASOSyCONTROLES.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaCOHORTES'] = plantillaCOHORTES.objects.filter(user=self.request.user).select_related('trabajo')
+            context['plantillaCORTETRANSVERSAL'] = plantillaCORTETRANSVERSAL.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaEP'] = plantillaEP.objects.all().filter(user=self.request.user).select_related('trabajo')
             return context
 
@@ -236,7 +238,7 @@ class plantilla4_evaluacion(LoginRequiredMixin,UpdateView):
 
     **Context** 
        
-        :model:  Una instancia de la plantilla SERIECASOS y CORTETRANSVERSAL en donde se guardan los datos de la evaluación.
+        :model:  Una instancia de la plantilla SERIECASOS en donde se guardan los datos de la evaluación.
         :form_class:  Formulario para la realizar la evaluación del TC.
         :success_url:  Al ser exitoso la evaluación redirecciona al index del usuario.
         
@@ -252,8 +254,8 @@ class plantilla4_evaluacion(LoginRequiredMixin,UpdateView):
             
     '''
 
-    model = plantillaSERIECASOSyCORTETRANSVERSAL
-    form_class = plantillaSCyCTForm
+    model = plantillaSERIECASOS
+    form_class = plantillaSCForm
     template_name = "plantillas_evaluacion/plantilla4.html"
     success_url = reverse_lazy('misEvaluaciones')
 
@@ -400,6 +402,61 @@ class plantilla6_evaluacion(LoginRequiredMixin,UpdateView):
         context['autores'] = Autores.objects.all()        
         return context
 
+class plantilla7_evaluacion(LoginRequiredMixin,UpdateView):
+    ''' Clase UpdateView para realizar la evaluación de los TC. 
+
+    **Context** 
+       
+        :model:  Una instancia de la plantilla CORTETRANSVERSAL en donde se guardan los datos de la evaluación.
+        :form_class:  Formulario para la realizar la evaluación del TC.
+        :success_url:  Al ser exitoso la evaluación redirecciona al index del usuario.
+        
+    **Methods**
+        
+        :``get_context_data(self, **kwargs)``: 
+        
+            Envio del context al formulario de realizar la evaluación.
+    
+    **Template:**
+
+        :template_name: Template en donde está el formulario para la realizar la evaluación.
+            
+    '''
+
+    model = plantillaCORTETRANSVERSAL
+    form_class = plantillacorteTrasversalForm
+    template_name = "plantillas_evaluacion/plantilla7.html"
+    success_url = reverse_lazy('misEvaluaciones')
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            trabajo_Evaluador = Trabajos_has_evaluadores.objects.filter(trabajo_id = self.object.trabajo_id)
+            for obj in trabajo_Evaluador:
+                if obj.evaluador.email == self.object.user.email:
+                    d = form.cleaned_data
+                    d.pop('comite_de_etica')
+                    total = sum(d[x] for x in d) 
+                    promedio = round(total*100/(len(d)*5), 2)
+                    plantilla = form.save(commit=False)
+                    plantilla.calificacion = promedio
+                    plantilla.save()
+                    obj.calificacion= promedio
+                    obj.fecha_evaluacion= datetime.today()
+                    obj.save()
+                
+            return redirect('misEvaluaciones')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)        
+        context['title'] = 'Realizar Evaluación'
+        context['autores'] = Autores.objects.all()        
+        return context
 class plantillaEP_evaluacion(LoginRequiredMixin,UpdateView):
     ''' Clase UpdateView para realizar la evaluación de los TC. 
 

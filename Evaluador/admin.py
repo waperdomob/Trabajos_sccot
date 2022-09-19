@@ -11,9 +11,11 @@ class plantillaPruebasDXAdmin(admin.ModelAdmin):
 class plantillaRSyMAAdmin(admin.ModelAdmin):
     list_display=("calificacion","trabajo","user")
 
-class plantillaSERIECASOSyCORTETRANSVERSALAdmin(admin.ModelAdmin):
+class plantillaSERIECASOSAdmin(admin.ModelAdmin):
     list_display=("calificacion","trabajo","user")
 
+class plantillaCORTETRANSAdmin(admin.ModelAdmin):
+    list_display=("calificacion","trabajo","user")
 class plantillaCASOSyCONTROLESAdmin(admin.ModelAdmin):
     list_display=("calificacion","trabajo","user")
 
@@ -23,6 +25,7 @@ class plantillaCOHORTESAdmin(admin.ModelAdmin):
 admin.site.register(plantillaECC,plantillaECCAdmin)
 admin.site.register(plantillaPruebasDX,plantillaPruebasDXAdmin)
 admin.site.register(plantillaRSyMA,plantillaRSyMAAdmin)
-admin.site.register(plantillaSERIECASOSyCORTETRANSVERSAL,plantillaSERIECASOSyCORTETRANSVERSALAdmin)
-admin.site.register(plantillaCASOSyCONTROLES,plantillaCASOSyCONTROLESAdmin)
+admin.site.register(plantillaSERIECASOS,plantillaSERIECASOSAdmin)
+admin.site.register(plantillaCORTETRANSVERSAL,plantillaSERIECASOSAdmin)
+admin.site.register(plantillaCASOSyCONTROLES,plantillaCORTETRANSAdmin)
 admin.site.register(plantillaCOHORTES,plantillaCOHORTESAdmin)

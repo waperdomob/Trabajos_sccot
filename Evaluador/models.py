@@ -119,7 +119,7 @@ class plantillaRSyMA(models.Model):
 
     objects = models.Manager()
 
-class plantillaSERIECASOSyCORTETRANSVERSAL(models.Model):
+class plantillaSERIECASOS(models.Model):
     titulo=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     Resumen_estructurado=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     Palabras_claves=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
@@ -195,6 +195,33 @@ class plantillaCOHORTES(models.Model):
     peprfce=models.IntegerField(choices=CALIFICACION,default=1,blank=False, help_text='Discusión')
     sarclr =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     lrcdpcr =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    asevc =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    avear =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    calificacion = models.FloatField(null=True, blank=True)
+    trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.trabajo.titulo
+
+class plantillaCORTETRANSVERSAL(models.Model):
+    titulo=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    Resumen_estructurado=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    Palabras_claves=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    Descripcion_de_justificacion=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    Descripcion_de_objetivos = models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    daprpi = models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    comite_de_etica=models.CharField(max_length=2,choices=CHOICES,blank=False,default='SI', help_text='Métodos')
+    def_muestra=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    ecs=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    spsiGT=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    dve =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    pea=models.IntegerField(choices=CALIFICACION,default=1,blank=False, help_text='Resultados')
+    dcdp =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    rsapps=models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    peprfce=models.IntegerField(choices=CALIFICACION,default=1,blank=False, help_text='Discusión')
+    sarclr =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
+    lrcdpcr =models.IntegerField(choices=CALIFICACION,default=1,blank=False,)
     asevc =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     avear =models.IntegerField(choices=CALIFICACION,default=1,blank=False)
     calificacion = models.FloatField(null=True, blank=True)

@@ -3,7 +3,7 @@ from subprocess import  Popen
 from django.conf import settings
 
 from Evaluador.forms import eccForm
-from Evaluador.models import plantillaCASOSyCONTROLES, plantillaCOHORTES, plantillaECC, plantillaPruebasDX, plantillaRSyMA, plantillaSERIECASOSyCORTETRANSVERSAL, plantillaEP
+from Evaluador.models import plantillaCASOSyCONTROLES, plantillaCOHORTES, plantillaECC, plantillaPruebasDX, plantillaRSyMA, plantillaSERIECASOS, plantillaEP, plantillaCORTETRANSVERSAL
 
 LIBRE_OFFICE = r"C:\Program Files\LibreOffice\program\soffice.exe"
 
@@ -39,8 +39,10 @@ def asignar_plantilla(nombre,Trabajo, User):
         plantillaPruebasDX.objects.create(trabajo=Trabajo, user= User)
     elif nombre == "RSyMAForm":
         plantillaRSyMA.objects.create(trabajo=Trabajo, user= User)
-    elif nombre == "plantillaSCyCTForm":
-        plantillaSERIECASOSyCORTETRANSVERSAL.objects.create(trabajo=Trabajo, user= User)
+    elif nombre == "plantillaSCForm":
+        plantillaSERIECASOS.objects.create(trabajo=Trabajo, user= User)
+    elif nombre == "plantillaCTForm":
+        plantillaCORTETRANSVERSAL.objects.create(trabajo=Trabajo, user= User)
     elif nombre == "casosyControlesForm":
         plantillaCASOSyCONTROLES.objects.create(trabajo=Trabajo, user= User)
     elif nombre == "cohortesForm":

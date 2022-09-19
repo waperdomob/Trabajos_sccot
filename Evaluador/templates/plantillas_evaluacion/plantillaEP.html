@@ -7,7 +7,9 @@
       <div class="modal-body contenedorModal" id="modal-body" >
           <div id="alert-box"></div>
           <div class="container" >
-            <p>Por favor califique de uno (1) a diez (10) Siendo 1 la menor calificación y 10 la mayor </p>
+            <div class="container  !align !spacing">
+              <p >Apreciado colega, a continuación encuentra el formato de calificación. Le solicitamos leer cuidadosamente el texto y calificar cada item  entre 1 y 10 mediante el menú desplegable correspondiente. La calificación final se obtendrá del promedio de puntaje de cada pregunta</p>
+            </div>
             <form action="{% url 'evaluacionEP' object.id %}" method="post">{% csrf_token %}
               {% for row in form %}              
               <div class=" container" >
