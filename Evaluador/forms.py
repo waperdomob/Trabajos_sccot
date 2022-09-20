@@ -24,10 +24,10 @@ class eccForm(ModelForm):
         exclude = ('trabajo','user','calificacion')
 
         labels = {
-            'titulo' : 'Titulo',
+            'titulo' : 'Título',
             'Resumen_estructurado' : 'Resumen estructurado',
             'Palabras_claves':'Palabras claves',
-            'Descripcion_de_justificacion':'Descripción de justificación',
+            'Descripcion_de_justificacion':'Descripción de la justificación',
             'Descripcion_de_objetivos': 'Descripción de objetivos',
             'daprpi': 'Diseño adecuado para responder pregunta de investigación',
             'pcmeISE':'Presentación clara de manejo de equipo ise',
@@ -43,7 +43,7 @@ class eccForm(ModelForm):
             'dcdp':'Descripción completa de demografía de los participantes',
             'rsapps':'Reporte de sujetos que no aceptaron participar o se perdieron en el seguimiento',
             'peprfce':'Pruebas estadísticas pertinentes reportadas en forma concreta pero explícita',
-            'sarclr':'Suficiente análisis de los resultados, comparación con la literatura mas reciente',
+            'sarclr':'Suficiente análisis de los resultados, comparación con la literatura más reciente',
             'lrcdpcr':'Las referencias citadas son discutidas y puestas en contexto con los resultados',
             'asevc':'Análisis de sesgos, efecto de variables de confusión',
             'avear':'Análisis de la validez externa (aplicabilidad) de los resultados',
@@ -82,10 +82,10 @@ class pruebasDXForm(ModelForm):
         exclude = ('trabajo','user','calificacion')
 
         labels = {
-            'titulo' : 'Titulo',
+            'titulo' : 'Título',
             'Resumen_estructurado' : 'Resumen estructurado',
             'Palabras_claves':'Palabras claves',
-            'Descripcion_de_justificacion':'Descripción de justificación',
+            'Descripcion_de_justificacion':'Descripción de la justificación',
             'Descripcion_de_objetivos': 'Descripción de objetivos',
             'daprpi': 'Diseño adecuado para responder pregunta de investigación',
             'comite_de_etica':'Comité de ética',
@@ -134,10 +134,10 @@ class RSyMAForm(ModelForm):
         exclude = ('trabajo','user','calificacion')
 
         labels = {
-            'titulo' : 'Titulo',
+            'titulo' : 'Título',
             'Resumen_estructurado' : 'Resumen estructurado',
             'Palabras_claves':'Palabras claves',
-            'Descripcion_de_justificacion':'Descripción de justificación',
+            'Descripcion_de_justificacion':'Descripción de la justificación',
             'Descripcion_de_objetivos': 'Descripción de objetivos',
             'daprpi': 'Diseño adecuado para responder pregunta de investigación',
             'comite_de_etica':'Comité de ética',
@@ -186,10 +186,10 @@ class plantillaSCForm(ModelForm):
         exclude = ('trabajo','user','calificacion')
 
         labels = {
-            'titulo' : 'Titulo',
+            'titulo' : 'Título',
             'Resumen_estructurado' : 'Resumen estructurado',
             'Palabras_claves':'Palabras claves',
-            'Descripcion_de_justificacion':'Descripción de justificación',
+            'Descripcion_de_justificacion':'Descripción de la justificación',
             'Descripcion_de_objetivos': 'Descripción de objetivos',
             'daprpi': 'Diseño adecuado para responder pregunta de investigación',
             'comite_de_etica':'Comité de ética',
@@ -236,10 +236,10 @@ class plantillacorteTrasversalForm(ModelForm):
         exclude = ('trabajo','user','calificacion')
 
         labels = {
-            'titulo' : 'Titulo',
+            'titulo' : 'Título',
             'Resumen_estructurado' : 'Resumen estructurado',
             'Palabras_claves':'Palabras claves',
-            'Descripcion_de_justificacion':'Descripción de justificación',
+            'Descripcion_de_justificacion':'Descripción de la justificación',
             'Descripcion_de_objetivos': 'Descripción de objetivos',
             'daprpi': 'Diseño adecuado para responder pregunta de investigación',
             'comite_de_etica':'Comité de ética',
@@ -286,10 +286,10 @@ class casosyControlesForm(ModelForm):
         exclude = ('trabajo','user','calificacion')
 
         labels = {
-            'titulo' : 'Titulo',
+            'titulo' : 'Título',
             'Resumen_estructurado' : 'Resumen estructurado',
             'Palabras_claves':'Palabras claves',
-            'Descripcion_de_justificacion':'Descripción de justificación',
+            'Descripcion_de_justificacion':'Descripción de la justificación',
             'Descripcion_de_objetivos': 'Descripción de objetivos',
             'daprpi': 'Diseño adecuado para responder pregunta de investigación',
             'comite_de_etica':'Comité de ética',
@@ -340,10 +340,10 @@ class cohortesForm(ModelForm):
         exclude = ('trabajo','user','calificacion')
 
         labels = {
-            'titulo' : 'Titulo',
+            'titulo' : 'Título',
             'Resumen_estructurado' : 'Resumen estructurado',
             'Palabras_claves':'Palabras claves',
-            'Descripcion_de_justificacion':'Descripción de justificación',
+            'Descripcion_de_justificacion':'Descripción de la justificación',
             'Descripcion_de_objetivos': 'Descripción de objetivos',
             'daprpi': 'Diseño adecuado para responder pregunta de investigación',
             'Comite_de_etica':'Comité de ética',
@@ -399,7 +399,7 @@ class epForm(ModelForm):
 
         labels = {
             'titulo' : 'Título e introducción',
-            'material_metodos' : 'Material y métodos',
+            'material_metodos' : 'Materiales y métodos',
             'resultado':'Resultados',
             'discusion':'Discusión',
             'interes_academico': 'Interés académico y originalidad',
