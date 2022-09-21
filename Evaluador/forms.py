@@ -30,7 +30,7 @@ class eccForm(ModelForm):
             'Descripcion_de_justificacion':'Descripción de la justificación',
             'Descripcion_de_objetivos': 'Descripción de objetivos',
             'daprpi': 'Diseño adecuado para responder pregunta de investigación',
-            'pcmeISE':'Presentación clara de manejo de equipo ise',
+            'pcmeISE':'Presentación clara de manejo de equipoise',
             'comite_de_etica':'Comité de ética',
             'registroClinica':'Registrado en clinicaltrials.gov',
             'doeEvP':'Definición de orientación del estudio: explicativo vs. pragmático',

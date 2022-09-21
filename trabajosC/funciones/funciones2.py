@@ -141,11 +141,11 @@ def crear_user(idEvaluador,fecha_fin_eva):
     correo = new_user.email
 
     if len(nombres) == 1 and len(apellidos)>=2:
-        nombre_usuario = nombres[0:3]+apellidos[0]+apellidos[1][0]
+        nombre_usuario = nombres[0][0:3]+apellidos[0]+apellidos[1][0]
     elif len(nombres) == 1 and len(apellidos)==1:
-        nombre_usuario = nombres[0:3]+apellidos
+        nombre_usuario = nombres[0][0:3]+apellidos[0]
     elif len(nombres) >= 2 and len(apellidos)==1:
-        nombre_usuario = nombres[0][0]+nombres[1][0]+apellidos
+        nombre_usuario = nombres[0][0]+nombres[1][0]+apellidos[0]
     elif len(nombres) >=2 and len(apellidos)>=2:
         nombre_usuario = nombres[0][0]+nombres[1][0]+apellidos[0]+apellidos[1][0]
 
