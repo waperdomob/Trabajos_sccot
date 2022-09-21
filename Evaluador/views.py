@@ -1,9 +1,12 @@
 from datetime import datetime
 from django.contrib import messages
+from django.http import HttpResponse, JsonResponse
+from django.contrib.auth import get_user_model
+from django.db import transaction
 from django.shortcuts import render
 from django.views.generic import CreateView,DetailView,UpdateView
 from django.urls import  reverse_lazy
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView,View
 from django.db.models import Q,F, Sum
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -19,7 +22,7 @@ from trabajosC.models import Autores, Manuscritos, Trabajos, Trabajos_has_evalua
 
 # Create your views here.
 
-class TrabajosAsignados(LoginRequiredMixin,TemplateView):
+class TrabajosAsignados(LoginRequiredMixin,CreateView):
     """Clase TemplateView para ver la información de los trabajos científicos asignados al evaluador.
 
     **Context**    
@@ -33,10 +36,43 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
     model = Trabajos
     template_name = "trabajos_evaluador.html"
    
+    def post(self, request, *args, **kwargs):
+        data = {}
+        User = get_user_model()
+        try:
+            action = request.POST['action']
+            if action == 'realizar_evaluacion1':
+                with transaction.atomic():                    
+                    frmECC = eccForm(request.POST) 
+                    if frmECC.is_valid():
+                        trabajo_Evaluador = Trabajos_has_evaluadores.objects.filter(trabajo = frmECC.cleaned_data['trabajo'])
+                        user = User.objects.get(id = frmECC.cleaned_data['user'].id)
+                        for obj in trabajo_Evaluador:
+                            if obj.evaluador.email == user.email:
+                                d = frmECC.cleaned_data
+                                d.pop('comite_de_etica')
+                                d.pop('registroClinica')
+                                d.pop('trabajo')
+                                d.pop('user')
+                                total = sum(d[x] for x in d) 
+                                promedio = round(total*100/(len(d)*5), 2)
+                                plantilla = frmECC.save(commit=False)
+                                plantilla.calificacion = promedio
+                                plantilla.save()
+                                obj.calificacion= promedio
+                                obj.fecha_evaluacion= datetime.today()
+                                obj.save()
+                                print(obj)
+                    else:
+                        data['error'] = frmECC.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return redirect('misEvaluaciones')
+
     def get_context_data(self, **kwargs):
         if self.request.user.is_superuser:
             Evaluador= Autores.objects.filter(role_id=2)
-            context = super().get_context_data(**kwargs)
+            context = {}
             context['trabajos'] = Trabajos_has_evaluadores.objects.all().select_related('trabajo')      
             context['manuscritos'] = Manuscritos.objects.select_related('trabajo')
             context['plantillaECC'] = plantillaECC.objects.all().select_related('trabajo')
@@ -47,13 +83,22 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
             context['plantillaCOHORTES'] = plantillaCOHORTES.objects.all().select_related('trabajo')
             context['plantillaCORTETRANSVERSAL'] = plantillaCORTETRANSVERSAL.objects.all().select_related('trabajo')
             context['plantillaEP'] = plantillaEP.objects.all().select_related('trabajo')
-
+            context['action'] = 'add1'
             return context
         else:
             Evaluador = Autores.objects.get(email = self.request.user.email)     
-            context = super().get_context_data(**kwargs)
-            context['trabajos'] = Trabajos_has_evaluadores.objects.filter(evaluador_id = Evaluador.id).select_related('trabajo')
-            
+            context = {}
+
+            context['form1'] = eccForm()
+            context['form2'] = pruebasDXForm()
+            context['form3'] = RSyMAForm()
+            context['form4'] = plantillaSCForm()
+            context['form5'] = casosyControlesForm()
+            context['form6'] = cohortesForm()
+            context['form7'] = plantillacorteTrasversalForm()
+            context['formEP'] = epForm()
+
+            context['trabajos'] = Trabajos_has_evaluadores.objects.filter(evaluador_id = Evaluador.id).select_related('trabajo')            
             context['manuscritos'] = Manuscritos.objects.select_related('trabajo')
             context['plantillaECC'] = plantillaECC.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaPruebasDX'] = plantillaPruebasDX.objects.filter(user=self.request.user).select_related('trabajo')
@@ -63,6 +108,8 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
             context['plantillaCOHORTES'] = plantillaCOHORTES.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaCORTETRANSVERSAL'] = plantillaCORTETRANSVERSAL.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaEP'] = plantillaEP.objects.all().filter(user=self.request.user).select_related('trabajo')
+
+            context['action'] = 'add1'
             return context
 
 class plantilla1_evaluacion(LoginRequiredMixin,UpdateView):

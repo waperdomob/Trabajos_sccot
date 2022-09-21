@@ -99,13 +99,13 @@ DATABASES = {
             'sql_mode': 'traditional',
         },
         'NAME': 'trabajos',
-        'USER': 'wilmer',#para deploy
-        'PASSWORD':'vcc2022*WP',#para deploy
+        #'USER': 'wilmer',#para deploy
+        #'PASSWORD':'vcc2022*WP',#para deploy
         #para local
-        #'USER':'root',
-        #'PASSWORD':'',
-        #'HOST':'localhost',
-        #'PORT':'3306'
+        'USER':'root',
+        'PASSWORD':'',
+        'HOST':'localhost',
+        'PORT':'3306'
     }
 }
 

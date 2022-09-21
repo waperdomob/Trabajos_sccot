@@ -5,12 +5,26 @@
 {% load static %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/index_evaluador.css' %}"/>
+
+<link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
+<script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
 {% endblock %}
 {% block scripts %}
 <!--Fontawesome-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 <!---->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<script src="{% static 'lib/moment-2.25.3/moment-with-locales.js' %}"></script>
+<script src="{% static 'lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js' %}"></script>
+<link href="{% static 'lib/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet"/>
 
+<link href="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+<script src="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.js' %}"></script>
+<!-- Sweetalert2 -->
+<script src="{% static 'lib/sweetalert2-9.10.0/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'js/funciones.js' %}"></script>
+<script src="{% static 'js/evaluador.js' %}"></script>
 
 {% endblock %}
 {%  block content   %}
@@ -45,6 +59,7 @@
         </div>
       </nav>
     <br>
+        
     <div class="container ">
         
         {% if user.is_superuser %}
@@ -112,66 +127,15 @@
         {% endfor %} 
         </div>   
     </div>
-    <div class="modal fade " id="plantilla1_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
-    </div>
-    <div class="modal fade " id="plantilla2_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    </div>
-    <div class="modal fade " id="plantilla3_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    </div>
-    <div class="modal fade " id="plantilla4_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
-    </div>
-    <div class="modal fade " id="plantilla5_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    </div>
-    <div class="modal fade " id="plantilla6_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    </div>
-    <div class="modal fade " id="plantilla7_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    </div>
-    <div class="modal fade " id="plantillaEP_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    </div>
+    {% include 'plantillas_evaluacion/plantilla1.html' %}
+    {% include 'plantillas_evaluacion/plantilla2.html' %}
+    {% include 'plantillas_evaluacion/plantilla3.html' %}
+    {% include 'plantillas_evaluacion/plantilla4.html' %}
+    {% include 'plantillas_evaluacion/plantilla5.html' %}
+    {% include 'plantillas_evaluacion/plantilla6.html' %}
+    {% include 'plantillas_evaluacion/plantilla7.html' %}
+    {% include 'plantillas_evaluacion/plantillaEP.html' %}
 {% endblock %}
 
 {% block javascript %}
-       <script type="text/javascript">
-                              
-            function abrir_modal_plantilla1(url){
-                $('#plantilla1_Modal').load(url, function (){
-                    $(this).modal('show');
-                });
-            }
-            function abrir_modal_plantilla2(url){
-                $('#plantilla2_Modal').load(url, function (){
-                    $(this).modal('show');
-                });
-            }           
-            function abrir_modal_plantilla3(url){
-                $('#plantilla3_Modal').load(url, function (){
-                    $(this).modal('show');
-                });
-            }
-            function abrir_modal_plantilla4(url){
-                $('#plantilla4_Modal').load(url, function (){
-                    $(this).modal('show');
-                });
-            }
-            function abrir_modal_plantilla5(url){
-                $('#plantilla5_Modal').load(url, function (){
-                    $(this).modal('show');
-                });
-            }
-            function abrir_modal_plantilla6(url){
-                $('#plantilla6_Modal').load(url, function (){
-                    $(this).modal('show');
-                });
-            }
-            function abrir_modal_plantilla7(url){
-                $('#plantilla7_Modal').load(url, function (){
-                    $(this).modal('show');
-                });
-            }
-            function abrir_modal_plantillaEP(url){
-                $('#plantillaEP_Modal').load(url, function (){
-                    $(this).modal('show');
-                });
-            }
-        </script>
 {% endblock %}

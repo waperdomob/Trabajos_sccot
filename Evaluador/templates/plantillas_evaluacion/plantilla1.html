@@ -1,48 +1,55 @@
-<div class="modal-dialog modal-lg">
-    <div class="modal-content contenedor2" >
-      <div class="modal-header contenedorModal" >
-        <h5 class="modal-title" id="exampleModalLabel">Evaluar Trabajo: "{{object.trabajo}}"</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body contenedorModal" id="modal-body" >
-          <div id="alert-box"></div>
-          <div class="container" >
-            <div class="container  !align !spacing">
-              <p>Apreciado colega, a continuación encuentra el formato de calificación para un estudio de Experimento clínico controlado. Le solicitamos leer cuidadosamente el texto y calificar cada item  entre 0 y 5 mediante el menú desplegable correspondiente. La calificación final se obtendrá del promedio de puntaje de cada pregunta</p>
-            </div>
-            <form action="{% url 'evaluacionECC' object.id %}" method="post">{% csrf_token %}
-              {% for row in form %}              
-              <div class=" container" >
-                  <div class="grid-container" >
-                      {% if "¿Justificado por variables de interés?" in row.label_tag  %}
-                        <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">Tamaño de la muestra</p> 
-                      {% endif %}
-                      {% if "¿Justificado por variables de interés?" in row.label_tag or "Cálculo descrito en el manuscrito" in row.label_tag %}
-                          <div style="margin-left:20px" class="textLabel" for="{{ row.html_name }}"  >
-                            {{ row.label_tag }}
-                            <div class="container-md !justify !spacing">
+<div class="modal fade " id="plantilla1_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-y: scroll;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content contenedor2" >
+        <div class="modal-header contenedorModal" >
+          <h5 class="modal-title" id="exampleModalLabel">Evaluar Trabajo: "{{object.trabajo}}"</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body contenedorModal" id="modal-body" >
+            <div id="alert-box"></div>
+            <div class="container" >
+              <div class="container  !align !spacing">
+                <p>Apreciado colega, a continuación encuentra el formato de calificación para un estudio de Experimento clínico controlado. Le solicitamos leer cuidadosamente el texto y calificar cada item  entre 0 y 5 mediante el menú desplegable correspondiente. La calificación final se obtendrá del promedio de puntaje de cada pregunta.</p>
+              </div>              
+              <form  id="plantilla1_form" method="POST">
+                {% csrf_token %}
+                {% for row in form1 %}
+                <div class=" container" >
+                    <div class="grid-container" >
+                        {% if "¿Justificado por variables de interés?" in row.label_tag  %}
+                          <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">Tamaño de la muestra</p> 
+                        {% endif %}
+                        {% if "¿Justificado por variables de interés?" in row.label_tag or "Cálculo descrito en el manuscrito" in row.label_tag %}
+                            <div style="margin-left:20px" class="textLabel" for="{{ row.html_name }}"  >
+                              {{ row.label_tag }}
+                              <div class="container-md !justify !spacing">
+                                {{ row }}  
+                              </div>
+                            </div>
+                          {% elif "Trabajo" in row.label_tag or "User" in row.label_tag %}  
+                          {{ row }}
+                          {% else %}                        
+                            <div  class="grid-container" for="{{ row.html_name }}"  >
+                              {{ row.label_tag }}
                               {{ row }}  
                             </div>
-                          </div>
-                        {% else %}
-                          <div  class="grid-container" for="{{ row.html_name }}"  >
-                            {{ row.label_tag }}
-                            {{ row }}  
-                          </div>
-                        {% endif %} 
-                  </div>                                                         
-                      <p style="color: rgb(15, 139, 139); margin-top: 20px; text-align: center;font-size: larger;">{{ row.help_text }}</p>                      
-                      
-                  <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>                       
-              </div>
-              {% endfor %}
-              <br>
-              <div class="modal-footer contenedorModal">
-                  <button class="btn btn-success" type="submit" value="Update"> Calificar</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              </div>
-        </form>
+                          {% endif %} 
+                    </div>  
+                                                                        
+                        <p style="color: rgb(15, 139, 139); margin-top: 20px; text-align: center;font-size: larger;">{{ row.help_text }}</p>                      
+                        
+                    <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>                       
+                </div>
+                {% endfor %}
+                <br>
+                <input type="hidden" name="action" value="realizar_evaluacion1">
+                <div class="modal-footer contenedorModal">
+                    <button class="btn btn-success" type="submit" value="Update"> Calificar</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </form>
+            </div>
+        </div>
       </div>
-      
     </div>
 </div>

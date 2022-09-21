@@ -1,4 +1,5 @@
-<div class="modal-dialog modal-lg">
+<div class="modal fade " id="plantilla3_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content contenedor2" >
       <div class="modal-header contenedorModal" >
         <h5 class="modal-title" id="exampleModalLabel">Evaluar Trabajo: "{{object.trabajo}}"</h5>
@@ -10,8 +11,8 @@
             <div class="container  !align !spacing">
               <p>Apreciado colega, a continuación encuentra el formato de calificación para un estudio de Revisión sistemática y Metaanálisis. Le solicitamos leer cuidadosamente el texto y calificar cada item  entre 0 y 5 mediante el menú desplegable correspondiente. La calificación final se obtendrá del promedio de puntaje de cada pregunta</p>
             </div>            
-            <form action="{% url 'evaluacionRSyMA' object.id %}" method="post">{% csrf_token %}
-              {% for row in form %}              
+            <form action="" method="post">{% csrf_token %}
+              {% for row in form3 %}              
               <div class=" container" >
                   <div class="grid-container" >
                       <label  class="textLabel" for="{{ row.html_name }}"  >
@@ -28,8 +29,9 @@
                   <button class="btn btn-success" type="submit" value="Update"> Calificar</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               </div>
-        </form>
+            </form>
+          </div>      
       </div>
-      
     </div>
+  </div>
 </div>

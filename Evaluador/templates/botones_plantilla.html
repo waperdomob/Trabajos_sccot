@@ -1,41 +1,41 @@
     {% for plantilla in  plantillaECC  %}                
     {% if plantilla.trabajo_id == trabajo.trabajo_id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
         
-        <button onclick="abrir_modal_plantilla1(`{% url 'evaluacionECC' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+        <button  class="btn btn-success plantilla1BTN" type="button"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}
     {% for plantilla in  plantillaPruebasDX %}                
     {% if plantilla.trabajo_id == trabajo.trabajo.id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
-        <button onclick="abrir_modal_plantilla2(`{% url 'evaluacionPruebasDX' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+        <button  class="btn btn-success plantilla2BTN" type="button"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}
     {% for plantilla in  plantillaRSyMA %}                
     {% if plantilla.trabajo_id == trabajo.trabajo.id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
-        <button onclick="abrir_modal_plantilla3(`{% url 'evaluacionRSyMA' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+        <button  class="btn btn-success plantilla3BTN" type="button"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}
     {% for plantilla in  plantillaSERIECASOS %}
     {% if plantilla.trabajo_id == trabajo.trabajo.id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
-        <button onclick="abrir_modal_plantilla4(`{% url 'evaluacionSC' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+        <button class="btn btn-success plantilla4BTN" type="button"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}
     {% for plantilla in  plantillaCASOSyCONTROLES %}                
     {% if plantilla.trabajo_id == trabajo.trabajo.id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
-        <button onclick="abrir_modal_plantilla5(`{% url 'evaluacionCyC' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+        <button class="btn btn-success plantilla5BTN" type="button"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}
     {% for plantilla in  plantillaCOHORTES %}                
     {% if plantilla.trabajo_id == trabajo.trabajo.id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
-        <button onclick="abrir_modal_plantilla6(`{% url 'evaluacionCOHORTES' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+        <button class="btn btn-success plantilla6BTN" type="button"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}
     {% for plantilla in  plantillaCORTETRANSVERSAL %}
     {% if plantilla.trabajo_id == trabajo.trabajo.id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
-        <button onclick="abrir_modal_plantilla4(`{% url 'evaluacionCT' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+        <button class="btn btn-success plantilla7BTN" type="button"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}
     {% for plantilla in  plantillaEP %}
     {% if plantilla.trabajo_id == trabajo.trabajo.id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
-        <button onclick="abrir_modal_plantillaEP(`{% url 'evaluacionEP' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+        <button class="btn btn-success plantillaEPBTN" type="button"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}

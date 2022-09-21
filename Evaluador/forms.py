@@ -1,5 +1,8 @@
+from datetime import datetime
 from django import forms
 from django.db.models import Q
+
+from trabajosC.models import Trabajos_has_evaluadores
 
 from .models import *
 from django.forms import ModelForm
@@ -21,7 +24,7 @@ CHOICES =(
 class eccForm(ModelForm):
     class Meta:
         model= plantillaECC
-        exclude = ('trabajo','user','calificacion')
+        exclude = ('calificacion',)
 
         labels = {
             'titulo' : 'Título',
@@ -47,6 +50,8 @@ class eccForm(ModelForm):
             'lrcdpcr':'Las referencias citadas son discutidas y puestas en contexto con los resultados',
             'asevc':'Análisis de sesgos, efecto de variables de confusión',
             'avear':'Análisis de la validez externa (aplicabilidad) de los resultados',
+            'trabajo':'Trabajo',
+            'user':'User',
         }
         widgets = {
 
@@ -73,9 +78,11 @@ class eccForm(ModelForm):
             'lrcdpcr':forms.Select(attrs={'class':'form-control'}),
             'asevc':forms.Select(attrs={'class':'form-control'}),
             'avear':forms.Select(attrs={'class':'form-control'}),
-            
+            'trabajo':forms.Select(attrs={'class':'form-control','hidden':True}),
+            'user':forms.Select(attrs={'class':'form-control','hidden':True}),
         }
 
+    
 class pruebasDXForm(ModelForm):
     class Meta:
         model= plantillaPruebasDX

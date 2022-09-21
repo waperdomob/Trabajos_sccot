@@ -172,13 +172,13 @@ def crear_user(idEvaluador,fecha_fin_eva):
         )
         passwd = "TCsccot2022"
         usuario.set_password(passwd)
-        send_emailEvaluador(new_user.Nombres, nombre_usuario, passwd,correo,fecha_fin_eva)
+        #send_emailEvaluador(new_user.Nombres, nombre_usuario, passwd,correo,fecha_fin_eva)
         usuario.save()
         print("usuario creado.")
         return usuario
     else:
         passwd = "TCsccot2022"
         for value in user_check:
-            send_emailEvaluador2(value.first_name, value.username,passwd,correo,fecha_fin_eva)
+            #send_emailEvaluador2(value.first_name, value.username,passwd,correo,fecha_fin_eva)
             print("usuario existente.")
             return value

@@ -312,7 +312,7 @@ class registrarTrabajo(CreateView):
                         nombre = AutorP.get_full_name()
                         correo = AutorP.email
                         n_curso = trab.curso
-                        email_confirmTC(nombre, correo, trab.titulo,n_curso)
+                        #email_confirmTC(nombre, correo, trab.titulo,n_curso)
                         messages.success(request, 'Trabajo cargado con exito!')
 
 
@@ -443,16 +443,16 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
                             messages.error(request, 'No se puede asignar evaluador, ya fue asignado previamente')
                             return redirect('inicio')
                     id_evaluador= Autores.objects.get(id=form.cleaned_data['evaluador'].id)
-                    #if id_evaluador.id != 2885 and id_evaluador.id !=2886:
-                    #    messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
-                    #    return redirect('inicio')
+                    if id_evaluador.id != 2885 and id_evaluador.id !=2886:
+                        messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
+                        return redirect('inicio')
                     user = crear_user(id_evaluador.id,fecha_fin_eva)
                     asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
                     ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
                     consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)
                     if not consultaM:         
-                        #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                        generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)
+                        convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
+                        #generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)
                         obj = Manuscritos(
                             tituloM = file_name+'.pdf',
                             manuscrito = ruta_pdf,
@@ -470,17 +470,17 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
                             messages.error(request, 'No se puede asignar evaluador, ya fue asignado previamente')
                             return redirect('inicio')
                     id_evaluador= Autores.objects.get(id=form.cleaned_data['evaluador'].id)
-                    #if id_evaluador.id != 2885 and id_evaluador.id !=2886:
-                    #    messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
-                    #    return redirect('inicio')
+                    if id_evaluador.id != 2885 and id_evaluador.id !=2886:
+                        messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
+                        return redirect('inicio')
                     user = crear_user(id_evaluador.id,fecha_fin_eva)
                     asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
                     if 'ppt' in postfix:                        
                         ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
                         consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)
                         if not consultaM:         
-                            #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                            generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)
+                            convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
+                            #generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)
                             obj = Manuscritos(
                                 tituloM = file_name+'.pdf',
                                 manuscrito = ruta_pdf,
