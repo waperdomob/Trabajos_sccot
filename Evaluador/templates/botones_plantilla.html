@@ -31,7 +31,7 @@
     {% endfor %}
     {% for plantilla in  plantillaCORTETRANSVERSAL %}
     {% if plantilla.trabajo_id == trabajo.trabajo.id and not plantilla.calificacion and plantilla.user.email == trabajo.evaluador.email %}
-        <button onclick="abrir_modal_plantilla4(`{% url 'evaluacionCT' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
+        <button onclick="abrir_modal_plantilla7(`{% url 'evaluacionCT' plantilla.id %}`)" class="btn btn-success"> <i class="fa-solid fa-pen"></i>EVALUAR</button>
     {% endif %}
     {% endfor %}
     {% for plantilla in  plantillaEP %}
