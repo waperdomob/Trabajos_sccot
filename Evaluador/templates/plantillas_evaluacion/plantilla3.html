@@ -15,7 +15,7 @@
             <div class="container  !align !spacing">
               <p>Apreciado colega, a continuación encuentra el formato de calificación para un estudio de Revisión sistemática y Metaanálisis. <b>Le solicitamos leer cuidadosamente el texto y calificar cada item  entre 0 y 5 mediante el menú desplegable correspondiente.</b>  La calificación final se obtendrá del promedio de puntaje de cada pregunta</p>
             </div>            
-            <form action="{% url 'evaluacionRSyMA' object.id %}" method="post" name="frm1" id="frm1">{% csrf_token %}
+            <form action="{% url 'evaluacionRSyMA' object.id %}" method="post" name="frm3" id="frm3">{% csrf_token %}
               {% for row in form %}              
               <div class=" container" >
                   <div class="grid-container" >

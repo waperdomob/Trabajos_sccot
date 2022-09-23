@@ -383,7 +383,7 @@ class plantilla6_evaluacion(LoginRequiredMixin,UpdateView):
             for obj in trabajo_Evaluador:
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
-                    d.pop('comite_de_etica')
+                    d.pop('Comite_de_etica')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
