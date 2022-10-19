@@ -446,7 +446,7 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
                     #if id_evaluador.id != 2885 and id_evaluador.id !=2886:
                     #    messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
                     #    return redirect('inicio')
-                    user = crear_user(id_evaluador.id,fecha_fin_eva)
+                    user = crear_user(id_evaluador.id,fecha_fin_eva,Trabajo.titulo)
                     asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
                     ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"
                     consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)
@@ -473,7 +473,7 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
                     #if id_evaluador.id != 2885 and id_evaluador.id !=2886:
                     #    messages.error(request, 'Esta en entorno de pruebas, no puede asignar otro evaluador')
                     #    return redirect('inicio')
-                    user = crear_user(id_evaluador.id,fecha_fin_eva)
+                    user = crear_user(id_evaluador.id,fecha_fin_eva,Trabajo.titulo)
                     asignar_plantilla(plantillasF['plantilla'].value(),Trabajo,user)
                     if 'ppt' in postfix:                        
                         ruta_pdf = 'manuscritos/'+nombre_curso+'/'+file_name+".pdf"

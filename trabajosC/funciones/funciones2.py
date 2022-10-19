@@ -54,7 +54,7 @@ def email_confirmTC(nombre,correo,trabajo, curso):
     except Exception as e:
         print(e)
 
-def send_emailEvaluador(nombre,usuario,password,correo,fecha_fin_eva):    
+def send_emailEvaluador(nombre,usuario,password,correo,fecha_fin_eva,titulo):    
     """Función para enviar correo de asignación de evaluador.
 
     Args:
@@ -79,7 +79,7 @@ def send_emailEvaluador(nombre,usuario,password,correo,fecha_fin_eva):
         mensaje['To']=sent_to
         mensaje['Subject']="Evaluación Trabajo científico."
         
-        content = render_to_string("emailEval.html", {'nombre': nombre, 'usuario':usuario, 'password':password,'fecha_fin':fecha_fin_eva,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
+        content = render_to_string("emailEval.html", {'nombre': nombre, 'usuario':usuario, 'password':password,'fecha_fin':fecha_fin_eva,'titulo':titulo,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
         mensaje.attach(MIMEText(content,'html'))
         # Envio del mensaje
         mailServer.sendmail(settings.EMAIL_HOST_USER,
@@ -89,7 +89,7 @@ def send_emailEvaluador(nombre,usuario,password,correo,fecha_fin_eva):
     except Exception as e:
         print(e)
 
-def send_emailEvaluador2(nombre,usuario,password,correo,fecha_fin_eva): 
+def send_emailEvaluador2(nombre,usuario,password,correo,fecha_fin_eva,titulo): 
     """Función para enviar correo en caso de que el usuario ya esté creado
 
     Args:
@@ -113,7 +113,7 @@ def send_emailEvaluador2(nombre,usuario,password,correo,fecha_fin_eva):
         mensaje['To']=sent_to
         mensaje['Subject']="Evaluación Trabajo científico."
         
-        content = render_to_string("emailEval2.html", {'nombre': nombre, 'usuario':usuario,'password':password,'fecha_fin':fecha_fin_eva,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
+        content = render_to_string("emailEval2.html", {'nombre': nombre, 'usuario':usuario,'password':password,'fecha_fin':fecha_fin_eva,'titulo':titulo,'link':'https://trabajos.sccot.org'+settings.LOGOUT_REDIRECT_URL,'correosporte':'revistacolombiana@sccot.org.co'})
         mensaje.attach(MIMEText(content,'html'))
         # Envio del mensaje
         mailServer.sendmail(settings.EMAIL_HOST_USER,
@@ -123,7 +123,7 @@ def send_emailEvaluador2(nombre,usuario,password,correo,fecha_fin_eva):
     except Exception as e:
         print(e)
 
-def crear_user(idEvaluador,fecha_fin_eva):
+def crear_user(idEvaluador,fecha_fin_eva,titulo):
     """Función para crear un usuario. 
 
     Args:
@@ -172,13 +172,13 @@ def crear_user(idEvaluador,fecha_fin_eva):
         )
         passwd = "TCsccot2022"
         usuario.set_password(passwd)
-        send_emailEvaluador(new_user.Nombres, nombre_usuario, passwd,correo,fecha_fin_eva)
+        send_emailEvaluador(new_user.Nombres, nombre_usuario, passwd,correo,fecha_fin_eva,titulo)
         usuario.save()
         print("usuario creado.")
         return usuario
     else:
         passwd = "TCsccot2022"
         for value in user_check:
-            send_emailEvaluador2(value.first_name, value.username,passwd,correo,fecha_fin_eva)
+            send_emailEvaluador2(value.first_name, value.username,passwd,correo,fecha_fin_eva,titulo)
             print("usuario existente.")
             return value

@@ -108,6 +108,7 @@
                 <div class="col-lg-4 col-md-6  col-12">
                     <h5>Titulo: <small>{{trabajo.trabajo.titulo}}</small> </h5>
                     <h5>Tipo de trabajo: <small>{{trabajo.trabajo.tipo_trabajo}}</small> </h5>
+                    {% if user.is_superuser %}<h5>Evaluador: <small>{{trabajo.evaluador}}</small> </h5>{% endif %}
                     <h5>Calificación: <small>{{trabajo.calificacion}}</small> </h5>
                     <h5>Fecha de Calificación: <small>{{trabajo.fecha_evaluacion    }}</small> </h5>
                     <hr>

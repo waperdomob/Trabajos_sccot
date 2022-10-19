@@ -144,7 +144,7 @@ class Trabajos_has_autores(models.Model):
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
     autor = models.ForeignKey(Autores, on_delete=models.CASCADE, blank=True, null=True)
     def __str__(self):
-        return self.autor.get_full_name
+        return self.trabajo.titulo
         
 class Trabajos_has_instituciones(models.Model):
     """
