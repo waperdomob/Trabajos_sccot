@@ -20,7 +20,7 @@ def convert_to_pdf_wd(input_docx, out_folder):
     p.communicate()
 
 
-def generate_pdf_linux(doc_path, path, timeout=None):
+def generate_pdf_linux(doc_path, path):
     """Función para convertir word a pdf desde linux
 
     Args:
@@ -29,7 +29,7 @@ def generate_pdf_linux(doc_path, path, timeout=None):
     """  
     args = ['libreoffice', '--headless', '--convert-to', 'pdf', '--outdir', path, doc_path]
 
-    process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
+    process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 def asignar_plantilla(nombre,Trabajo, User):
     

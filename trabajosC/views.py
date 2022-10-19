@@ -452,7 +452,7 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
                     consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)
                     if not consultaM:         
                         #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                        generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)
+                        generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder)
                         obj = Manuscritos(
                             tituloM = file_name+'.pdf',
                             manuscrito = ruta_pdf,
@@ -480,7 +480,7 @@ class AsignarEvaluadorTC(LoginRequiredMixin,IsSuperuserMixin,UpdateView):
                         consultaM = Manuscritos.objects.filter(trabajo = Trabajo).filter(tituloM = file_name+'.pdf').filter(trabajo = Trabajo)
                         if not consultaM:         
                             #convert_to_pdf_wd(manus_path+manuscrito1.tituloM, out_folder)
-                            generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder,timeout=15)
+                            generate_pdf_linux(manus_path+manuscrito1.tituloM, out_folder)
                             obj = Manuscritos(
                                 tituloM = file_name+'.pdf',
                                 manuscrito = ruta_pdf,
