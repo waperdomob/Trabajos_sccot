@@ -22,6 +22,9 @@ class plantillaCASOSyCONTROLESAdmin(admin.ModelAdmin):
 class plantillaCOHORTESAdmin(admin.ModelAdmin):
     list_display=("calificacion","trabajo","user")
 
+class plantillaEPOSTERAdmin(admin.ModelAdmin):
+    list_display=("calificacion","trabajo","user")
+
 admin.site.register(plantillaECC,plantillaECCAdmin)
 admin.site.register(plantillaPruebasDX,plantillaPruebasDXAdmin)
 admin.site.register(plantillaRSyMA,plantillaRSyMAAdmin)
@@ -29,3 +32,4 @@ admin.site.register(plantillaSERIECASOS,plantillaSERIECASOSAdmin)
 admin.site.register(plantillaCORTETRANSVERSAL,plantillaSERIECASOSAdmin)
 admin.site.register(plantillaCASOSyCONTROLES,plantillaCORTETRANSAdmin)
 admin.site.register(plantillaCOHORTES,plantillaCOHORTESAdmin)
+admin.site.register(plantillaEP,plantillaEPOSTERAdmin)
