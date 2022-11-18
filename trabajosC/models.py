@@ -80,7 +80,7 @@ class Autores(models.Model):
     Doctores miembros de la Sccot que serán autores de trabajos científicos.
     """
     tipo_identificacion = models.CharField(max_length=45,null=True, blank=True)
-    identificacion = models.BigIntegerField(null=True, blank=True)
+    identificacion = models.CharField(max_length=45,null=True, blank=True)
     role = models.ForeignKey(Roles,null=True, blank=True, on_delete=models.CASCADE)
     Nombres = models.CharField(max_length=60)
     Apellidos = models.CharField(max_length=60)
