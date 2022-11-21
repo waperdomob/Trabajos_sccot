@@ -115,7 +115,8 @@ function submit_trabajo_with_ajax(url, title, content, parameters, callback) {
         theme: 'material',
         title: title,
         icon: 'fa fa-info',
-        content: content,
+        content: content+
+        '<br><p> ¿Esta seguro de realizar el envío del trabajo?</p>',
         columnClass: 'small',
         typeAnimated: true,
         cancelButtonClass: 'btn-primary',

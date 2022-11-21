@@ -47,6 +47,7 @@ class eccForm(ModelForm):
             'lrcdpcr':'Las referencias citadas son discutidas y puestas en contexto con los resultados',
             'asevc':'Análisis de sesgos, efecto de variables de confusión',
             'avear':'Análisis de la validez externa (aplicabilidad) de los resultados',
+            'comentario':'Observaciones y/o comentarios',
         }
         widgets = {
 
@@ -73,6 +74,7 @@ class eccForm(ModelForm):
             'lrcdpcr':forms.Select(attrs={'class':'form-control'}),
             'asevc':forms.Select(attrs={'class':'form-control'}),
             'avear':forms.Select(attrs={'class':'form-control'}),
+            'comentario': forms.Textarea(attrs={'class':'form-control','rows': 3}),
             
         }
 
@@ -102,6 +104,7 @@ class pruebasDXForm(ModelForm):
             'lrcdpcr':'Las referencias citadas son discutidas y puestas en contexto con los resultados',
             'asevc':'Análisis de sesgos, efecto de variables de confusión',
             'avear':'Análisis de la validez externa (aplicabilidad) de los resultados',
+            'comentario':'Observaciones y/o comentarios',
         }
         widgets = {
 
@@ -125,6 +128,7 @@ class pruebasDXForm(ModelForm):
             'lrcdpcr':forms.Select(attrs={'class':'form-control'}),
             'asevc':forms.Select(attrs={'class':'form-control'}),
             'avear':forms.Select(attrs={'class':'form-control'}),
+            'comentario': forms.Textarea(attrs={'class':'form-control','rows': 3}),
             
         }
 
@@ -154,6 +158,7 @@ class RSyMAForm(ModelForm):
             'lrcdpcr':'Las referencias citadas son discutidas y puestas en contexto con los resultados',
             'asevc':'Análisis de sesgos, efecto de variables de confusión',
             'avear':'Análisis de la validez externa (aplicabilidad) de los resultados',
+            'comentario':'Observaciones y/o comentarios',
         }
         widgets = {
 
@@ -177,6 +182,7 @@ class RSyMAForm(ModelForm):
             'lrcdpcr':forms.Select(attrs={'class':'form-control'}),
             'asevc':forms.Select(attrs={'class':'form-control'}),
             'avear':forms.Select(attrs={'class':'form-control'}),
+            'comentario': forms.Textarea(attrs={'class':'form-control','rows': 3}),
             
         }
 
@@ -205,6 +211,7 @@ class plantillaSCForm(ModelForm):
             'lrcdpcr':'Las referencias citadas son discutidas y puestas en contexto con los resultados',
             'asevc':'Análisis de sesgos, efecto de variables de confusión',
             'avear':'Análisis de la validez externa (aplicabilidad) de los resultados',
+            'comentario':'Observaciones y/o comentarios',
         }
         widgets = {
 
@@ -227,6 +234,7 @@ class plantillaSCForm(ModelForm):
             'lrcdpcr':forms.Select(attrs={'class':'form-control'}),
             'asevc':forms.Select(attrs={'class':'form-control'}),
             'avear':forms.Select(attrs={'class':'form-control'}),
+            'comentario': forms.Textarea(attrs={'class':'form-control','rows': 3}),
             
         }
 
@@ -255,6 +263,7 @@ class plantillacorteTrasversalForm(ModelForm):
             'lrcdpcr':'Las referencias citadas son discutidas y puestas en contexto con los resultados',
             'asevc':'Análisis de sesgos, efecto de variables de confusión',
             'avear':'Análisis de la validez externa (aplicabilidad) de los resultados',
+            'comentario':'Observaciones y/o comentarios',
         }
         widgets = {
 
@@ -277,7 +286,7 @@ class plantillacorteTrasversalForm(ModelForm):
             'lrcdpcr':forms.Select(attrs={'class':'form-control'}),
             'asevc':forms.Select(attrs={'class':'form-control'}),
             'avear':forms.Select(attrs={'class':'form-control'}),
-            
+            'comentario': forms.Textarea(attrs={'class':'form-control','rows': 3}),
         }
 
 class casosyControlesForm(ModelForm):
@@ -307,6 +316,7 @@ class casosyControlesForm(ModelForm):
             'lrcdpcr':'Las referencias citadas son discutidas y puestas en contexto con los resultados',
             'asevc':'Análisis de sesgos, efecto de variables de confusión',
             'avear':'Análisis de la validez externa (aplicabilidad) de los resultados',
+            'comentario':'Observaciones y/o comentarios',
         }
         widgets = {
 
@@ -331,7 +341,7 @@ class casosyControlesForm(ModelForm):
             'lrcdpcr':forms.Select(attrs={'class':'form-control'}),
             'asevc':forms.Select(attrs={'class':'form-control'}),
             'avear':forms.Select(attrs={'class':'form-control'}),
-            
+            'comentario': forms.Textarea(attrs={'class':'form-control','rows': 3}),
         }
 
 class cohortesForm(ModelForm):
@@ -361,6 +371,7 @@ class cohortesForm(ModelForm):
             'lrcdpcr':'Las referencias citadas son discutidas y puestas en contexto con los resultados',
             'asevc':'Análisis de sesgos, efecto de variables de confusión',
             'avear':'Análisis de la validez externa (aplicabilidad) de los resultados',
+            'comentario':'Observaciones y/o comentarios',
         }
         widgets = {
 
@@ -385,7 +396,7 @@ class cohortesForm(ModelForm):
             'lrcdpcr':forms.Select(attrs={'class':'form-control'}),
             'asevc':forms.Select(attrs={'class':'form-control'}),
             'avear':forms.Select(attrs={'class':'form-control'}),
-            
+            'comentario': forms.Textarea(attrs={'class':'form-control','rows': 3}),
         }
 
 class selectPlantillaForm(forms.Form):
@@ -403,6 +414,7 @@ class epForm(ModelForm):
             'resultado':'Resultados',
             'discusion':'Discusión',
             'interes_academico': 'Interés académico y originalidad',
+            'comentario':'Observaciones y/o comentarios',
         }
         widgets = {
 
@@ -411,5 +423,6 @@ class epForm(ModelForm):
             'resultado':forms.Select(attrs={'class':'form-control'}),
             'discusion':forms.Select(attrs={'class':'form-control'}),
             'interes_academico':forms.Select(attrs={'class':'form-control'}),
+            'comentario': forms.Textarea(attrs={'class':'form-control','rows': 3}),
             
         }

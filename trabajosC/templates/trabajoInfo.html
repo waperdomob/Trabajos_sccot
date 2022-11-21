@@ -122,7 +122,12 @@
                     <div class="col-lg-4 col-md-6 col-12 ">
                         <h5>Nombre: <small>{{evaluador.evaluador}}</small> </h5>
                         <h5>Calificación: <small>{{evaluador.calificacion}}</small> </h5>
+                        <h5>Observaciones y/o comentarios</h5>
+                        <div class="container" style="word-wrap: break-word;">
+                            {{evaluador.comentario}}
+                        </div>
                         <h5>Fecha: <small>{{evaluador.fecha_evaluacion}}</small></h5>
+
                     </div>                                      
                 {% endfor %} 
             </div>
