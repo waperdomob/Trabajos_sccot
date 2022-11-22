@@ -448,7 +448,7 @@ var trabajo={
                 for (var i = 0; i < $('input[name="tabla"]').get(0).files.length; ++i) {
                     parameters.append('tablas', document.getElementById('id_tabla').files[i]);                    
                 }
-                submit_trabajo_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+                submit_trabajo_with_ajax(window.location.pathname, 'Notificación', 'Si hay algún error al enviar el trabajo científico, por favor tomar captura al error y enviarlo al correo revistacolombiana@sccot.org.co junto con el trabajo científico y los datos solicitados en el formulario para que este pueda ser validado. Esto solo puede ser enviado en el rango de fechas de la convocatoria del curso. No se aceptan trabajos enviados después de esta fecha', parameters, function () {
                     message_success("Trabajo registrado con exito!");
                     location.href = '/';
                 });

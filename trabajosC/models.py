@@ -133,6 +133,7 @@ class Trabajos_has_evaluadores(models.Model):
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE,  blank=True, null=True)
     evaluador = models.ForeignKey(Autores, on_delete=models.CASCADE, blank=True, null=True)
     calificacion = models.FloatField(null=True, blank=True)
+    comentario=models.TextField(null=True, blank=True)
     fecha_evaluacion = models.DateField(null=True, blank=True)
     def __str__(self):
         return self.trabajo.titulo

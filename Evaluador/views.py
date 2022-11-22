@@ -104,6 +104,8 @@ class plantilla1_evaluacion(LoginRequiredMixin,UpdateView):
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
                     d.pop('registroClinica')
+                    obj.comentario= d['comentario']
+                    d.pop('comentario')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -160,6 +162,8 @@ class plantilla2_evaluacion(LoginRequiredMixin,UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
+                    obj.comentario= d['comentario']
+                    d.pop('comentario')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -216,6 +220,8 @@ class plantilla3_evaluacion(LoginRequiredMixin,UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
+                    obj.comentario= d['comentario']
+                    d.pop('comentario')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -272,6 +278,8 @@ class plantilla4_evaluacion(LoginRequiredMixin,UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
+                    obj.comentario= d['comentario']
+                    d.pop('comentario')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -328,6 +336,8 @@ class plantilla5_evaluacion(LoginRequiredMixin,UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
+                    obj.comentario= d['comentario']
+                    d.pop('comentario')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -384,6 +394,8 @@ class plantilla6_evaluacion(LoginRequiredMixin,UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('Comite_de_etica')
+                    obj.comentario= d['comentario']
+                    d.pop('comentario')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
@@ -441,6 +453,8 @@ class plantilla7_evaluacion(LoginRequiredMixin,UpdateView):
                 if obj.evaluador.email == self.object.user.email:
                     d = form.cleaned_data
                     d.pop('comite_de_etica')
+                    obj.comentario= d['comentario']
+                    d.pop('comentario')
                     total = sum(d[x] for x in d) 
                     promedio = round(total*100/(len(d)*5), 2)
                     plantilla = form.save(commit=False)
