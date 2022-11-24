@@ -98,15 +98,15 @@ DATABASES = {
         'OPTIONS': {
             'sql_mode': 'traditional',
         },
-        #'NAME': 'trabajos',#para deploy
-        #'USER': 'wilmer',#para deploy
-        #'PASSWORD':'vcc2022*WP',#para deploy
+        'NAME': 'trabajos',#para deploy
+        'USER': 'wilmer',#para deploy
+        'PASSWORD':'vcc2022*WP',#para deploy
         #para local
-        'NAME': 'trabajostest',
-        'USER':'root',
-        'PASSWORD':'',
-        'HOST':'localhost',
-        'PORT':'3306'
+        #'NAME': 'trabajostest',
+        #'USER':'root',
+        #'PASSWORD':'',
+        #'HOST':'localhost',
+        #'PORT':'3306'
     }
 }
 
@@ -169,5 +169,5 @@ EMAIL_PORT = 587
 #EMAIL_HOST_USER = 'wilmerpb30@gmail.com'#←correo de pruebas. Poner correo de sccot
 #EMAIL_HOST_PASSWORD = 'teamlduzaplgebvc'#poner password de sccot
 EMAIL_HOST_USER = 'revistacolombiana@sccot.org.co'
-EMAIL_HOST_PASSWORD = 'Public@2023'
+EMAIL_HOST_PASSWORD = 'RreviOchoa*'
 EMAIL_USE_TLS = True

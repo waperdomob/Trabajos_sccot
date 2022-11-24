@@ -18,16 +18,12 @@ CALIFICACION = (
     )
     
 CALIFICACIONEP = (
+        (0, '0'),
         (1, '1'),
         (2, '2'),
         (3, '3'),
         (4, '4'),
         (5, '5'),
-        (6, '6'),
-        (7, '7'),
-        (8, '8'),
-        (9, '9'),
-        (10, '10'),
 
     )
 CHOICES = (
@@ -246,12 +242,14 @@ class plantillaCORTETRANSVERSAL(models.Model):
         return self.trabajo.titulo
 
 class plantillaEP(models.Model):
-    titulo=models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
-    material_metodos=models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
-    resultado=models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
-    discusion=models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
-    interes_academico = models.IntegerField(choices=CALIFICACIONEP,default=1,blank=False)
-    cryo = models.IntegerField(choices=CALIFICACION,default=0,blank=False)
+    titulo=models.IntegerField(choices=CALIFICACIONEP,default=0,blank=False)
+    introduccion_justificacion=models.IntegerField(choices=CALIFICACIONEP,default=0,blank=False)
+    material_metodos=models.IntegerField(choices=CALIFICACIONEP,default=0,blank=False)
+    redaccion_ortografia=models.IntegerField(choices=CALIFICACIONEP,default=0,blank=False)
+    resultado=models.IntegerField(choices=CALIFICACIONEP,default=0,blank=False)
+    discusion=models.IntegerField(choices=CALIFICACIONEP,default=0,blank=False)
+    presentacion = models.IntegerField(choices=CALIFICACIONEP,default=0,blank=False)
+    referencias = models.IntegerField(choices=CALIFICACION,default=0,blank=False)
     comentario=models.TextField(null=True, blank=True)
     calificacion = models.FloatField(null=True, blank=True)
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE)

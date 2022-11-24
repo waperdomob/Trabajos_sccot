@@ -13,6 +13,30 @@
             <form action="{% url 'evaluacionEP' object.id %}" method="post">{% csrf_token %}
               {% for row in form %}              
               <div class=" container" >
+                  {% if "Es conciso pero explica suficientemente el trabajo." in row.label_tag  %}
+                    <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">1. Título</p> 
+                  {% endif %}
+                  {% if "Explica el interés especial del caso" in row.label_tag  %}
+                    <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">2. Introducción y justificación.</p> 
+                  {% endif %}
+                  {% if "Reporta adecuadamente las pruebas diagnósticas pertinentes e intervenciones." in row.label_tag  %}
+                    <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">3. Material y método o reporte del caso</p> 
+                  {% endif %}
+                  {% if "Se reporta en forma objetiva los resultados." in row.label_tag  %}
+                    <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">4. Resultados</p> 
+                  {% endif %}
+                  {% if "Se expone el interés del caso o casos" in row.label_tag  %}
+                    <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">5. Discusion</p> 
+                  {% endif %}
+                  {% if "Distribución de texto" in row.label_tag  %}
+                    <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">6. Presentación</p> 
+                  {% endif %}
+                  {% if "Referencias pertinentes incluidas en el texto presentado." in row.label_tag  %}
+                    <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">7. Referencias, maximo 10</p> 
+                  {% endif %}
+                  {% if "Comentarios y/o observaciones." in row.label_tag  %}
+                    <p style="color: rgb(23, 15, 139); margin-top: 20px; text-align: left;font-size: 15px;">8. Comentarios del evaluador</p> 
+                  {% endif %}
                   <div class="grid-container" >
                         <div  class="grid-container" for="{{ row.html_name }}"  >
                         {{ row.label_tag }}
@@ -21,7 +45,7 @@
                   </div>                                                         
                       <p style="color: rgb(15, 139, 139); margin-top: 20px; text-align: center;font-size: larger;">{{ row.help_text }}</p>                      
                       
-                  <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>                       
+                  <p class="help-block">{{ row.errors.as_text }} {{ row.field.css_classes }}</p>
               </div>
               {% endfor %}
               <br>

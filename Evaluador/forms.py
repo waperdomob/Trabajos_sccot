@@ -419,21 +419,25 @@ class epForm(ModelForm):
         exclude = ('trabajo','user','calificacion')
 
         labels = {
-            'titulo' : 'Título e introducción',
-            'material_metodos' : 'Materiales y métodos',
-            'resultado':'Resultados',
-            'discusion':'Discusión',
-            'interes_academico': 'Interés académico y originalidad',
-            'cryo': 'Construcción, redacción y ortografía',
-            'comentario':'Observaciones y/o comentarios',
+            'titulo' : 'Es conciso pero explica suficientemente el trabajo.',
+            'introduccion_justificacion':'Explica el interés especial del caso, por el diagnóstico poco usual, novedad del tratamiento o del desenlace.',
+            'material_metodos' : 'Reporta adecuadamente las pruebas diagnósticas pertinentes e intervenciones.',
+            'redaccion_ortografia' : 'Redacción y ortografia',
+            'resultado':'Se reporta en forma objetiva los resultados.',
+            'discusion':'Se expone el interés del caso o casos y se contrasta los resultados en contexto con la literatura pertinente.',
+            'presentacion': 'Distribución de texto, tamaño de fuentes, Calidad de fotografías.',
+            'referencias': 'Referencias pertinentes incluidas en el texto presentado.',
+            'comentario':'Comentarios y/o observaciones.',
         }
         widgets = {
 
             'titulo':forms.Select(attrs={'class':'form-control'}),
+            'introduccion_justificacion':forms.Select(attrs={'class':'form-control'}),
             'material_metodos':forms.Select(attrs={'class':'form-control'}),
+            'redaccion_ortografia':forms.Select(attrs={'class':'form-control'}),
             'resultado':forms.Select(attrs={'class':'form-control'}),
             'discusion':forms.Select(attrs={'class':'form-control'}),
-            'interes_academico':forms.Select(attrs={'class':'form-control'}),
-            'cryo':forms.Select(attrs={'class':'form-control'}),
+            'presentacion':forms.Select(attrs={'class':'form-control'}),
+            'referencias':forms.Select(attrs={'class':'form-control'}),
             'comentario': forms.Textarea(attrs={'class':'form-control','rows': 3}),
         }
