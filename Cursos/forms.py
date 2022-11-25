@@ -14,6 +14,7 @@ class CursosForm(ModelForm):
         labels = {
             'nombre_curso':'Nombre del curso',
             'fecha_fin_evaluacion': 'Fecha límite para realizar evaluación',
+            'estado':'Visible'
         }
         widgets = {
 	        'nombre_curso':forms.TextInput(attrs={'class':'form-control'}),
@@ -22,6 +23,7 @@ class CursosForm(ModelForm):
             'fecha_fin_evaluacion':forms.DateInput(format=('%Y-%m-%d'),attrs={'class':'form-control','type':'date'}),
             'fecha_fin':forms.DateInput(format=('%Y-%m-%d'),attrs={'class':'form-control','type':'date'}),
             'ciudad':forms.TextInput(attrs={'class':'form-control'}),
+            'estado':forms.CheckboxInput(attrs={'type': 'checkbox', 'class': 'form-check form-switch', 'id':"flexSwitchCheckDefault"}),
         }
                 
 class EspecialidadesForm(ModelForm):

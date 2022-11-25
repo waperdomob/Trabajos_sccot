@@ -13,6 +13,7 @@
               <th >Fecha Cierre</th>
               <th >Fecha límite para realizar evaluación</th>
               <th >Ciudad</th>
+              <th >Visible</th>
               <th ><center>Acciones</center></th>
          </tr>
         </thead>
@@ -26,9 +27,18 @@
                 <td>{{object.fecha_inicio|date:'d-m-Y'}}</td>
                 <td>{{object.fecha_fin|date:'d-m-Y'}}</td>
                 <td>{{object.fecha_fin_evaluacion|date:'d-m-Y'}}</td>
-
                 <td>{{object.ciudad}}</td>
-               
+                <td>
+                    {% if object.estado == 1 %}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked disabled>
+                      </div>
+                    {% else %}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" disabled>
+                      </div>
+                    {% endif %}
+                </td>
                 <td>
                         <button onclick="abrir_modal_editCurso(`{% url 'edit_Curso' object.id %}`)" class="btn btn-primary"> <i class="fa-solid fa-file-pen"></i></button>
                         <button onclick="abrir_modal_deleteCurso(`{% url 'delete_Curso' object.id %}`)" class="btn btn-danger"> <i class="fa-solid fa-trash-alt"></i></button>                    

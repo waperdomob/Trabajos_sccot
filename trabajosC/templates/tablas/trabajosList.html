@@ -20,63 +20,63 @@
          </tr>
         </thead>
         <tbody>
-            {% for object in trabajos %}
-    
-            <tr>
-                <td>{{object.identificador}}</td>
-                <td>{{object.tipo_trabajo}}</td>
-                <td>{{object.titulo}}</td>
-                <td>{{object.Autor_correspondencia}}</td>
-                <td>
-                    {% for autor in autores_trab %}
-                    {% if autor.trabajo_id == object.id %}
-                    <ul>
-                        <li>{{autor.autor}}</li>
-                    </ul>
-                    {%  endif   %}
-                    {% endfor %}
-                </td>
-                <td>{{object.institucion_principal}}</td>
-                <td>
-                    {% for palabra in palab_trab %}
-                    {% if palabra.trabajo_id == object.id %}
-                    <ul>
-                        <li>{{palabra.palabra}}</li>
-                    </ul>
-                    {%  endif   %}
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for manuscrito in manuscritos %}
-                    {% if manuscrito.trabajo_id == object.id %}
-                    <ul>
-                        <li>
-                            <a href="media/{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
-                        </li>
-                    </ul>
-                    {%  endif   %}
-                    {% endfor %}
-                </td>
-                <td>{{object.curso}}</td>
-                <td>{{object.calificacion}}</td>
-                    
-                <td>
-                    <div class="d-grid gap-2 col-12 mx-auto"> 
-                        <a href="{% url 'detalleTrabajo' object.id %}" class="btn btn-success"> <i class="fa-solid fa-file"></i> VER</a>
+            {% for object in trabajos %}            
+                {% if object.curso.estado == True %}
+                    <tr>
+                        <td>{{object.identificador}}</td>
+                        <td>{{object.tipo_trabajo}}</td>
+                        <td>{{object.titulo}}</td>
+                        <td>{{object.Autor_correspondencia}}</td>
+                        <td>
+                            {% for autor in autores_trab %}
+                            {% if autor.trabajo_id == object.id %}
+                            <ul>
+                                <li>{{autor.autor}}</li>
+                            </ul>
+                            {%  endif   %}
+                            {% endfor %}
+                        </td>
+                        <td>{{object.institucion_principal}}</td>
+                        <td>
+                            {% for palabra in palab_trab %}
+                            {% if palabra.trabajo_id == object.id %}
+                            <ul>
+                                <li>{{palabra.palabra}}</li>
+                            </ul>
+                            {%  endif   %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for manuscrito in manuscritos %}
+                            {% if manuscrito.trabajo_id == object.id %}
+                            <ul>
+                                <li>
+                                    <a href="media/{{ manuscrito.manuscrito }}">{{manuscrito.tituloM}}</a>
+                                </li>
+                            </ul>
+                            {%  endif   %}
+                            {% endfor %}
+                        </td>
+                        <td>{{object.curso}}</td>
+                        <td>{{object.calificacion}}</td>
+                            
+                        <td>
+                            <div class="d-grid gap-2 col-12 mx-auto"> 
+                                <a href="{% url 'detalleTrabajo' object.id %}" class="btn btn-success"> <i class="fa-solid fa-file"></i> VER</a>
 
-                        <button onclick="abrir_modal_evaluador(`{% url 'asignarEvaluador' object.id %}`)"  class="btn btn-warning"><i class="fa-solid fa-hand-pointer"></i> Asignar Evaluador</button>
-                        {% for manuscrito in manuscritos %}
-                        {% if manuscrito.trabajo_id == object.id and '.doc' in manuscrito.tituloM %}
-                        <button onclick="abrir_modal_editManus(`{% url 'editar_manuscrito' manuscrito.id %}`)" class="btn btn-primary"><i class="fa-solid fa-file-edit"></i> Editar Manuscrito</button>
-                        {%  endif   %}
-                        {% if manuscrito.trabajo_id == object.id and '.ppt' in manuscrito.tituloM or manuscrito.trabajo_id == object.id and '.mp4' in manuscrito.tituloM or manuscrito.trabajo_id == object.id and '.mov' in manuscrito.tituloM or manuscrito.trabajo_id == object.id and '.avi' in manuscrito.tituloM %}
-                        <button onclick="abrir_modal_editManus(`{% url 'editar_manuscrito' manuscrito.id %}`)" class="btn btn-primary"><i class="fa-solid fa-file-edit"></i> Editar Manuscrito</button>
-                        {%  endif   %}
-                        {% endfor %}                      
-                    </div>
-                    
-                </td>
-            </tr>
+                                <button onclick="abrir_modal_evaluador(`{% url 'asignarEvaluador' object.id %}`)"  class="btn btn-warning"><i class="fa-solid fa-hand-pointer"></i> Asignar Evaluador</button>
+                                {% for manuscrito in manuscritos %}
+                                {% if manuscrito.trabajo_id == object.id and '.doc' in manuscrito.tituloM %}
+                                <button onclick="abrir_modal_editManus(`{% url 'editar_manuscrito' manuscrito.id %}`)" class="btn btn-primary"><i class="fa-solid fa-file-edit"></i> Editar Manuscrito</button>
+                                {%  endif   %}
+                                {% if manuscrito.trabajo_id == object.id and '.ppt' in manuscrito.tituloM or manuscrito.trabajo_id == object.id and '.mp4' in manuscrito.tituloM or manuscrito.trabajo_id == object.id and '.mov' in manuscrito.tituloM or manuscrito.trabajo_id == object.id and '.avi' in manuscrito.tituloM %}
+                                <button onclick="abrir_modal_editManus(`{% url 'editar_manuscrito' manuscrito.id %}`)" class="btn btn-primary"><i class="fa-solid fa-file-edit"></i> Editar Manuscrito</button>
+                                {%  endif   %}
+                                {% endfor %}                      
+                            </div>                    
+                        </td>
+                    </tr>
+                {% endif %}            
             {% endfor %}
         </tbody>
     </table>

@@ -66,6 +66,7 @@ class Cursos(models.Model):
     fecha_inicio = models.DateField()
     fecha_fin_evaluacion = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField()
+    estado= models.BooleanField('Estado',default=True)
     ciudad = models.CharField(max_length=45)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     def __str__(self):
