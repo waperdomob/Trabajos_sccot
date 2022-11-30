@@ -112,7 +112,7 @@ class Trabajos(models.Model):
     identificador = models.CharField(max_length=45,null=True,blank=True)
     tipo_trabajo=models.CharField(max_length=45, choices=CATEGORIAS)
     subtipo_trabajo=models.CharField(max_length=45, choices=SUBCATEGORIAS,null=True, blank=True)
-    titulo=models.CharField(max_length=100)
+    titulo=models.CharField(max_length=150)
     Autor_correspondencia=models.ForeignKey(Autores, on_delete=models.CASCADE)
     observaciones=models.TextField(null=True, blank=True)
     institucion_principal=models.ForeignKey(Instituciones, on_delete=models.CASCADE)
