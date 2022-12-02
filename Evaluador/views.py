@@ -15,7 +15,7 @@ from statistics import mean
 from Evaluador.forms import RSyMAForm, casosyControlesForm, cohortesForm, eccForm, epForm, plantillaSCForm, plantillacorteTrasversalForm, pruebasDXForm
 from Evaluador.models import plantillaCASOSyCONTROLES, plantillaCOHORTES, plantillaECC, plantillaEP, plantillaPruebasDX, plantillaRSyMA, plantillaSERIECASOS, plantillaCORTETRANSVERSAL
 
-from trabajosC.models import Autores, Manuscritos, Trabajos, Trabajos_has_evaluadores
+from trabajosC.models import Autores, Manuscritos, Trabajos, Trabajos_has_evaluadores, Tablas
 
 # Create your views here.
 
@@ -39,6 +39,7 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
             context = super().get_context_data(**kwargs)
             context['trabajos'] = Trabajos_has_evaluadores.objects.all().select_related('trabajo')      
             context['manuscritos'] = Manuscritos.objects.select_related('trabajo')
+            context['anexos'] = Tablas.objects.select_related('trabajo')
             context['plantillaECC'] = plantillaECC.objects.all().select_related('trabajo')
             context['plantillaPruebasDX'] = plantillaPruebasDX.objects.all().select_related('trabajo')
             context['plantillaRSyMA'] = plantillaRSyMA.objects.all().select_related('trabajo')
@@ -55,6 +56,7 @@ class TrabajosAsignados(LoginRequiredMixin,TemplateView):
             context['trabajos'] = Trabajos_has_evaluadores.objects.filter(evaluador_id = Evaluador.id).select_related('trabajo')
             
             context['manuscritos'] = Manuscritos.objects.select_related('trabajo')
+            context['anexos'] = Tablas.objects.select_related('trabajo')
             context['plantillaECC'] = plantillaECC.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaPruebasDX'] = plantillaPruebasDX.objects.filter(user=self.request.user).select_related('trabajo')
             context['plantillaRSyMA'] = plantillaRSyMA.objects.filter(user=self.request.user).select_related('trabajo')

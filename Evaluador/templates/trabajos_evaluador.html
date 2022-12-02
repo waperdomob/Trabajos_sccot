@@ -61,43 +61,52 @@
             <h2><center>Trabajos por evaluar</center></h2><br><br>
         {% endif %}            
         
-        {% for trabajo in  trabajos %}
-        {% if not trabajo.calificacion %}
-            <div class="row ${1| ,row-col-2,row-col-3, auto,justify-content-md-center,|}">
-                <div class="col-7">
-                    <h5>Titulo: <small>{{trabajo.trabajo.titulo}}</small> </h5>
-                    <h5>Tipo de trabajo: <small>{{trabajo.trabajo.tipo_trabajo}}</small> </h5>
-                </div>
-                <div class="col-5 ">
-                    <div class="d-grid gap-2 col-4 mx-auto">                        
-                        {% include 'botones_plantilla.html' %}
+        {% for trabajo in  trabajos %}        
+            {% if trabajo.trabajo.curso.estado == True %}
+                {% if not trabajo.calificacion %}
+                    <div class="row ${1| ,row-col-2,row-col-3, auto,justify-content-md-center,|}">
+                        <div class="col-7">
+                            <h5>Titulo: <small>{{trabajo.trabajo.titulo}}</small> </h5>
+                            <h5>Tipo de trabajo: <small>{{trabajo.trabajo.tipo_trabajo}}</small> </h5>
+                        </div>
+                        <div class="col-5 ">
+                            <div class="d-grid gap-2 col-4 mx-auto">                        
+                                {% include 'botones_plantilla.html' %}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <br>
-            {% for manuscrito in manuscritos %}
-            {% if manuscrito.trabajo_id == trabajo.trabajo.id and ".pdf" in manuscrito.tituloM  %}
-            <div id="Iframe-Master-CC-and-Rs" class="set-margin set-padding set-border set-box-shadow center-block-horiz">                
-                <div class="responsive-wrapper responsive-wrapper-wxh-572x612" >
-                    <iframe id="inlineFrameExample" class="responsive-iframe" 
-                    src="../../media/{{ manuscrito.manuscrito }}"
-                    title="{{ manuscrito.tituloM }}" width="70%" height="50%">
-                    </iframe>
-                    <br>                    
-                </div> 
-                <div class="d-grid gap-2 col-12 mx-auto">
-                    <a href="../../media/{{manuscrito.manuscrito}}" download="../../media/{{manuscrito.manuscrito}}" class="btn btn-primary" id="btn-download"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>  
-                </div>
-            </div>
-            {% elif manuscrito.trabajo_id == trabajo.trabajo.id and "mp4" in manuscrito.tituloM or "mov" in manuscrito.tituloM or "avi" in manuscrito.tituloM %}
-            <div class="d-grid gap-2 col-2 mx-auto">
-                <a href="../../media/{{manuscrito.manuscrito}}" class="btn btn-primary"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>
-            </div>
-            {%  endif    %}
-            {% endfor %}
-            <hr>
-            
-        {% endif %}                                     
+                    <br>
+                    {% for anexo in anexos %}                        
+                        {% if anexo.trabajo_id == trabajo.trabajo.id %}
+                        Anexo: 
+                            <a href="../../media/{{anexo.tabla}}" class="btn btn-primary"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>
+                            <br><br>
+                        {% endif %}
+                    {% endfor %}
+                    {% for manuscrito in manuscritos %}                    
+                                                
+                    {% if manuscrito.trabajo_id == trabajo.trabajo.id and ".pdf" in manuscrito.tituloM  %}
+                    <div id="Iframe-Master-CC-and-Rs" class="set-margin set-padding set-border set-box-shadow center-block-horiz">                
+                        <div class="responsive-wrapper responsive-wrapper-wxh-572x612" >
+                            <iframe id="inlineFrameExample" class="responsive-iframe" 
+                            src="../../media/{{ manuscrito.manuscrito }}"
+                            title="{{ manuscrito.tituloM }}" width="70%" height="50%">
+                            </iframe>
+                            <br>                    
+                        </div> 
+                        <div class="d-grid gap-2 col-12 mx-auto">
+                            <a href="../../media/{{manuscrito.manuscrito}}" download="../../media/{{manuscrito.manuscrito}}" class="btn btn-primary" id="btn-download"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>  
+                        </div>
+                    </div>
+                    {% elif manuscrito.trabajo_id == trabajo.trabajo.id and "mp4" in manuscrito.tituloM or "mov" in manuscrito.tituloM or "avi" in manuscrito.tituloM %}
+                    <div class="d-grid gap-2 col-2 mx-auto">
+                        <a href="../../media/{{manuscrito.manuscrito}}" class="btn btn-primary"><center><i class="fa-solid fa-file-arrow-down"></i>DESCARGAR</center></a>
+                    </div>
+                    {%  endif    %}
+                    {% endfor %}
+                    <hr>
+                {% endif %}
+            {% endif %}
         {% endfor %}
     </div>
     <div class="container">

@@ -109,6 +109,7 @@ class Trabajos(models.Model):
     """
     Trabajos científicos subidos por los doctores. 
     """
+    siglasTrabajo = models.CharField(max_length=5,null=True,blank=True)
     identificador = models.CharField(max_length=45,null=True,blank=True)
     tipo_trabajo=models.CharField(max_length=45, choices=CATEGORIAS)
     subtipo_trabajo=models.CharField(max_length=45, choices=SUBCATEGORIAS,null=True, blank=True)
@@ -145,6 +146,15 @@ class Trabajos_has_autores(models.Model):
     """
     trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
     autor = models.ForeignKey(Autores, on_delete=models.CASCADE, blank=True, null=True)
+    def __str__(self):
+        return self.trabajo.titulo
+
+class Trabajos_has_autoresIngreso(models.Model):
+    """
+    Relación Many to Many entre trabajo y autores para nuevo ingreso. 
+    """
+    trabajo = models.ForeignKey(Trabajos, on_delete=models.CASCADE, blank=True, null=True)
+    autorIN = models.ForeignKey(Autores, on_delete=models.CASCADE, blank=True, null=True)
     def __str__(self):
         return self.trabajo.titulo
         

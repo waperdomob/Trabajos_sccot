@@ -16,9 +16,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from Cursos.forms import EspecialidadesForm
 from Evaluador.forms import selectPlantillaForm
-from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
+from trabajosC.forms import AutoresForm2, AutoresForm3, EvaluadorTrabajoForm, InstitucionForm, KeywordForm, ManuscritosForm, Palabras_clavesForm, TablasForm, Trabajo_AutoresForm,Trabajo_AutoresINForm, Trabajo_InstitucionesForm, Trabajo_KeywordsForm, Trabajo_PalabrasForm, TrabajosCForm
 
-from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_evaluadores, Trabajos_has_instituciones, Trabajos_has_palabras
+from trabajosC.models import Autores, Cursos, Especialidades, Instituciones, Keywords, Manuscritos, Palabras_claves, Tablas, Trabajos, Trabajos_has_Keywords, Trabajos_has_autores, Trabajos_has_autoresIngreso, Trabajos_has_evaluadores, Trabajos_has_instituciones, Trabajos_has_palabras
 
 from trabajosC.funciones.funciones1 import asignar_plantilla, convert_to_pdf_wd ,generate_pdf_linux
 from trabajosC.funciones.funciones2 import crear_user, email_confirmTC, handle_uploaded_file
@@ -51,7 +51,9 @@ def index(request):
     #Validación si el usuario logeado es superuser(Admin)
     if request.user.is_authenticated:
         if request.user.is_superuser:
-            trabajos = Trabajos.objects.all().only("identificador","tipo_trabajo", "subtipo_trabajo","titulo","Autor_correspondencia", "institucion_principal","curso")
+
+            trabajos = Trabajos.objects.filter(curso__in= Cursos.objects.filter(estado=True)).only("identificador","tipo_trabajo", "subtipo_trabajo","titulo","Autor_correspondencia", "institucion_principal","curso")
+
             autores = Autores.objects.all().defer( "especialidad","direccion")
             cursos = Cursos.objects.all()
             
@@ -137,7 +139,7 @@ class registrarTrabajo(CreateView):
                 data = []
                 term = request.POST['term']
                 autores = Autores.objects.filter(
-                    Q(Nombres__icontains=term) | Q(Apellidos__icontains=term))[0:10]
+                    Q(Nombres__icontains=term) | Q(Apellidos__icontains=term) )
                 for i in autores:
                     item = i.toJSON()
                     item['text'] = i.get_full_name()
@@ -233,6 +235,7 @@ class registrarTrabajo(CreateView):
                     else:
                         trab.save()
                         otros_autores = trabj['otros_autores']
+                        autores_ingreso = trabj['autores_ingreso']
                         otras_inst = trabj['otras_instituciones']
     
                         palabras_claves = trabj['palabras_claves']
@@ -255,7 +258,13 @@ class registrarTrabajo(CreateView):
                                 a = int(i)
                                 aut = Autores.objects.get(id = a)
                                 Trabajos_has_autores.objects.create(trabajo_id=trab.id, autor_id =aut.id)
-    
+
+                        for i in autores_ingreso:
+                            if len(i) != 0:
+                                a = int(i)
+                                aut = Autores.objects.get(id = a)
+                                Trabajos_has_autoresIngreso.objects.create(trabajo_id=trab.id, autorIN_id =aut.id)
+                        
                         for i in otras_inst:
                             if len(i) != 0:
                                 a = int(i)
@@ -269,45 +278,57 @@ class registrarTrabajo(CreateView):
                             if "Libre" in trab.tipo_trabajo or "Ingreso" in trab.tipo_trabajo:
                                 cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(Q(tipo_trabajo__icontains="Libre") | Q(tipo_trabajo__icontains="Ingreso")).count()
                                 if "Libre" in trab.tipo_trabajo:
+                                    if cant_trabajos<10:
+                                        cant_trabajos = '0'+str(cant_trabajos)
                                     name1 = fs.save(nombre_curso+'/'+"LI"+str(cant_trabajos)+'.'+postfix,file)
                                     obj = Manuscritos(
-                                    tituloM = "LI"+str(cant_trabajos)+'.'+postfix,
-                                    manuscrito = '/manuscritos/'+name1,
-                                    trabajo = trab
+                                        tituloM = "LI"+str(cant_trabajos)+'.'+postfix,
+                                        manuscrito = '/manuscritos/'+name1,
+                                        trabajo = trab
                                     )
-                                    trab.identificador = 'LI'+str(cant_trabajos)
+                                    trab.siglasTrabajo = 'LI'
+                                    trab.identificador = str(cant_trabajos)
                                 else:
+                                    if cant_trabajos<10:
+                                        cant_trabajos = '0'+str(cant_trabajos)
                                     name1 = fs.save(nombre_curso+'/'+"IN"+str(cant_trabajos)+'.'+postfix,file)
                                     obj = Manuscritos(
-                                    tituloM = "IN"+str(cant_trabajos)+'.'+postfix,
-                                    manuscrito = '/manuscritos/'+name1,
-                                    trabajo = trab
+                                        tituloM = "IN"+str(cant_trabajos)+'.'+postfix,
+                                        manuscrito = '/manuscritos/'+name1,
+                                        trabajo = trab
                                     )
-                                    trab.identificador = 'IN'+str(cant_trabajos)
+                                    trab.siglasTrabajo = 'LI'
+                                    trab.identificador = str(cant_trabajos)
     
                             elif "E-poster" in trab.tipo_trabajo:
-                                cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(tipo_trabajo__icontains="E-poster").count()
+                                cant_trabajos= Trabajos.objects.filter(curso_id = trab.curso_id).filter(tipo_trabajo__icontains="E-poster").count()                                
+                                if cant_trabajos<10:
+                                    cant_trabajos = '0'+str(cant_trabajos)
+                                    
                                 name1 = fs.save(nombre_curso+'/'+"EP"+str(cant_trabajos)+'.'+postfix,file)
                                 obj = Manuscritos(
                                 tituloM = "EP"+str(cant_trabajos)+'.'+postfix,
                                 manuscrito = '/manuscritos/'+name1,
                                 trabajo = trab
                                 )
-                                trab.identificador = 'EP'+str(cant_trabajos)
+                                trab.siglasTrabajo = 'EP'
+                                trab.identificador = str(cant_trabajos)
                                 
                             trab.save()
                             obj.save(force_insert=True )
     
                         for file in tablas:
+                            i=1
                             postfix=os.path.splitext(file.name)[1][1:]
                             fs = FileSystemStorage(location=manus_path2, base_url=manus_path2)
                             name1 = fs.save(nombre_curso+'/'+"anexo"+trab.tipo_trabajo+str(cant_trabajos)+'.'+postfix,file)
                             obj = Tablas(
-                                tituloT = "anexo"+trab.tipo_trabajo+str(cant_trabajos)+'.'+postfix,
+                                tituloT = str(i)+"anexo"+trab.tipo_trabajo+str(cant_trabajos)+'.'+postfix,
                                 tabla = '/otros/'+name1,
                                 trabajo = trab
                                 )
                             obj.save(force_insert=True )
+                            i+=1
                         AutorP = Autores.objects.get(id = trab.Autor_correspondencia_id)
                         nombre = AutorP.get_full_name()
                         correo = AutorP.email
@@ -334,6 +355,8 @@ class registrarTrabajo(CreateView):
         context['manuscritosForm'] = ManuscritosForm()
         context['tablasForm'] = TablasForm()
         context['trabajo_autorForm'] = Trabajo_AutoresForm()
+        context['trabajo_autorINForm'] = Trabajo_AutoresINForm()
+
         context['trabajo_instiForm'] = Trabajo_InstitucionesForm()
         context['trabajo_instiForm'] = Trabajo_InstitucionesForm()
         context['trabajo_palbForm'] = Trabajo_PalabrasForm()

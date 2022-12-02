@@ -49,6 +49,7 @@ class registrarCurso(LoginRequiredMixin,IsSuperuserMixin,CreateView):
         if curso.is_valid():
             new_curso = curso.save(commit=False)
             new_curso.user_id = user_id
+            new_curso.estado = True
             new_curso.save()
             return redirect('inicio')
 

@@ -193,7 +193,22 @@
             <br>
             {%  endif %}
             {% endfor %}
-
+            {% for row in trabajo_autorINForm %}
+            {%  if "Autores para Ingreso" in row.label_tag %}
+            <div class=" container" >
+                <div class="form-group" id="autorIN_id">
+                    <label  class="textLabel" for="{{ row.html_name }}" >
+                        {{ row.label_tag }}
+                    </label>
+                    <div class="input-group">
+                        {{ row }} 
+                    </div>
+                </div>
+                
+            </div>
+            <br>
+            {%  endif %}
+            {% endfor %}
             {% for row in form %}
             {% if "Observaciones" in row.label_tag %}
             <div class=" container" >

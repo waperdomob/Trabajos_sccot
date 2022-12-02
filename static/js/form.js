@@ -16,6 +16,7 @@ var trabajo={
         titulo : '',
         Autor_correspondencia:'',
         otros_autores :[],
+        autores_ingreso :[],
         observaciones : '',
         institucion_principal: '',
         resumen_esp : '',
@@ -45,8 +46,22 @@ var trabajo={
                 $('#eposterLabel_id').prop('hidden', false);
                 $('#id_subtipo_trabajo').prop('hidden', true);
                 $('#id_subtipo_trabajo').prop('required', false);
+                $('#autorIN_id').prop('hidden', true);
+                $('#id_autorIN').prop('required', false);
 
-            }else {
+            }
+            else if (selectValor === 'Ingreso') {
+                $('#eposterLabel_id').prop('hidden', true);
+                $('#manuscritosLabel_id').prop('hidden', false);
+                $('#id_tabla').prop('hidden', false);
+                $('#tablaLabel_id').prop('hidden', false);
+                $('#subtipoLabel_id').prop('hidden', false);
+                $('#id_subtipo_trabajo').prop('hidden', false);
+                $('#id_subtipo_trabajo').prop('required', true);                
+                $('#autorIN_id').prop('hidden', false);
+                $('#id_autorIN').prop('required', true);
+            }
+            else {
                 $('#eposterLabel_id').prop('hidden', true);
                 $('#manuscritosLabel_id').prop('hidden', false);
                 $('#id_tabla').prop('hidden', false);
@@ -54,8 +69,9 @@ var trabajo={
                 $('#subtipoLabel_id').prop('hidden', false);
                 $('#id_subtipo_trabajo').prop('hidden', false);
                 $('#id_subtipo_trabajo').prop('required', true);
-
-
+                $('#autorIN_id').prop('hidden', true);
+                $('#id_autorIN').prop('required', false);
+            
             }
         });
         $('#id_curso').on('change',function(){
@@ -101,50 +117,18 @@ var trabajo={
             theme: "bootstrap4",
             language: 'es',
             allowClear: true,
-            ajax: {
-                delay: 250,
-                type: 'POST',
-                url: window.location.pathname,
-                data: function (params) {
-                    var queryParameters = {
-                        term: params.term,
-                        action: 'search_autor'
-                    }
-                    return queryParameters;
-                },
-                processResults: function (data) {
-                    //console.log(data);
-                    return {                        
-                        results: data
-                    };
-                },
-            },
             placeholder: 'Ingrese un Nombre o apellido',
             minimumInputLength: 1,
         });
         $('select[name="autor"]').select2({
             theme: "bootstrap4",
             language: 'es',
-                        
-            ajax: {
-                delay: 250,
-                type: 'POST',
-                url: window.location.pathname,
-                data: function (params) {
-                    var queryParameters = {
-                        term: params.term,
-                        action: 'search_autor'
-                    }
-                    return queryParameters;
-                },
-                processResults: function (data) {
-                    return {                        
-                        results: data
-                    };
-                },
-            allowClear: true,
-            
-            },
+            placeholder: 'Ingrese un Nombre o apellido',
+            minimumInputLength: 1,
+        });
+        $('select[name="autorIN"]').select2({
+            theme: "bootstrap4",
+            language: 'es',
             placeholder: 'Ingrese un Nombre o apellido',
             minimumInputLength: 1,
         });
@@ -370,6 +354,7 @@ var trabajo={
             trabajo.items.titulo = $('input[name="titulo"]').val();
             trabajo.items.Autor_correspondencia = $('select[name="Autor_correspondencia"]').val();
             trabajo.items.otros_autores = $('select[name="autor"]').val();
+            trabajo.items.autores_ingreso = $('select[name="autorIN"]').val();
             trabajo.items.observaciones = $('input[name="observaciones"]').val();
             trabajo.items.institucion_principal = $('select[name="institucion_principal"]').val();
             trabajo.items.otras_instituciones = $('select[name="institucion"]').val();
@@ -438,6 +423,12 @@ var trabajo={
                 }
             };
             
+            trabajo.items.autores_ingreso.forEach(element => {
+                if (element === null || element.trim().length === 0) {
+                    trabajo.items.autores_ingreso.shift();
+                } 
+            });
+
             if (contador == 0) {
                 var parameters = new FormData();
                 parameters.append('action', $('input[name="action"]').val());
@@ -448,10 +439,14 @@ var trabajo={
                 for (var i = 0; i < $('input[name="tabla"]').get(0).files.length; ++i) {
                     parameters.append('tablas', document.getElementById('id_tabla').files[i]);                    
                 }
-                submit_trabajo_with_ajax(window.location.pathname, 'Notificación', 'Si hay algún error al enviar el trabajo científico, por favor tomar captura al error y enviarlo al correo revistacolombiana@sccot.org.co junto con el trabajo científico y los datos solicitados en el formulario para que este pueda ser validado. Esto solo puede ser enviado en el rango de fechas de la convocatoria del curso. No se aceptan trabajos enviados después de esta fecha', parameters, function () {
+                if (trabajo.items.autores_ingreso.length >2) {
+                    message_error("Solo se pueden agregar dos autores de ingreso");
+                } else {
+                    submit_trabajo_with_ajax(window.location.pathname, 'Notificación', 'Si hay algún error al enviar el trabajo científico, por favor tomar captura al error y enviarlo al correo revistacolombiana@sccot.org.co junto con el trabajo científico y los datos solicitados en el formulario para que este pueda ser validado. Esto solo puede ser enviado en el rango de fechas de la convocatoria del curso. No se aceptan trabajos enviados después de esta fecha', parameters, function () {
                     message_success("Trabajo registrado con exito!");
                     location.href = '/';
                 });
+                }
             }            
         });
     });
